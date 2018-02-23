@@ -47,8 +47,10 @@ module.exports = function (ctx) {
         'QLayout',
         'QLayoutHeader',
         'QLayoutDrawer',
+        'QLayoutFooter',
         'QPageContainer',
         'QPage',
+        'QPageSticky',
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
@@ -57,12 +59,28 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
-        'QItemSide'
+        'QItemSide',
+        'QItemSeparator',
+        'QTabs',
+        'QTab',
+        'QRouteTab',
+        'QTabPane',
+        'QModal',
+        'QModalLayout',
+        'QSearch',
+        'QFab',
+        'QFabAction',
+        'QCard',
+        'QPullToRefresh',
+        'QCardTitle',
+        'QCardSeparator',
+        'QSpinner'
       ],
       directives: [
         'Ripple'
       ],
       plugins: [
+        'LocalStorage',
         'Notify'
       ]
     },
