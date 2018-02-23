@@ -10,7 +10,7 @@
         <q-tab slot="title" name="tab-3" label="Pending Moves"/>
         <div class="contain-main">
           <q-tab-pane class="no-pad no-border" name="tab-1">
-            <b-team :thisTeam="myTeam"/>
+            <blitz-team :thisTeam="myTeam"/>
           </q-tab-pane>
           <q-tab-pane name="tab-2" class="draft-picks no-border no-padding">
             <q-list
@@ -56,12 +56,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { callApi, loadData } from '../data'
-import bTeam from '../components/bTeam.vue'
+import blitzTeam from '../components/bTeam.vue'
 
 export default {
   name: 'team',
   components: {
-    bTeam
+    blitzTeam
   },
   data () {
     return {
