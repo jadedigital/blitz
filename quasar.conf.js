@@ -74,14 +74,16 @@ module.exports = function (ctx) {
         'QPullToRefresh',
         'QCardTitle',
         'QCardSeparator',
-        'QSpinner'
+        'QSpinner',
+        'QSpinnerDots'
       ],
       directives: [
         'Ripple'
       ],
       plugins: [
         'LocalStorage',
-        'Notify'
+        'Notify',
+        'ActionSheet'
       ]
     },
     // animations: 'all' --- includes all animations

@@ -80,10 +80,6 @@
 </template>
 
 <script>
-import {
-  Toast,
-  ActionSheet
-} from 'quasar'
 import { mapGetters } from 'vuex'
 import blitzInjury from './blitzInjury.vue'
 import blitzVersus from './blitzVersus.vue'
@@ -321,20 +317,15 @@ export default {
           label: this.playerLookup[el.id].name,
           avatar: 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + this.playerLookup[el.id].cbs_id + '.jpg',
           handler () {
-            Toast.create('API call to submit lineup')
+            this.$q.notify('API call to submit lineup')
           }
         }
         actions.push(action)
       })
-      ActionSheet.create({
+      this.$q.actionSheet({
         title: 'Move ' + name.split(', ').reverse().join(' '),
         actions: actions,
-        dismiss: {
-          label: 'Cancel',
-          handler () {
-            Toast.create('Cancelled...')
-          }
-        }
+        dismissLabel: 'Cancel'
       })
     }
   }

@@ -1,5 +1,7 @@
 export default {
+  version: '',
   leagueData: '',
+  activeLeague: '',
   rosters: '',
   players: '',
   leagueStandings: '',
