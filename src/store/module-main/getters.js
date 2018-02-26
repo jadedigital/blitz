@@ -2,6 +2,8 @@
 export const someGetter = (state) => {
 }
 */
+export const isAuthenticated = state => !!state.token
+export const version = state => state.version
 export const leagueData = state => state.leagueData
 export const rosters = state => state.rosters
 export const players = state => state.players

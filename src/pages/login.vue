@@ -63,11 +63,14 @@ export default {
   },
   methods: {
     login () {
-      if (!this.username || !this.password) {
+      const { username, password } = this
+      if (!username || !password) {
         this.$q.notify('Please enter a valid username and password.')
       }
       else {
-        this.mflLogin()
+        this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
+          this.$router.push('/')
+        })
       }
     },
     mflLogin () {
