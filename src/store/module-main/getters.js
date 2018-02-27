@@ -5,6 +5,7 @@ export const someGetter = (state) => {
 export const isAuthenticated = state => !!state.token
 export const version = state => state.version
 export const leagueData = state => state.leagueData
+export const activeLeague = state => state.activeLeague
 export const rosters = state => state.rosters
 export const players = state => state.players
 export const league = state => state.league
@@ -40,3 +41,5 @@ export const settings = state => state.settings
 export const endWeek = state => {
   return state.league.endWeek
 }
+export const api = state => state.api
+export const params = state => state.params

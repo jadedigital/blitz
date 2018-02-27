@@ -40,26 +40,8 @@ export default {
       response: null,
       username: '',
       password: '',
-      lastWeek: '',
       loadingData: false
     }
-  },
-  computed: {
-    ...mapGetters({
-      leagueData: 'leagueData',
-      activeLeague: 'activeLeague',
-      rosters: 'rosters',
-      players: 'players',
-      league: 'league',
-      leagueStandings: 'leagueStandings',
-      freeAgents: 'freeAgents',
-      projectedScores: 'projectedScores',
-      topAdds: 'topAdds',
-      topOwns: 'topOwns',
-      fullNflSchedule: 'fullNflSchedule',
-      liveScoring: 'liveScoring',
-      pointsAllowed: 'pointsAllowed'
-    })
   },
   methods: {
     login () {
@@ -68,60 +50,19 @@ export default {
         this.$q.notify('Please enter a valid username and password.')
       }
       else {
-        this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
-          this.$router.push('/')
-        })
-      }
-    },
-    mflLogin () {
-      this.loadingData = true
-      var userParams = {
-        USERNAME: this.username,
-        PASSWORD: this.password
-      }
-      var url = 'https://keepersync.com/auth/mfl'
-      this.axios.get(url, {
-        params: userParams
-      })
-        .then((response) => {
-          var str = response.data.leagues.league.url
-          var host = str.substring(str.lastIndexOf('//') + 2, str.indexOf('.'))
-          var leagueId = str.substring(str.lastIndexOf('/') + 1)
-          var leagueData = {}
-          leagueData[leagueId] = {cookie: response.data.cookie, host: host, teamId: response.data.leagues.league.franchise_id}
-          LocalStorage.set('leagueData', leagueData)
-          LocalStorage.set('activeLeague', leagueId)
-          var time = Date.now()
-          LocalStorage.set('leagueData_time', time)
-          LocalStorage.set('activeLeague_time', time)
-          this.$store.commit('SET_LEAGUE_DATA', leagueData)
-          this.$store.commit('CHANGE_ACTIVE_LEAGUE', leagueId)
-          return getLeagueData()
-        })
-        .then((response) => {
-          this.lastWeek = parseFloat(response.league.endWeek)
-          return getWeek()
-        })
-        .then((response) => {
-          console.log('week = ' + response)
-          var week = Math.min(response, this.lastWeek)
-          console.log('last week = ' + week)
-          LocalStorage.set('currentWeek', week)
-          var time = Date.now()
-          LocalStorage.set('currentWeek_time', time)
-          this.$store.commit('SET_DATA', {type: 'currentWeek', data: week})
-          return callApi(week)
-        })
-        .then(() => {
-          this.$router.push('user/team')
-          this.loadingData = false
-        })
-        .catch((error) => {
-          if (error) {
+        this.loadingData = true
+        this.$store.dispatch(AUTH_REQUEST, { username, password })
+          .then(() => {
+            this.$router.push('user/team')
             this.loadingData = false
-            Toast.create('Invalid username or password. Please try again.')
-          }
-        })
+          })
+          .catch((error) => {
+            if (error) {
+              this.loadingData = false
+              this.$q.notify('Invalid username or password. Please try again.')
+            }
+          })
+      }
     }
   }
 }
