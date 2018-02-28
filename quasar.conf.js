@@ -75,7 +75,9 @@ module.exports = function (ctx) {
         'QCardTitle',
         'QCardSeparator',
         'QSpinner',
-        'QSpinnerDots'
+        'QSpinnerDots',
+        'QInput',
+        'QChip'
       ],
       directives: [
         'Ripple'
@@ -83,7 +85,8 @@ module.exports = function (ctx) {
       plugins: [
         'LocalStorage',
         'Notify',
-        'ActionSheet'
+        'ActionSheet',
+        'Dialog'
       ]
     },
     // animations: 'all' --- includes all animations

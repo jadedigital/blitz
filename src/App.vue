@@ -1,17 +1,77 @@
 <template>
   <div id="q-app">
-    <router-view />
+    <transition :name="transitionName">
+      <keep-alive>
+        <router-view class="child-slide"></router-view>
+      </keep-alive>
+    </transition>
   </div>
 </template>
 
 <script>
 export default {
   name: 'App',
-  beforeCreate () {
-		this.$store.commit('INITIALIZE_STORE');
-	}
+  data () {
+    return {
+      transitionName: '',
+      routeMap: {
+        user: 1,
+        login: 2,
+        matchup: 3,
+        team: 4,
+        player: 5,
+        thread: 6,
+        message: 7,
+        newmessage: 8,
+        settings: 10
+      }
+    }
+  },
+  beforeRouteUpdate (to, from, next) {
+    console.log('test')
+    var fromRoute = ''
+    var toRoute = ''
+    if (from.path.split('/')[1] === 'settings' && to.path.split('/')[1] === 'settings') {
+      fromRoute = from.path.split('/').length
+      toRoute = to.path.split('/').length
+      this.transitionName = toRoute < fromRoute ? 'overlap-left' : 'overlap-right'
+    } else {
+      fromRoute = from.path.split('/')[1]
+      toRoute = to.path.split('/')[1]
+      this.transitionName = this.routeMap[toRoute] < this.routeMap[fromRoute] ? 'overlap-left' : 'overlap-right'
+    }
+    console.log('from: ' + fromRoute)
+    console.log('to: ' + toRoute)
+    next()
+  }
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.child-slide
+  width 100%
+  min-height 100%
+  position absolute
+  transition all 0.4s
+.overlap-left-enter-active
+  z-index -1
+  position fixed
+.overlap-left-enter
+  transform translate(-20%, 0)
+  position fixed
+.overlap-left-leave-active
+  transform translate(100%, 0)
+.overlap-right-leave-active
+  z-index -1
+  transform translate(-20%, 0)
+  position fixed
+.overlap-right-enter
+  transform translate(100%, 0)
+.overlay
+  z-index 4500
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 100%
 </style>

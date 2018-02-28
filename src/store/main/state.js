@@ -1,7 +1,7 @@
 export default {
   token: '',
   version: '',
-  leagueData: '',
+  leagueData: {},
   activeLeague: '',
   rosters: '',
   players: '',
@@ -29,7 +29,6 @@ export default {
   messageBoardThread: '',
   leagueTab: '',
   matchupTeams: {teamA: '', teamB: ''},
-  displayTeam: '',
   chat: '',
   draftResults: '',
   settings: {
@@ -161,74 +160,6 @@ export default {
       params: 'futureDraftPicksParams',
       timeOut: 3600000,
       timeStamp: 0
-    }
-  },
-  params: {
-    rosterParams: {
-      TYPE: 'rosters',
-      L: leagueId,
-      JSON: 1
-    },
-    playerParams: {
-      TYPE: 'players',
-      DETAILS: 1,
-      JSON: 1
-    },
-    injuriesParams: {
-      TYPE: 'injuries',
-      JSON: 1
-    },
-    leagueParams: {
-      TYPE: 'league',
-      L: leagueId,
-      JSON: 1
-    },
-    standingsParams: {
-      TYPE: 'leagueStandings',
-      L: leagueId,
-      JSON: 1
-    },
-    freeAgentsParams: {
-      TYPE: 'freeAgents',
-      L: leagueId,
-      JSON: 1
-    },
-    projectedScoresParams: {
-      TYPE: 'projectedScores',
-      L: leagueId,
-      W: week,
-      COUNT: 3000,
-      JSON: 1
-    },
-    topAddsParams: {
-      TYPE: 'topAdds',
-      JSON: 1
-    },
-    topOwnsParams: {
-      TYPE: 'topOwns',
-      JSON: 1
-    },
-    nflScheduleParams: {
-      TYPE: 'nflSchedule',
-      W: 'ALL',
-      JSON: 1
-    },
-    liveScoringParams: {
-      TYPE: 'liveScoring',
-      L: leagueId,
-      W: week,
-      DETAILS: 1,
-      JSON: 1
-    },
-    pointsAllowedParams: {
-      TYPE: 'pointsAllowed',
-      L: leagueId,
-      JSON: 1
-    },
-    futureDraftPicksParams: {
-      TYPE: 'futureDraftPicks',
-      L: this.activeLeague,
-      JSON: 1
     }
   }
 }

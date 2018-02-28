@@ -21,11 +21,11 @@
             >
               <q-list-header class="text-center bg-grey-2 border-bottom">{{year}}</q-list-header>
               <q-item
-                v-for="(pick, key) in myPicksPerYear[year]" 
+                v-for="(pick, key) in myPicksPerYear[year]"
                 :key="key"
                 class="border-bottom"
               >
-                <q-item-main 
+                <q-item-main
                   :label="'Round ' + pick.round"
                 >
                   <q-item-tile class="owner">
@@ -46,7 +46,7 @@
               </q-list-header>
               <div class="no-pending light-paragraph text-italic text-center">No pending trades </div>
             </q-list>
-          </q-tab-pane>          
+          </q-tab-pane>
         </div>
       </q-tabs>
     </q-pull-to-refresh>
@@ -55,8 +55,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { callApi, loadData } from '../data'
-import blitzTeam from '../components/bTeam.vue'
+import blitzTeam from '../components/blitzTeam.vue'
 
 export default {
   name: 'team',
@@ -73,13 +72,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      activeLeague: 'activeLeague',
-      leagueData: 'leagueData',
-      rosters: 'rosters',
-      players: 'players',
-      league: 'league',
-      currentWeek: 'currentWeek',
-      futureDraftPicks: 'futureDraftPicks'
+      activeLeague: 'main/activeLeague',
+      leagueData: 'main/leagueData',
+      league: 'main/league',
+      rosters: 'main/rosters',
+      players: 'main/players',
+      currentWeek: 'main/currentWeek',
+      futureDraftPicks: 'main/futureDraftPicks'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -159,37 +158,24 @@ export default {
       })
     },
     refresher (done) {
-      callApi(this.currentWeek)
+      this.fetchData()
       done()
     },
     fetchData () {
-      var data = [
-        'futureDraftPicks'
+      var requests = [
+        'rosters',
+        'futureDraftPicks',
+        'liveScoring',
+        'projectedScores',
+        'fullNflSchedule',
+        'pointsAllowed',
+        'injuries'
       ]
-      loadData(data)
 
-      var futureDraftPicksParams = {
-        cookie: this.leagueData[this.activeLeague].cookie,
-        host: this.leagueData[this.activeLeague].host,
-        TYPE: 'futureDraftPicks',
-        L: this.activeLeague,
-        JSON: 1
-      }
-      var request = [
-        {
-          type: 'futureDraftPicks',
-          value: 'futureDraftPicks',
-          params: futureDraftPicksParams,
-          timeOut: 3600000
-        }
-      ]
-      callApi('', request)
+      this.$store.dispatch('main/API_REQUEST', { types: requests })
         .then((response) => {
           this.dataLoaded = true
         })
-    },
-    setTeam () {
-      this.dataLoaded = true
     }
   },
   created () {
@@ -220,7 +206,7 @@ export default {
   display inline
 .team .team-player-name
   display inline
-  overflow hidden 
+  overflow hidden
   -webkit-box-orient vertical
 .team .no-pending
   padding 24px 0

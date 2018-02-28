@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import store from '../store'
 import routes from './routes'
 
 Vue.use(VueRouter)
@@ -36,19 +37,17 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if (localStorage.getItem('leagueData') === null) {
+    if (!store.getters['main/isAuthenticated']) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }
       })
-    }
-    else {
+    } else {
       next()
     }
-  }
-  else {
+  } else {
     next() // make sure to always call next()!
   }
 })
 
-export default Router
+export default router

@@ -1,8 +1,8 @@
 <template>
-  <div 
+  <div
     v-if="!playerLookup[player].team.startsWith('FA')"
   >
-    {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} - 
+    {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
     <span
       :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-positive' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-warning' : 'text-negative'"
     >
@@ -25,13 +25,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      activeLeague: 'activeLeague',
-      leagueData: 'leagueData',
-      players: 'players',
-      league: 'league',
-      fullNflSchedule: 'fullNflSchedule',
-      pointsAllowed: 'pointsAllowed',
-      currentWeek: 'currentWeek'
+      activeLeague: 'main/activeLeague',
+      leagueData: 'main/leagueData',
+      players: 'main/players',
+      league: 'main/league',
+      fullNflSchedule: 'main/fullNflSchedule',
+      pointsAllowed: 'main/pointsAllowed',
+      currentWeek: 'main/currentWeek'
     }),
     playerLookup () {
       var array = this.players.player
@@ -48,7 +48,7 @@ export default {
           vs: el.team[1].id,
           day: date.formatDate(kickoff, 'ddd'),
           time: date.formatDate(kickoff, 'h' + ':' + 'mm' + 'a'),
-          result: parseInt(el.team[0].score) > parseInt(el.team[1].score) ? ('W' + ' ' + el.team[0].score + '-' + el.team[1].score) : ('L'  + ' ' + el.team[0].score + '-' + el.team[1].score),
+          result: parseInt(el.team[0].score) > parseInt(el.team[1].score) ? ('W' + ' ' + el.team[0].score + '-' + el.team[1].score) : ('L' + ' ' + el.team[0].score + '-' + el.team[1].score),
           location: ((el.team[0].isHome === '0') ? '@' : 'vs'),
           remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2)
         }
@@ -56,7 +56,7 @@ export default {
           vs: el.team[0].id,
           day: date.formatDate(kickoff, 'ddd'),
           time: date.formatDate(kickoff, 'h' + ':' + 'mm' + 'a'),
-          result: parseInt(el.team[1].score) > parseInt(el.team[0].score) ? ('W' + ' ' + el.team[1].score + '-' + el.team[0].score) : ('L'  + ' ' + el.team[1].score + '-' + el.team[0].score),
+          result: parseInt(el.team[1].score) > parseInt(el.team[0].score) ? ('W' + ' ' + el.team[1].score + '-' + el.team[0].score) : ('L' + ' ' + el.team[1].score + '-' + el.team[0].score),
           location: ((el.team[1].isHome === '0') ? '@' : 'vs'),
           remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2)
         }
@@ -108,17 +108,13 @@ export default {
       value = value.toString()
       if (value.endsWith('1')) {
         value = value.toString() + 'st'
-      }
-      else if (value.endsWith('2')) {
+      } else if (value.endsWith('2')) {
         value = value.toString() + 'nd'
-      }
-      else if (value.endsWith('3')) {
+      } else if (value.endsWith('3')) {
         value = value.toString() + 'rd'
-      }
-      else if (parseInt(value) > 9 && parseInt(value) < 20) {
+      } else if (parseInt(value) > 9 && parseInt(value) < 20) {
         value = value.toString() + 'th'
-      }
-      else {
+      } else {
         value = value.toString() + 'th'
       }
       return value

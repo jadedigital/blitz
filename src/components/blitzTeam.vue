@@ -100,15 +100,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      activeLeague: 'activeLeague',
-      leagueData: 'leagueData',
-      rosters: 'rosters',
-      players: 'players',
-      league: 'league',
-      liveScoring: 'liveScoring',
-      projectedScores: 'projectedScores',
-      teamMap: 'teamMap',
-      displayTeam: 'displayTeam'
+      activeLeague: 'main/activeLeague',
+      leagueData: 'main/leagueData',
+      players: 'main/players',
+      rosters: 'main/rosters',
+      league: 'main/league',
+      liveScoring: 'main/liveScoring',
+      projectedScores: 'main/projectedScores',
+      teamMap: 'main/teamMap'
     }),
     rosterLookup () {
       var array = this.rosters.franchise
@@ -165,12 +164,13 @@ export default {
       return this.lookup(array, 'id')
     },
     startersSorted () {
-      var array = []
-      var positions = this.positionsBasic
-      this.teamScoring.players.player.forEach((el) => {
-        var obj = {
+      let array = []
+      let positions = this.positionsBasic
+      let positionLookup = this.playerLookup
+      this.teamScoring.players.player.slice(0).forEach((el) => {
+        const obj = {
           id: el.id,
-          pos: this.playerLookup[el.id].position,
+          pos: positionLookup[el.id].position,
           status: el.status,
           score: el.score
         }
@@ -185,6 +185,7 @@ export default {
       var starters = []
       var players = []
       var positions = this.positions
+      let playerObj = this.playerLookup
       var playerCheck = ''
       this.teamScoring.players.player.forEach(el => {
         if (el.status === 'starter') {
@@ -194,20 +195,20 @@ export default {
       positions.forEach((elarray) => {
         elarray.some((elPos) => {
           players.some((elId) => {
-            if (this.playerLookup[elId].position === elPos) {
+            if (playerObj[elId].position === elPos) {
               var index = players.indexOf(elId)
               players.splice(index, 1)
               var position = elarray.length > 1 ? elarray.map((pos) => pos[0]).join('/') : elPos
               var obj = {
-                id: this.playerLookup[elId].id,
+                id: playerObj[elId].id,
                 position: position
               }
               starters.push(obj)
             }
             playerCheck = elId
-            return this.playerLookup[elId].position === elPos
+            return playerObj[elId].position === elPos
           })
-          return this.playerLookup[playerCheck].position === elPos
+          return playerObj[playerCheck].position === elPos
         })
       })
       return starters
@@ -268,16 +269,13 @@ export default {
         if (el.limit === '1' && el.name === 'Def') {
           def[0] = new Array(0)
           def[0].push(el.name)
-        }
-        else if (el.limit === '1' && el.name === 'K') {
+        } else if (el.limit === '1' && el.name === 'K') {
           kick[0] = new Array(0)
           kick[0].push(el.name)
-        }
-        else if (el.limit.indexOf('-')) {
+        } else if (el.limit.indexOf('-')) {
           min = el.limit.split('-')[0]
           max = el.limit.split('-')[1]
-        }
-        else {
+        } else {
           min = el.limit
           max = el.limit
         }

@@ -1,23 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
-import main from './module-main'
+import main from './main'
 
 Vue.use(Vuex)
-
-const watchStore = store => {
-  store.subscribe((mutation, state) => {
-    var time = Date.now()
-    localStorage.setItem('leagueData_time', time)
-    localStorage.setItem('store', JSON.stringify(state))
-  })
-}
 
 const store = new Vuex.Store({
   modules: {
     main
   },
-  plugins: [watchStore]
+  plugins: [createPersistedState()]
 })
 
 export default store

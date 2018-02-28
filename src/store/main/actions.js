@@ -1,39 +1,35 @@
+import axios from 'axios'
 import { arrayCheck } from '../../plugins/utils'
 
-export const AUTH_REQUEST = ({ commit, dispatch, getters }, payload) => {
+export const AUTH_REQUEST = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
     var userParams = {
       USERNAME: payload.username,
       PASSWORD: payload.password
     }
     var url = 'https://keepersync.com/auth/mfl'
-    Vue.$axios.get(url, {params: userParams})
+    axios.get(url, {params: userParams})
       .then(response => {
+        const data = response.data.leagues
         const array = arrayCheck(data)
         const token = response.data.cookie
         const firstLeague = array[0].league.url.substring(array[0].league.url.lastIndexOf('/') + 1)
-
         var leagueData = {}
         array.forEach(el => {
           var str = el.league.url
           var host = str.substring(str.lastIndexOf('//') + 2, str.indexOf('.'))
           var leagueId = str.substring(str.lastIndexOf('/') + 1)
-          leagueData[leagueId] = {host: host, teamId: el.league.franchise_id}  
+          leagueData[leagueId] = {host: host, teamId: el.league.franchise_id}
         })
-        
+
         commit('SET_DATA', {type: 'token', data: token})
-        commit('SET_DATA', {type: 'activeLeague', data: firstLeague})
         commit('SET_DATA', {type: 'leagueData', data: leagueData})
-        return dispatch('GET_LEAGUE_DATA')
-      })
-      .then(() => {
-        return dispatch('GET_WEEK')
-      })
-      .then(() => {
+        commit('SET_DATA', {type: 'activeLeague', data: firstLeague})
         resolve()
       })
       .catch((error) => {
         if (error) {
+          console.log('uh oh')
           reject(error)
         }
       })
@@ -54,7 +50,7 @@ export const GET_LEAGUE_DATA = ({ commit, getters }) => {
     }
     var url = 'https://keepersync.com/mfl/export'
 
-    Vue.$axios.get(url, {
+    axios.get(url, {
       params: leagueParams
     })
       .then((response) => {
@@ -83,7 +79,7 @@ export const GET_WEEK = ({ commit, getters }) => {
     }
     var url = 'https://keepersync.com/mfl/export'
 
-    Vue.$axios.get(url, {
+    axios.get(url, {
       params: nflScheduleParams
     })
       .then((response) => {
@@ -96,12 +92,11 @@ export const GET_WEEK = ({ commit, getters }) => {
         })
         if (timeLeft > 0) {
           week = parseFloat(responseData.nflSchedule.week)
-        }
-        else {
+        } else {
           week = parseFloat(responseData.nflSchedule.week) + 1
         }
         const currentWeek = Math.min(week, getters.endWeek)
-        commit('SET_DATA', {type: 'currentWeek', data: week})
+        commit('SET_DATA', {type: 'currentWeek', data: currentWeek})
         resolve(week)
       })
       .catch((error) => {
@@ -123,14 +118,10 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   requests.forEach(el => {
     let timeCheck = Date.now()
     let apiParams = getters.params[el.params]
-    const data = getters.leagueData
-    const leagueId = getters.activeLeague
-    apiParams['cookie'] = getters.token
-    apiParams['host'] = data[leagueId].host
     const diff = timeCheck - el.timeStamp
     if (diff > el.timeOut) {
       console.log('fetching ' + el.type + ' data from server')
-      promises.push(Vue.$axios.get(url, {
+      promises.push(axios.get(url, {
         params: apiParams
       })
         .then((response) => {

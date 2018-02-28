@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      injuries: 'injuries'
+      injuries: 'main/injuries'
     }),
     injuryLookup () {
       var array = this.injuries.injury
@@ -48,8 +48,7 @@ export default {
       }
       if (injury.toLowerCase().startsWith('ir')) {
         output = 'IR'
-      }
-      else {
+      } else {
         output = map[injury]
       }
       return output

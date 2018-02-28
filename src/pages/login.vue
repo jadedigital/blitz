@@ -30,8 +30,6 @@
 </template>
 -
 <script>
-import { mapGetters } from 'vuex'
-import { callApi, getWeek, getLeagueData } from '../data'
 
 export default {
   name: 'login',
@@ -48,13 +46,17 @@ export default {
       const { username, password } = this
       if (!username || !password) {
         this.$q.notify('Please enter a valid username and password.')
-      }
-      else {
+      } else {
         this.loadingData = true
-        this.$store.dispatch(AUTH_REQUEST, { username, password })
+        this.$store.dispatch('main/AUTH_REQUEST', { username, password })
           .then(() => {
-            this.$router.push('user/team')
-            this.loadingData = false
+            return this.$store.dispatch('main/API_REQUEST', { types: ['players', 'league'] })
+          })
+          .then(() => {
+            return this.$store.dispatch('main/GET_WEEK')
+          })
+          .then(() => {
+            this.$router.push('/user/team')
           })
           .catch((error) => {
             if (error) {
@@ -64,6 +66,9 @@ export default {
           })
       }
     }
+  },
+  activated () {
+    this.loadingData = false
   }
 }
 </script>
@@ -107,7 +112,7 @@ export default {
   font-weight 700
 .login-logo .sub
   font-style italic
-  font-weight 300  
+  font-weight 300
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
@@ -124,4 +129,3 @@ export default {
   height 335px
   margin-top 40px
 </style>
-

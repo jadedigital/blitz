@@ -1,5 +1,5 @@
 <template>
-  <q-layout 
+  <q-layout
     @scroll="scrollHandler"
     ref="layout"
     view="lHh Lpr lFf"
@@ -73,10 +73,12 @@
           <q-item-side icon="settings" />
           <q-item-main label="Settings"/>
         </q-item>
-        <q-item @click="logout">
-          <q-item-side icon="undo" />
-          <q-item-main label="Logout"/>
-        </q-item>
+        <div @click="logout">
+          <q-item>
+            <q-item-side icon="undo" />
+            <q-item-main label="Logout"/>
+          </q-item>
+        </div>
       </q-list>
     </q-layout-drawer>
 
@@ -97,19 +99,19 @@
     </q-page-container>
 
     <q-layout-footer>
-      <q-tabs slot="footer" inverted class="bg-white main-nav desktop-hide">
+      <q-tabs inverted class="bg-white main-nav desktop-hide">
         <q-route-tab v-if="settings.navbar.includes('team')" to="team" exact slot="title" icon="mdi-football-helmet" label="My Team" />
         <q-route-tab v-if="settings.navbar.includes('league')" to="league" exact slot="title" icon="mdi-trophy-variant" label="League" />
         <q-route-tab v-if="settings.navbar.includes('matchup')" to="matchup" exact slot="title" icon="mdi-shield-half-full" label="Matchup"/>
         <q-route-tab v-if="settings.navbar.includes('players')" to="players" exact slot="title" icon="mdi-account-multiple" label="Players"/>
-        <q-route-tab v-if="settings.navbar.includes('chat')" to="chat" exact slot="title" icon="mdi-forum" label="Chat"/> 
-        <q-route-tab v-if="settings.navbar.includes('draft')" to="draft" exact slot="title" icon="view_comfy" label="Draft"/> 
-        <q-route-tab v-if="settings.navbar.includes('polls')" to="polls" exact slot="title" icon="mdi-poll" label="Polls"/> 
+        <q-route-tab v-if="settings.navbar.includes('chat')" to="chat" exact slot="title" icon="mdi-forum" label="Chat"/>
+        <q-route-tab v-if="settings.navbar.includes('draft')" to="draft" exact slot="title" icon="view_comfy" label="Draft"/>
+        <q-route-tab v-if="settings.navbar.includes('polls')" to="polls" exact slot="title" icon="mdi-poll" label="Polls"/>
       </q-tabs>
     </q-layout-footer>
 
     <q-page-sticky v-if="leagueTab === 'messages' && $route.name === 'league'" position="bottom-right" :offset="[18, 18]">
-      <q-btn 
+      <q-btn
         round
         icon="edit"
         class="bg-tertiary shadow-5 text-white"
@@ -120,42 +122,10 @@
 </template>
 
 <script>
-import {
-  openURL,
-  Dialog,
-  LocalStorage
-} from 'quasar'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'user',
-  components: {
-    QLayout,
-    QToolbar,
-    QToolbarTitle,
-    QBtn,
-    QIcon,
-    QList,
-    QListHeader,
-    QItem,
-    QItemSide,
-    QItemSeparator,
-    QItemMain,
-    QTabs,
-    QTab,
-    QRouteTab,
-    QTabPane,
-    QAutocomplete,
-    QSearch,
-    QFixedPosition,
-    QModal,
-    QModalLayout,
-    QTransition,
-    QPopover,
-    QFab,
-    QSideLink,
-    QFabAction
-  },
   data () {
     return {
       leftDrawerOpen: false,
@@ -182,12 +152,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      activeLeague: 'activeLeague',
-      leagueData: 'leagueData',
-      league: 'league',
-      players: 'players',
-      leagueTab: 'leagueTab',
-      settings: 'settings'
+      activeLeague: 'main/activeLeague',
+      leagueData: 'main/leagueData',
+      league: 'main/league',
+      players: 'main/players',
+      leagueTab: 'main/leagueTab',
+      settings: 'main/settings'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -204,7 +174,7 @@ export default {
     playerSearchLookup () {
       var list = this.players.player
       var positions = []
-      this.league.starters.position.forEach(el => {
+      this.league.starters.position.slice(0).forEach(el => {
         positions.push(el.name)
       })
       list = this.positionFilter(list, positions)
@@ -230,8 +200,7 @@ export default {
     scrollHandler (scroll) {
       if (scroll.position > 48) {
         this.headerShadow = true
-      }
-      else {
+      } else {
         this.headerShadow = false
       }
     },
@@ -253,25 +222,20 @@ export default {
       })
     },
     logout () {
-      Dialog.create({
+      this.$q.dialog({
         title: 'Logout',
         message: 'Are you sure?',
-        buttons: [
-          {
-            label: 'Cancel',
-            handler () {
-              console.log('canceled...')
-            }
-          },
-          {
-            label: 'Logout',
-            handler: () => {
-              LocalStorage.clear()
-              this.$router.push('/login')
-            }
-          }
-        ]
+        ok: 'Logout',
+        cancel: 'Cancel'
       })
+        .then(() => {
+          this.$q.localStorage.clear()
+          this.$store.commit('main/LOGOUT')
+          this.$router.push('/login')
+        })
+        .catch(() => {
+          console.log('canceled...')
+        })
     }
   }
 }
