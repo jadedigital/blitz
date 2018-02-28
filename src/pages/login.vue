@@ -9,7 +9,7 @@
           </div>
           <div class="login-wrapper">
             <transition name="fade">
-              <q-spinner-dots v-if="loadingData" color="white" size="100px" class="login-spinner absolute-center"/>
+              <q-spinner-dots v-if="loadingData && !logged" color="white" size="100px" class="login-spinner absolute-center"/>
             </transition>
             <transition name="sling">
               <div v-if="!loadingData">
@@ -38,7 +38,8 @@ export default {
       response: null,
       username: '',
       password: '',
-      loadingData: false
+      loadingData: false,
+      logged: false
     }
   },
   methods: {
@@ -56,7 +57,8 @@ export default {
             return this.$store.dispatch('main/GET_WEEK')
           })
           .then(() => {
-            this.$router.push('/user/team')
+            this.logged = true
+            setTimeout(this.pushRoute, 1000)
           })
           .catch((error) => {
             if (error) {
@@ -65,9 +67,13 @@ export default {
             }
           })
       }
+    },
+    pushRoute () {
+      this.$router.push('user/team')
     }
   },
-  activated () {
+  deactivated () {
+    this.logged = false
     this.loadingData = false
   }
 }

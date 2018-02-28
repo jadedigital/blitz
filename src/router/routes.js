@@ -1,23 +1,35 @@
 
 export default [
   { path: '/',
-    component: () => import('layouts/home'),
+    component: () => import('layouts/root'),
     redirect: {name: 'team'},
-    name: 'user',
-    meta: { requiresAuth: true },
     children: [
+      { path: 'user',
+        component: () => import('layouts/home'),
+        redirect: {name: 'team'},
+        name: 'user',
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: 'team',
+            name: 'team',
+            component: () => import('pages/team'),
+            meta: { requiresAuth: true }
+          },
+          {
+            path: 'league',
+            name: 'league',
+            component: () => import('pages/league'),
+            meta: { requiresAuth: true }
+          }
+        ]
+      },
       {
-        path: 'user/team',
-        name: 'team',
-        component: () => import('pages/team'),
-        meta: { requiresAuth: true }
+        path: '/login',
+        name: 'login',
+        component: () => import('pages/login')
       }
     ]
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('pages/login')
   },
   // Always leave this last one
   {

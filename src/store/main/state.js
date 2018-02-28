@@ -160,6 +160,20 @@ export default {
       params: 'futureDraftPicksParams',
       timeOut: 3600000,
       timeStamp: 0
+    },
+    transactions: {
+      type: 'transactions',
+      value: 'transactions',
+      params: 'transactionsParams',
+      timeOut: 3600000,
+      timeStamp: 0
+    },
+    messageBoard: {
+      type: 'messageBoard',
+      value: 'messageBoard',
+      params: 'messageBoardParams',
+      timeOut: 0,
+      timeStamp: 0
     }
   }
 }

@@ -136,6 +136,21 @@ export const params = state => {
         TYPE: 'futureDraftPicks',
         L: state.activeLeague,
         JSON: 1
+      },
+      transactionsParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'transactions',
+        L: state.activeLeague,
+        COUNT: 30,
+        JSON: 1
+      },
+      messageBoardParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'messageBoard',
+        L: state.activeLeague,
+        JSON: 1
       }
     }
   } else {

@@ -184,7 +184,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '~variables'
 .team .draft-picks .q-item
   font-size 14px

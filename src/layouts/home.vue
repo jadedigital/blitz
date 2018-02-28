@@ -73,12 +73,10 @@
           <q-item-side icon="settings" />
           <q-item-main label="Settings"/>
         </q-item>
-        <div @click="logout">
-          <q-item>
-            <q-item-side icon="undo" />
-            <q-item-main label="Logout"/>
-          </q-item>
-        </div>
+        <q-item @click.native="logout">
+          <q-item-side icon="undo" />
+          <q-item-main label="Logout"/>
+        </q-item>
       </q-list>
     </q-layout-drawer>
 
@@ -303,7 +301,7 @@ export default {
   font-size 10px
   padding 0
   min-height 62px
-.q-tab.icon-and-label
+.q-tab.icon-and-label:not(.hide-icon):not(.hide-label)
   padding 0
   min-height 62px
 .q-tabs-inverted .q-tabs-scroller
@@ -417,11 +415,11 @@ export default {
 {
   transform: translateX(100%);
 }
-.no-header-shadow .layout-header
+.no-header-shadow .q-layout-header
   box-shadow none
 .header-shadow .layout-header
   box-shadow 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
-.layout-footer
+.q-layout-footer
   box-shadow 0 -1px 5px rgba(0,0,0,.2), 0 -2px 2px rgba(0,0,0,.14), 0 -3px 1px -2px rgba(0,0,0,.12)
 .league .msg-board
   height calc(100vh - 162px)
