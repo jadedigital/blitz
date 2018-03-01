@@ -111,6 +111,9 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   var requests = []
   payload.types.forEach(el => {
     requests.push(getters.api[el])
+    if (payload.week) {
+      getters.api[el].week = payload.week
+    }
   })
 
   var url = 'https://keepersync.com/mfl/export'

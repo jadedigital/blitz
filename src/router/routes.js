@@ -21,6 +21,12 @@ export default [
             name: 'league',
             component: () => import('pages/league'),
             meta: { requiresAuth: true }
+          },
+          {
+            path: 'matchup',
+            name: 'matchup',
+            component: () => import('pages/matchup'),
+            meta: { requiresAuth: true }
           }
         ]
       },

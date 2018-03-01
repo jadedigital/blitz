@@ -140,6 +140,13 @@ export default {
       timeOut: 3600000,
       timeStamp: 0
     },
+    matchupLiveScoring: {
+      type: 'matchupLiveScoring',
+      value: 'liveScoring',
+      params: 'matchupLiveScoringParams',
+      timeOut: 0,
+      timeStamp: 0
+    },
     pointsAllowed: {
       type: 'pointsAllowed',
       value: 'pointsAllowed',

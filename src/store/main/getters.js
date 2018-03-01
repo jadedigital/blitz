@@ -123,6 +123,15 @@ export const params = state => {
         DETAILS: 1,
         JSON: 1
       },
+      matchupLiveScoringParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'liveScoring',
+        L: state.activeLeague,
+        W: state.currentWeek,
+        DETAILS: 1,
+        JSON: 1
+      },
       pointsAllowedParams: {
         cookie: state.token,
         host: state.leagueData[state.activeLeague].host,
