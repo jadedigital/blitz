@@ -99,12 +99,28 @@ export const params = state => {
         cookie: state.token,
         host: state.leagueData[state.activeLeague].host,
         TYPE: 'topAdds',
+        W: Math.min(state.league.endWeek, state.currentWeek),
         JSON: 1
       },
       topOwnsParams: {
         cookie: state.token,
         host: state.leagueData[state.activeLeague].host,
         TYPE: 'topOwns',
+        W: Math.min(state.league.endWeek, state.currentWeek),
+        JSON: 1
+      },
+      topDropsParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'topDrops',
+        W: Math.min(state.league.endWeek, state.currentWeek),
+        JSON: 1
+      },
+      topStartersParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'topStarters',
+        W: Math.min(state.league.endWeek, state.currentWeek),
         JSON: 1
       },
       nflScheduleParams: {
@@ -159,6 +175,14 @@ export const params = state => {
         host: state.leagueData[state.activeLeague].host,
         TYPE: 'messageBoard',
         L: state.activeLeague,
+        JSON: 1
+      },
+      playerScoresParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'playerScores',
+        L: state.activeLeague,
+        W: 'YTD',
         JSON: 1
       }
     }

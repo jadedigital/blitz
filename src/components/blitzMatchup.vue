@@ -449,8 +449,83 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .matchup-header .team
   height 100%
   padding 20px 0
+<style lang="stylus" scoped>
+.matchup-header
+  height 100px
+.matchup-header .team-name
+  font-size 11px
+  font-weight 700
+  padding-bottom 4px
+.matchup-header .q-item-avatar
+  margin-left 10px
+  margin-right 10px
+.matchup-header .total-score
+  font-weight 400
+  font-size 24px
+.matchup-header .total-score.strong
+  font-weight 700
+.matchup-header .total-projection
+  font-size 12px
+.separator-title
+  padding 4px 0
+  font-size 12px
+  font-weight 300
+.matchup-list
+  font-size 12px
+.matchup-list .list-item
+  height 48px
+  padding 6px 4px
+.matchup-list .team-name
+  font-size 14px
+  font-weight 500
+  padding-bottom 2px
+.team-name-container
+  overflow hidden
+  white-space nowrap
+  text-overflow ellipsis
+.matchup-list .team
+  display inline
+  font-weight 300
+  font-size 12px
+.matchup-list .team-score
+  font-size 14px
+  font-weight 500
+  padding-bottom 2px
+.matchup-list .team-projection
+  font-size 12px
+  font-weight 300
+.matchup-list .team-matchup
+  font-size 12px
+  font-weight 300
+  white-space nowrap
+.matchup-list .team-matchup span
+  font-weight 500
+.position-list .positions
+  height 48px
+  text-align center
+  font-size 9px
+  font-weight 500
+.matchup .col-5
+  max-width 45%
+  flex 0 0 45%
+.matchup .col-2
+  max-width 10%
+  flex 0 0 10%
+.matchup .q-tabs-panes
+  background #fff
+.matchup .q-select
+  font-size 14px
+  font-weight 500
+  text-transform uppercase
+  margin-bottom 0
+.matchup .q-select .q-input-target
+  padding-left 24px
+.matchup .all-matchups .q-list
+  padding 0
+.matchup .all-matchups .q-list
+  padding 0
 </style>

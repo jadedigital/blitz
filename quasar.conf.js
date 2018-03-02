@@ -79,7 +79,9 @@ module.exports = function (ctx) {
         'QSpinnerDots',
         'QInput',
         'QChip',
-        'QDialog'
+        'QDialog',
+        'QSelect',
+        'QCollapsible'
       ],
       directives: [
         'Ripple'

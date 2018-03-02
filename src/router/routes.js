@@ -27,6 +27,18 @@ export default [
             name: 'matchup',
             component: () => import('pages/matchup'),
             meta: { requiresAuth: true }
+          },
+          {
+            path: 'players',
+            name: 'players',
+            component: () => import('pages/players'),
+            meta: { requiresAuth: true }
+          },
+          {
+            path: 'chat',
+            name: 'chat',
+            component: () => import('pages/chat'),
+            meta: { requiresAuth: true }
           }
         ]
       },

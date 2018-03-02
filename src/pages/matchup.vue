@@ -14,7 +14,7 @@
           @click="weekDialog"
         >
           <div class="q-if-inner col row no-wrap items-center relative-position">
-            <span class="q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}</span>
+            <span class="week-select q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}<q-btn dense flat icon="mdi-menu-down" /></span>
           </div>
         </div>
         <q-tab-pane class="no-pad no-border" name="tab-1">
@@ -191,6 +191,8 @@ export default {
         cancel: true
       }).then(data => {
         this.changeWeek(data)
+      }).catch(() => {
+        console.log('canceled...')
       })
     },
     changeWeek (week) {
@@ -247,6 +249,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~variables'
 .matchup-header
   height 100px
 .matchup-header .team-name
@@ -321,4 +324,8 @@ export default {
   padding 0
 .matchup .all-matchups .q-list
   padding 0
+.matchup .week-select
+  text-align center
+  font-weight 500
+  color $dark
 </style>

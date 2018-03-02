@@ -116,14 +116,28 @@ export default {
       type: 'topAdds',
       value: 'topAdds',
       params: 'topAddsParams',
-      timeOut: 3600000,
+      timeOut: 2,
       timeStamp: 0
     },
     topOwns: {
       type: 'topOwns',
       value: 'topOwns',
       params: 'topOwnsParams',
-      timeOut: 3600000,
+      timeOut: 1,
+      timeStamp: 0
+    },
+    topDrops: {
+      type: 'topDrops',
+      value: 'topDrops',
+      params: 'topDropsParams',
+      timeOut: 1,
+      timeStamp: 0
+    },
+    topStarters: {
+      type: 'topStarters',
+      value: 'topStarters',
+      params: 'topStartersParams',
+      timeOut: 1,
       timeStamp: 0
     },
     fullNflSchedule: {
@@ -180,6 +194,13 @@ export default {
       value: 'messageBoard',
       params: 'messageBoardParams',
       timeOut: 0,
+      timeStamp: 0
+    },
+    playerScores: {
+      type: 'playerScores',
+      value: 'playerScores',
+      params: 'playerScoresParams',
+      timeOut: 3600000,
       timeStamp: 0
     }
   }

@@ -111,9 +111,6 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   var requests = []
   payload.types.forEach(el => {
     requests.push(getters.api[el])
-    if (payload.week) {
-      getters.api[el].week = payload.week
-    }
   })
 
   var url = 'https://keepersync.com/mfl/export'
@@ -121,7 +118,12 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   requests.forEach(el => {
     let timeCheck = Date.now()
     let apiParams = getters.params[el.params]
+    if (payload.week) {
+      apiParams['W'] = payload.week
+    }
     const diff = timeCheck - el.timeStamp
+    console.log(el.type + ' = ' + diff)
+    console.log(el)
     if (diff > el.timeOut) {
       console.log('fetching ' + el.type + ' data from server')
       promises.push(axios.get(url, {
@@ -143,4 +145,29 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   })
 
   return Promise.all(promises)
+}
+
+export const GET_CHATS = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    var queryParams = {
+      host: payload.host,
+      league: payload.league,
+      cookie: payload.cookie
+    }
+    var url = 'https://keepersync.com/mfl/chat'
+
+    axios.get(url, {
+      params: queryParams
+    })
+      .then((response) => {
+        var responseData = response.data
+        commit('SET_DATA', {type: 'chat', data: responseData['messages']})
+        resolve(responseData)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
 }

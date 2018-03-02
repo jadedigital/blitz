@@ -9,6 +9,7 @@
       <q-toolbar class="toolbar border-bottom" color="primary">
         <q-btn
           flat
+          dense
           @click="leftDrawerOpen = !leftDrawerOpen"
         >
           <q-icon name="menu" />
@@ -20,7 +21,11 @@
             {{this.league.name}}
           </span>
         </q-toolbar-title>
-        <q-btn flat @click="toggleModal">
+        <q-btn
+          flat
+          dense
+          @click="toggleModal"
+        >
           <q-icon name="search" />
         </q-btn>
       </q-toolbar>
@@ -97,7 +102,7 @@
     </q-page-container>
 
     <q-layout-footer>
-      <q-tabs inverted class="bg-white main-nav desktop-hide">
+      <q-tabs inverted class="bg-white main-nav">
         <q-route-tab v-if="settings.navbar.includes('team')" to="team" exact slot="title" icon="mdi-football-helmet" label="My Team" />
         <q-route-tab v-if="settings.navbar.includes('league')" to="league" exact slot="title" icon="mdi-trophy-variant" label="League" />
         <q-route-tab v-if="settings.navbar.includes('matchup')" to="matchup" exact slot="title" icon="mdi-shield-half-full" label="Matchup"/>
@@ -323,6 +328,8 @@ export default {
 .search-modal .q-btn
   margin 20px
   width 90%
+.search-modal .q-if
+  margin 16px 0
 .search-modal.fullscreen
   top 50px
 .main-avatar .q-item-avatar
