@@ -184,6 +184,14 @@ export const params = state => {
         L: state.activeLeague,
         W: 'YTD',
         JSON: 1
+      },
+      playerStatusParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'playerStatus',
+        L: state.activeLeague,
+        P: '',
+        JSON: 1
       }
     }
   } else {

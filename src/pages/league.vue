@@ -285,6 +285,7 @@ export default {
       this.$router.push('/message')
     },
     goToTeam (team) {
+      window.scrollTo(0, 0)
       this.selectedTeam = team
       this.$router.push('/team/' + team)
     },

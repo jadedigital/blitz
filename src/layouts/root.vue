@@ -49,26 +49,15 @@ export default {
   width 100%
   min-height 100%
   position absolute
-  transition all 1.4s
-.overlap-left-enter-active
+  transition all 0.4s cubic-bezier(.55,0,.1,1)
+.overlap-left-enter, .overlap-right-leave-active
   z-index -1
   position fixed
-.overlap-left-enter
-  transform translate(-20%, 0)
-  position fixed
-.overlap-left-leave-active
-  transform translate(100%, 0)
-.overlap-right-leave-active
-  z-index -1
-  transform translate(-20%, 0)
-  position fixed
-.overlap-right-enter
-  transform translate(100%, 0)
-.overlay
-  z-index 4500
-  position fixed
-  top 0
-  left 0
-  width 100%
-  height 100%
+  opacity 0
+  -webkit-transform translate(-30px, 0)
+  transform translate(-30px, 0)
+.overlap-left-leave-active, .overlap-right-enter
+  opacity 0
+  -webkit-transform translate(60px, 0)
+  transform translate(60px, 0)
 </style>

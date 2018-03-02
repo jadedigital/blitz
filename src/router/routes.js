@@ -43,6 +43,30 @@ export default [
         ]
       },
       {
+        path: 'player/:id',
+        component: () => import('pages/player'),
+        name: 'player',
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'team/:id',
+        component: () => import('pages/teamOther'),
+        name: 'teamOther',
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'settings',
+        component: () => import('pages/settings'),
+        name: 'settings',
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'settings/general',
+        name: 'settingsGeneral',
+        component: () => import('pages/settingsGeneral'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/login',
         name: 'login',
         component: () => import('pages/login')

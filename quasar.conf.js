@@ -81,7 +81,8 @@ module.exports = function (ctx) {
         'QChip',
         'QDialog',
         'QSelect',
-        'QCollapsible'
+        'QCollapsible',
+        'QToggle'
       ],
       directives: [
         'Ripple'

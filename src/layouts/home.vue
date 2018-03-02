@@ -74,7 +74,7 @@
           <q-item-main label="Polls" />
         </q-item>
         <q-item-separator/>
-        <q-item to="/settings">
+        <q-item @click.native="goSettings">
           <q-item-side icon="settings" />
           <q-item-main label="Settings"/>
         </q-item>
@@ -239,6 +239,12 @@ export default {
         .catch(() => {
           console.log('canceled...')
         })
+    },
+    goSettings () {
+      this.leftDrawerOpen = false
+      setTimeout(() => {
+        this.$router.push('/settings')
+      }, 150)
     }
   }
 }

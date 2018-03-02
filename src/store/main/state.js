@@ -202,6 +202,13 @@ export default {
       params: 'playerScoresParams',
       timeOut: 3600000,
       timeStamp: 0
+    },
+    playerStatus: {
+      type: 'playerStatus',
+      value: 'playerStatus',
+      params: 'playerStatusParams',
+      timeOut: 0,
+      timeStamp: 0
     }
   }
 }

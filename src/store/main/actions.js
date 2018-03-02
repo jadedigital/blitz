@@ -121,9 +121,10 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
     if (payload.week) {
       apiParams['W'] = payload.week
     }
+    if (payload.player) {
+      apiParams['P'] = payload.player
+    }
     const diff = timeCheck - el.timeStamp
-    console.log(el.type + ' = ' + diff)
-    console.log(el)
     if (diff > el.timeOut) {
       console.log('fetching ' + el.type + ' data from server')
       promises.push(axios.get(url, {
@@ -163,6 +164,48 @@ export const GET_CHATS = ({ commit }, payload) => {
         var responseData = response.data
         commit('SET_DATA', {type: 'chat', data: responseData['messages']})
         resolve(responseData)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
+}
+
+export const GET_PLAYER_NEWS = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    var queryParams = {
+      player: parseInt(payload.player)
+    }
+    var url = 'https://keepersync.com/playernews'
+
+    axios.get(url, {
+      params: queryParams
+    })
+      .then((response) => {
+        resolve(response)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
+}
+
+export const GET_PLAYER_STATS = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    var queryParams = {
+      player: parseInt(payload.player)
+    }
+    var url = 'https://keepersync.com/playerstats'
+
+    axios.get(url, {
+      params: queryParams
+    })
+      .then((response) => {
+        resolve(response)
       })
       .catch((error) => {
         if (error) {
