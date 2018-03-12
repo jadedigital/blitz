@@ -44,20 +44,22 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .child-slide
   width 100%
   min-height 100%
   position absolute
-  transition all 0.4s cubic-bezier(.55,0,.1,1)
-.overlap-left-enter, .overlap-right-leave-active
+  transition all 0.4s
+.overlap-left-enter-active
   z-index -1
   position fixed
+.overlap-left-leave-active
   opacity 0
-  -webkit-transform translate(-30px, 0)
-  transform translate(-30px, 0)
-.overlap-left-leave-active, .overlap-right-enter
+  transform translate(300px, 0)
+.overlap-right-leave-active
+  z-index -1
+  position fixed
+.overlap-right-enter
   opacity 0
-  -webkit-transform translate(60px, 0)
-  transform translate(60px, 0)
+  transform translate(300px, 0)
 </style>

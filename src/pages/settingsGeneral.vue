@@ -113,7 +113,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~variables'
-.layout.settings-layout
+.settings-layout
   background-color #fff
 .settings-modal .list-item
   padding 10px
