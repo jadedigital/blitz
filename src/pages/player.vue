@@ -331,4 +331,32 @@ export default {
   padding 20px 16px
 .player-layout .b-versus
   display inline
+.player-header .layout-header
+  box-shadow none
+.player-info-list
+  list-style none
+  padding-left 0
+  font-weight 500
+.player-info-list span
+  font-weight 300
+.player-info .player-img
+  border-radius 50%
+  border 2px solid
+  background #fff
+.player-actions
+  margin-top -28px
+  margin-right 50px
+  position fixed
+  right 0
+.player-name-main
+  padding 12px
+  font-size 24px
+  font-weight 700
+.player-name-main .q-toolbar-subtitle
+  font-size 18px
+  font-weight 500
+.no-header-shadow .q-layout-header
+  box-shadow none
+.header-shadow .layout-header
+  box-shadow 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
 </style>

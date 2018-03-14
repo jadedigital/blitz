@@ -55,6 +55,24 @@ export default [
         meta: { requiresAuth: true }
       },
       {
+        path: 'thread/:id',
+        component: () => import('pages/thread'),
+        name: 'thread',
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'message/:id',
+        component: () => import('pages/message'),
+        name: 'message',
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'newmessage',
+        component: () => import('pages/newmessage'),
+        name: 'newmessage',
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'settings',
         component: () => import('pages/settings'),
         name: 'settings',

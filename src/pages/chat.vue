@@ -14,7 +14,7 @@
         <q-card class="compact-card bg-white">
           <q-item
             link
-            @click="goToThread('1000')"
+            @click.native="goToThread('1000')"
           >
             <div class="q-item-side q-item-side-left q-item-section">
               <div :style="logoUrl" class="q-item-avatar"></div>
@@ -38,7 +38,7 @@
             link
             v-for="chat in franchiseList"
             :key="chat.id"
-            @click="goToThread(chat.id)"
+            @click.native="goToThread(chat.id)"
           >
             <q-item-side v-if="chat.icon" :avatar="chat.icon" />
             <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ chat.owner_name ? chat.owner_name[0] : chat.name[0] }}</q-btn>

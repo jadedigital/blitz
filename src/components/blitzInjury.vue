@@ -56,3 +56,12 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.q-chip
+  min-height 16px
+  font-size 10px
+  padding-left 8px
+  padding-right 8px
+  background #ff1744
+</style>

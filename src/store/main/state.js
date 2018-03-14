@@ -209,6 +209,13 @@ export default {
       params: 'playerStatusParams',
       timeOut: 0,
       timeStamp: 0
+    },
+    messageBoardThread: {
+      type: 'messageBoardThread',
+      value: 'messageBoardThread',
+      params: 'messageBoardThreadParams',
+      timeOut: 0,
+      timeStamp: 0
     }
   }
 }

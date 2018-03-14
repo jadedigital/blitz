@@ -109,7 +109,7 @@
             <q-item
               v-for="chat in msgBoardPretty"
               :key="chat.id"
-              @click="goToMsg(chat.id, chat.subject)"
+              @click.native="goToMsg(chat.id, chat.subject)"
             >
               <q-item-side :avatar="teamLookup[chat.franchise_id].icon ? teamLookup[chat.franchise_id].icon : './statics/avatar.jpg'" />
               <q-item-main :label="chat.subject" :sublabel="teamLookup[chat.franchise_id].name" />
@@ -282,7 +282,7 @@ export default {
     },
     goToMsg (id, title) {
       this.$store.commit('main/SET_DATA', {type: 'currentMsgThread', data: {id: id, title: title}})
-      this.$router.push('/message')
+      this.$router.push('/message/' + id)
     },
     goToTeam (team) {
       window.scrollTo(0, 0)

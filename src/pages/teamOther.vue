@@ -21,21 +21,25 @@
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
-    <q-card ref="teamHeader" class="compact-card bg-primary team-header">
-      <div class="card-main bg-primary">
-        <div class="row">
-          <div class="col-6">
-            <div class="row justify-center" :style="{'opacity': 1 - opacity}">
-              <img class="team-img" :src="teamLookup[thisTeam].icon ? teamLookup[thisTeam].icon : './statics/avatar.jpg'" alt="">
+    <div ref="teamHeader">
+      <q-card class="compact-card bg-primary team-header">
+        <div class="card-main bg-primary">
+          <div class="row">
+            <div class="col-6">
+              <div class="row justify-center" :style="{'opacity': 1 - opacity}">
+                <img class="team-img" :src="teamLookup[thisTeam].icon ? teamLookup[thisTeam].icon : './statics/avatar.jpg'" alt="">
+              </div>
             </div>
+            <div class="col-6"></div>
           </div>
-          <div class="col-6"></div>
+          <q-item v-if="thisTeam">
+            <div class="q-toolbar-title text-white">{{teamLookup[thisTeam].name}}
+              <div class="q-toolbar-subtitle">{{teamLookup[thisTeam].owner_name}}</div>
+            </div>
+          </q-item>
         </div>
-        <q-item v-if="thisTeam">
-          <q-item-main class="text-white" :label="teamLookup[thisTeam].name" :sublabel="teamLookup[thisTeam].owner_name" />
-        </q-item>
-      </div>
-    </q-card>
+      </q-card>
+    </div>
     <q-pull-to-refresh :handler="refresher">
       <div class="contain-main">
         <div style="height: calc(100vh - 50px); background-color: #fff;">
@@ -77,8 +81,7 @@ export default {
       leagueData: 'main/leagueData',
       rosters: 'main/rosters',
       players: 'main/players',
-      league: 'main/league',
-      displayTeam: 'main/displayTeam'
+      league: 'main/league'
     }),
     teamLookup () {
       var array = this.league.franchises.franchise
@@ -94,6 +97,7 @@ export default {
     },
     scrollHandler (scroll) {
       var height = this.$refs.teamHeader.clientHeight
+      console.log(height)
       if (scroll.position === 0) {
         this.opacity = 0
       } else if (scroll.position > (height - 50)) {
@@ -159,8 +163,6 @@ export default {
   position relative
 .team-layout .team-header .q-item-label
   font-size 26px
-.team-layout .team-header .q-item-sublabel
-  color #ccc
 .team-layout .injury
   display inline
 .team-layout .team-player-name
@@ -172,4 +174,14 @@ export default {
   width 80px
   border-radius 50%
   border 2px solid #fff
+.team-header .q-toolbar-title
+  font-size 24px
+  font-weight 700
+.team-header .q-toolbar-subtitle
+  font-size 18px
+  font-weight 500
+.no-header-shadow .q-layout-header
+  box-shadow none
+.header-shadow .layout-header
+  box-shadow 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
 </style>

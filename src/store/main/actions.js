@@ -124,6 +124,9 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
     if (payload.player) {
       apiParams['P'] = payload.player
     }
+    if (payload.thread) {
+      apiParams['THREAD'] = payload.thread
+    }
     const diff = timeCheck - el.timeStamp
     if (diff > el.timeOut) {
       console.log('fetching ' + el.type + ' data from server')

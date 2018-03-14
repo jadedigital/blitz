@@ -192,6 +192,14 @@ export const params = state => {
         L: state.activeLeague,
         P: '',
         JSON: 1
+      },
+      messageBoardThreadParams: {
+        cookie: state.token,
+        host: state.leagueData[state.activeLeague].host,
+        TYPE: 'messageBoardThread',
+        L: state.activeLeague,
+        THREAD: '',
+        JSON: 1
       }
     }
   } else {
