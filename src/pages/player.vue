@@ -123,10 +123,11 @@
         </q-tabs>
       </div>
     </div>
-    <div class="fixed-fab">
+    <div v-if="statusLoaded" class="fixed-fab">
       <q-btn
         v-if="faLookup[activePlayer]"
         round
+        size='lg'
         icon="add"
         class="bg-green-13 shadow-5 text-white"
       />
@@ -143,6 +144,7 @@
       <q-btn
         v-if="!faLookup[activePlayer] && teamLookup[myTeam].name !== playerStatus.status"
         round
+        size='lg'
         icon="swap_horiz"
         class="bg-primary shadow-5 text-white"
       />

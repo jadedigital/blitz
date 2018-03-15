@@ -41,16 +41,16 @@ export default {
       done()
     },
     loadData () {
+      this.teamA = this.$route.params.teamA
+      this.teamB = this.$route.params.teamB
       this.dataLoaded = true
     }
   },
   activated () {
-    this.teamA = this.$route.params.teamA
-    this.teamB = this.$route.params.teamB
+    this.dataLoaded = false
     setTimeout(this.loadData, 500)
   },
   deactivated () {
-    this.dataLoaded = false
   }
 }
 </script>

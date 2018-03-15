@@ -9,10 +9,10 @@
         <q-tab slot="title" name="tab-2" label="Draft Picks" />
         <q-tab slot="title" name="tab-3" label="Pending Moves"/>
         <div class="contain-main">
-          <q-tab-pane class="no-pad no-border" name="tab-1">
+          <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
             <blitz-team :thisTeam="myTeam"/>
           </q-tab-pane>
-          <q-tab-pane name="tab-2" class="draft-picks no-border no-padding">
+          <q-tab-pane keep-alive name="tab-2" class="draft-picks no-border no-padding">
             <q-list
               v-for="(year, key) in pickYears"
               :key="key"
@@ -27,15 +27,16 @@
               >
                 <q-item-main
                   :label="'Round ' + pick.round"
+                  class="text-primary"
                 >
-                  <q-item-tile class="owner">
+                  <q-item-tile class="owner text-dark">
                     Original owner: <span>{{teamLookup[pick.originalPickFor].name}}</span>
                   </q-item-tile>
                 </q-item-main>
               </q-item>
             </q-list>
           </q-tab-pane>
-          <q-tab-pane class="no-border no-padding" name="tab-3">
+          <q-tab-pane keep-alive class="no-border no-padding" name="tab-3">
             <q-list class="no-border no-padding no-margin">
               <q-list-header class="text-center bg-grey-2 border-bottom">
                 Pending Waivers

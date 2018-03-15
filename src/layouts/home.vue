@@ -85,7 +85,7 @@
       </q-list>
     </q-layout-drawer>
 
-    <q-modal class="search-modal" @open="$refs.search.focus()" v-model="modal">
+    <q-modal class="search-modal" @show="$refs.search.focus()" v-model="modal">
       <q-search color="primary" v-model="playerSearch" placeholder="Search" stack-label="Search All Players" ref="search">
       </q-search>
       <div v-if="!playerSearch" class="row flex-center"><i class="info">Start typing to search</i></div>
@@ -113,14 +113,6 @@
       </q-tabs>
     </q-layout-footer>
 
-    <q-page-sticky v-if="leagueTab === 'messages' && $route.name === 'league'" position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        round
-        icon="edit"
-        class="bg-tertiary shadow-5 text-white"
-        @click="$router.push('/newmessage')"
-      />
-    </q-page-sticky>
   </q-layout>
 </template>
 

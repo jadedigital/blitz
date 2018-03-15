@@ -4,7 +4,7 @@
   >
     {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
     <span
-      :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-positive' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-warning' : 'text-negative'"
+      :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-green-14' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-yellow-9' : 'text-red-13'"
     >
       {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
     </span>

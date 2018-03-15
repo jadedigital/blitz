@@ -27,7 +27,8 @@
           <div class="row">
             <div class="col-6">
               <div class="row justify-center" :style="{'opacity': 1 - opacity}">
-                <img class="team-img" :src="teamLookup[thisTeam].icon ? teamLookup[thisTeam].icon : './statics/avatar.jpg'" alt="">
+                <img v-if="teamLookup[thisTeam].icon" class="team-img" :src="teamLookup[thisTeam].icon" alt="">
+                <q-btn v-else round style="font-size: 28px; font-weight:500; height: 80px; width: 80px;" class="q-btn-outline bg-primary text-white q-item-avatar q-item-section">{{ teamLookup[thisTeam].owner_name ? teamLookup[thisTeam].owner_name[0] : teamLookup[thisTeam].name[0] }}</q-btn>
               </div>
             </div>
             <div class="col-6"></div>
@@ -97,7 +98,7 @@ export default {
     },
     scrollHandler (scroll) {
       var height = this.$refs.teamHeader.clientHeight
-      console.log(height)
+
       if (scroll.position === 0) {
         this.opacity = 0
       } else if (scroll.position > (height - 50)) {
@@ -139,6 +140,7 @@ export default {
   },
   activated () {
     this.opacity = 0
+    this.dataLoaded = false
     this.headerShadow = false
     this.thisTeam = this.$route.params.id
     if (this.thisTeam !== this.lastTeam) {
@@ -149,7 +151,6 @@ export default {
     this.lastTeam = this.$route.params.id
   },
   deactivated () {
-    this.dataLoaded = false
   }
 }
 </script>

@@ -10,23 +10,20 @@
         slot="title"
         name="tab-1"
         label="Standings"
-        @click="activeTab('standings')"
       />
       <q-tab
         slot="title"
         name="tab-2"
         label="Transactions"
-        @click="activeTab('transactions')"
       />
       <q-tab
         slot="title"
         name="tab-3"
         label="Message Board"
-        @click="activeTab('messages')"
       />
       <!-- Targets -->
       <div class="contain-main bg-white">
-        <q-tab-pane class="no-pad no-border standings" name="tab-1">
+        <q-tab-pane keep-alive class="no-pad no-border standings" name="tab-1">
           <q-card class="compact-card bg-white" v-for="(division, key) in standings" :key="key">
             <q-card-title>
               {{divisionLookup[key].name}}
@@ -71,6 +68,7 @@
           </q-card>
         </q-tab-pane>
         <q-tab-pane
+          keep-alive
           class="no-pad no-border transactions"
           name="tab-2"
         >
@@ -102,6 +100,7 @@
           </q-item>
         </q-tab-pane>
         <q-tab-pane
+          keep-alive
           class="no-pad no-border msg-board"
           name="tab-3"
         >
@@ -120,6 +119,15 @@
               </q-item-side>
             </q-item>
           </q-list>
+          <q-page-sticky position="bottom-right" :offset="[18, 18]">
+            <q-btn
+              round
+              icon="edit"
+              size="lg"
+              class="bg-tertiary shadow-5 text-white"
+              @click="$router.push('/newmessage')"
+            />
+          </q-page-sticky>
         </q-tab-pane>
       </div>
     </q-tabs>
@@ -256,9 +264,6 @@ export default {
     }
   },
   methods: {
-    activeTab (tab) {
-      this.$store.commit('main/SET_DATA', {type: 'leagueTab', data: tab})
-    },
     order (list, key, order) {
       return list.sort((a, b) => {
         var x = a[key]; var y = b[key]
@@ -321,10 +326,8 @@ export default {
 .league .rank
   padding-right 12px
   font-weight 500
-.league .q-item-label
-  font-weight 500
-  font-size 14px
 .league .q-item
+  font-weight 500
   font-size 14px
 .league .q-item-sublabel
   font-weight 300

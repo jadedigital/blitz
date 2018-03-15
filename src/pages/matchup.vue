@@ -13,30 +13,32 @@
           class="q-if row no-wrap items-center relative-position q-input q-search q-if-has-label text-primary"
           @click="weekDialog"
         >
-          <div class="q-if-inner col row no-wrap items-center relative-position">
-            <span class="week-select q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}<q-btn dense flat icon="mdi-menu-down" /></span>
+          <div class="q-if-inner col row no-wrap items-center relative-position week-select-wrap">
+            <span class="text-primary text-weight-regular week-select q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}<q-btn dense flat icon="mdi-menu-down" /></span>
           </div>
         </div>
-        <q-tab-pane class="no-pad no-border" name="tab-1">
+        <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
           <div v-if="byeWeek">
             Bye Week
           </div>
           <blitz-matchup v-if="!byeWeek" :teamA="teamA" :teamB="teamB"/>
         </q-tab-pane>
-        <q-tab-pane class="no-pad no-border all-matchups" name="tab-2">
+        <q-tab-pane keep-alive class="no-pad no-border all-matchups" name="tab-2">
           <div>
             <q-list
               v-for="(match, key) in displayScoring.matchup"
               :key="key"
-              @click.native="goToMatchup(match.franchise, key)"
+              @click.native="goToMatchup(match.franchise)"
             >
-              <div :class="{'bg-grey-4': selectedMatchup === key}">
+              <div>
                 <q-item
                   v-for="(team, key2) in match.franchise"
                   :key="key2"
                 >
-                  <q-item-side :avatar="teamLookup[team.id].icon ? teamLookup[team.id].icon : './statics/avatar.jpg'" />
+                  <q-item-side v-if="teamLookup[team.id].icon" :avatar="teamLookup[team.id].icon"/>
+                  <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[team.id].owner_name ? teamLookup[team.id].owner_name[0] : teamLookup[team.id].name[0] }}</q-btn>
                   <q-item-main
+                    v-ripple
                     :label="teamLookup[team.id].name"
                     :sublabel="standingsLookup[team.id].h2hw + '-' + standingsLookup[team.id].h2hl + '-' + standingsLookup[team.id].h2ht"
                   />
@@ -57,7 +59,8 @@
                 class="border-bottom"
                 @click.native="goToTeam(match.id)"
               >
-                <q-item-side :avatar="teamLookup[match.id].icon ? teamLookup[match.id].icon : './statics/avatar.jpg'" />
+                <q-item-side v-if="teamLookup[match.id].icon" :avatar="teamLookup[match.id].icon"/>
+                <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[match.id].owner_name ? teamLookup[match.id].owner_name[0] : teamLookup[match.id].name[0] }}</q-btn>
                 <q-item-main :label="teamLookup[match.id].name" />
                 <q-item-side right>
                   <q-item-tile class="text-dark">
@@ -91,7 +94,6 @@ export default {
       search: '',
       weekSelect: '',
       byeWeek: false,
-      selectedMatchup: '',
       teamA: '',
       teamB: ''
     }
@@ -213,12 +215,7 @@ export default {
     goToTeam (team) {
       this.$router.push('/team/' + team)
     },
-    goToMatchup (match, key) {
-      this.selectedMatchup = key
-      var obj = {}
-      match.forEach(el => {
-        obj['teamA'] ? obj['teamB'] = el.id : obj['teamA'] = el.id
-      })
+    goToMatchup (match) {
       this.$router.push('/matchup/' + match[0].id + '/' + match[1].id)
     },
     fetchdata () {
@@ -243,7 +240,6 @@ export default {
     setTimeout(this.fetchdata, 500)
   },
   activated () {
-    this.selectedMatchup = ''
     setTimeout(this.setTeams, 500)
   }
 }
@@ -327,6 +323,6 @@ export default {
   padding 0
 .matchup .week-select
   text-align center
-  font-weight 500
-  color $dark
+.week-select-wrap
+  margin-bottom 10px
 </style>
