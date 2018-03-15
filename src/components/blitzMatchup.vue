@@ -175,6 +175,10 @@ export default {
   components: {
     blitzVersus
   },
+  props: {
+    teamA: String,
+    teamB: String
+  },
   computed: {
     ...mapGetters({
       activeLeague: 'main/activeLeague',
@@ -184,15 +188,8 @@ export default {
       league: 'main/league',
       liveScoring: 'main/liveScoring',
       matchupLiveScoring: 'main/matchupLiveScoring',
-      projectedScores: 'main/projectedScores',
-      matchupTeams: 'main/matchupTeams'
+      projectedScores: 'main/projectedScores'
     }),
-    teamA () {
-      return this.matchupTeams.teamA
-    },
-    teamB () {
-      return this.matchupTeams.teamB
-    },
     playerLookup () {
       var array = this.players.player
       return this.lookup(array, 'id')

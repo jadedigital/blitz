@@ -55,6 +55,12 @@ export default [
         meta: { requiresAuth: true }
       },
       {
+        path: 'matchup/:teamA/:teamB',
+        component: () => import('pages/matchupOther'),
+        name: 'matchupOther',
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'thread/:id',
         component: () => import('pages/thread'),
         name: 'thread',

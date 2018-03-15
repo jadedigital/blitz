@@ -21,14 +21,14 @@
           <div v-if="byeWeek">
             Bye Week
           </div>
-          <blitz-matchup v-if="!byeWeek"/>
+          <blitz-matchup v-if="!byeWeek" :teamA="teamA" :teamB="teamB"/>
         </q-tab-pane>
         <q-tab-pane class="no-pad no-border all-matchups" name="tab-2">
           <div>
             <q-list
               v-for="(match, key) in displayScoring.matchup"
               :key="key"
-              @click="goToMatchup(match.franchise, key)"
+              @click.native="goToMatchup(match.franchise, key)"
             >
               <div :class="{'bg-grey-4': selectedMatchup === key}">
                 <q-item
@@ -55,7 +55,7 @@
                 v-for="(match, key) in displayScoring.franchise"
                 :key="key"
                 class="border-bottom"
-                @click="goToTeam(match.id)"
+                @click.native="goToTeam(match.id)"
               >
                 <q-item-side :avatar="teamLookup[match.id].icon ? teamLookup[match.id].icon : './statics/avatar.jpg'" />
                 <q-item-main :label="teamLookup[match.id].name" />
@@ -91,7 +91,9 @@ export default {
       search: '',
       weekSelect: '',
       byeWeek: false,
-      selectedMatchup: ''
+      selectedMatchup: '',
+      teamA: '',
+      teamB: ''
     }
   },
   computed: {
@@ -101,7 +103,6 @@ export default {
       league: 'main/league',
       liveScoring: 'main/liveScoring',
       matchupLiveScoring: 'main/matchupLiveScoring',
-      matchupTeams: 'main/matchupTeams',
       currentWeek: 'main/currentWeek',
       leagueStandings: 'main/leagueStandings'
     }),
@@ -165,7 +166,8 @@ export default {
           }
         })
       })
-      this.$store.commit('main/SET_DATA', {type: 'matchupTeams', data: {teamA: myTeam, teamB: opponent}})
+      this.teamA = myTeam
+      this.teamB = opponent
       if (!opponent) {
         this.byeWeek = true
       } else {
@@ -217,8 +219,7 @@ export default {
       match.forEach(el => {
         obj['teamA'] ? obj['teamB'] = el.id : obj['teamA'] = el.id
       })
-      this.$store.commit('main/SET_DATA', {type: 'matchupTeams', data: obj})
-      this.$router.push('/matchup')
+      this.$router.push('/matchup/' + match[0].id + '/' + match[1].id)
     },
     fetchdata () {
       var requests = [
