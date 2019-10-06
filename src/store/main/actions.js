@@ -86,7 +86,7 @@ export const GET_WEEK = ({ commit, getters }) => {
         var responseData = JSON.parse(response.data)
         var timeLeft = 0
         var week = ''
-        var schedule = arrayCheck(responseData.nflSchedule.matchup)
+        var schedule = arrayCheck(responseData.nflSchedule.week)
         schedule.forEach(el => {
           timeLeft += parseFloat(el.gameSecondsRemaining)
         })
@@ -149,6 +149,37 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   })
 
   return Promise.all(promises)
+}
+
+export const GET_MFL = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    let data = {
+      params: {
+        L: payload.league,
+        P: payload.player,
+        TYPE: 'playerRosterStatus',
+        JSON: 1
+      }
+    }
+    let config = {
+      headers: {
+        cookie: payload.cookie
+      }
+    }
+    var url = 'https://' + payload.host + '.myfantasyleague.com/2017/export'
+
+    axios.get(url, data, config)
+      .then((response) => {
+        var responseData = response.data
+        commit('SET_DATA', {type: 'playerRosterStatus', data: responseData})
+        resolve(responseData)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
 }
 
 export const GET_CHATS = ({ commit }, payload) => {

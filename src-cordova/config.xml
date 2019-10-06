@@ -21,7 +21,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <preference name="StatusBarBackgroundColor" value="#1a237e" />
+    <preference name="StatusBarBackgroundColor" value="#3d5afe" />
     <preference name="StatusBarStyle" value="lightcontent" />
     <preference name="HeaderColor" value="#3d5afe" />
     <config-file parent="/manifest/application" target="AndroidManifest.xml">

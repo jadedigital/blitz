@@ -89,7 +89,7 @@
       <q-search color="primary" v-model="playerSearch" placeholder="Search" stack-label="Search All Players" ref="search">
       </q-search>
       <div v-if="!playerSearch" class="row flex-center"><i class="info">Start typing to search</i></div>
-      <div v-if="playerSearch" v-for="player in playerSearchLookup" :key="player.id" class="row flex-center">{{player.name}} ({{player.team}}) - {{player.id}}</div>
+      <div v-if="playerSearch" v-for="player in playerSearchLookup" :key="player.id" class="row flex-center">{{player.name}} ({{player.team}}) - {{player.sportsdata_id}}</div>
       <q-btn outline color="primary" @click="toggleModal">Cancel</q-btn>
     </q-modal>
 

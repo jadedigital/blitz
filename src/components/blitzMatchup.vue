@@ -233,6 +233,7 @@ export default {
       this.startersTeamA.forEach(el => {
         team1 += parseFloat(this.updatedProjection[el.id].projection)
       })
+      console.log()
       this.startersTeamB.forEach(el => {
         team2 += parseFloat(this.updatedProjection[el.id].projection)
       })
@@ -244,7 +245,7 @@ export default {
       var obj = {}
       this.allScoring[this.teamA].players.player.forEach(el => {
         var score = parseFloat(this.scoringLookupTeamA[el.id].score)
-        var projection = parseFloat(this.projectedLookup[el.id].score)
+        var projection = this.projectedLookup[el.id] ? parseFloat(this.projectedLookup[el.id].score) : 0
         var newProjection = ''
         var timeRemaining = parseFloat(this.scoringLookupTeamA[el.id].gameSecondsRemaining)
         if (!score) {
@@ -254,12 +255,12 @@ export default {
           projection = 0
         }
         var rate = projection / 3600
-        newProjection = ((timeRemaining * rate) + score).toFixed(2)
+        newProjection = timeRemaining === 0 ? projection : ((timeRemaining * rate) + score).toFixed(2)
         obj[el.id] = {projection: newProjection}
       })
       this.allScoring[this.teamB].players.player.forEach(el => {
         var score = parseFloat(this.scoringLookupTeamB[el.id].score)
-        var projection = parseFloat(this.projectedLookup[el.id].score)
+        var projection = this.projectedLookup[el.id] ? parseFloat(this.projectedLookup[el.id].score) : 0
         var newProjection = ''
         var timeRemaining = parseFloat(this.scoringLookupTeamB[el.id].gameSecondsRemaining)
         if (!score) {
@@ -269,7 +270,7 @@ export default {
           projection = 0
         }
         var rate = projection / 3600
-        newProjection = ((timeRemaining * rate) + score).toFixed(2)
+        newProjection = timeRemaining === 0 ? projection : ((timeRemaining * rate) + score).toFixed(2)
         obj[el.id] = {projection: newProjection}
       })
       return obj

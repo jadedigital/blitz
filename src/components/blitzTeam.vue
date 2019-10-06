@@ -129,14 +129,14 @@ export default {
       var obj = {}
       this.teamScoring.players.player.forEach(el => {
         var score = parseFloat(this.scoringLookup[el.id].score)
-        var projection = parseFloat(this.projectedLookup[el.id].score)
+        var projection = this.projectedLookup[el.id] ? parseFloat(this.projectedLookup[el.id].score) : 0
         var newProjection = ''
         var timeRemaining = parseFloat(this.scoringLookup[el.id].gameSecondsRemaining)
         if (!score) {
           score = 0
         }
         var rate = projection / 3600
-        newProjection = ((timeRemaining * rate) + score).toFixed(2)
+        newProjection = timeRemaining === 0 ? projection : ((timeRemaining * rate) + score).toFixed(2)
         obj[el.id] = {projection: newProjection}
       })
       return obj
@@ -313,18 +313,32 @@ export default {
       this.startersSorted.forEach((el) => {
         var action = {
           label: this.playerLookup[el.id].name,
-          avatar: 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + this.playerLookup[el.id].cbs_id + '.jpg',
-          handler () {
-            this.$q.notify('API call to submit lineup')
-          }
+          avatar: 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + this.playerLookup[el.id].cbs_id + '.jpg'
         }
         actions.push(action)
       })
       this.$q.actionSheet({
-        title: 'Move ' + name.split(', ').reverse().join(' '),
+        title: 'Move ' + name.split(', ').reverse().join(' ') + ' to the following slot',
         actions: actions,
         dismissLabel: 'Cancel'
       })
+        .then(action => {
+          var str = JSON.stringify(action, null, 2)
+          console.log(str)
+          // user picked an action
+          this.$q.notify({
+            message: action.label,
+            color: 'grey-8'
+          })
+          // { label: 'Joe', ... }
+        })
+        .catch(() => {
+          // user dismissed Action Sheet
+          this.$q.notify({
+            message: 'Cancelled',
+            color: 'grey-8'
+          })
+        })
     }
   }
 }
