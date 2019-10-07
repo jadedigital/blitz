@@ -182,6 +182,36 @@ export const GET_MFL = ({ commit }, payload) => {
   })
 }
 
+export const API_LINEUP = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    let data = {
+      params: {
+        L: payload.league,
+        STARTERS: payload.starters,
+        W: payload.week,
+        TYPE: 'lineup'
+      }
+    }
+    let config = {
+      headers: {
+        cookie: payload.cookie
+      }
+    }
+    var url = 'https://' + payload.host + '.myfantasyleague.com/2017/import'
+
+    axios.get(url, data, config)
+      .then((response) => {
+        var responseData = response.data
+        resolve(responseData)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
+}
+
 export const GET_CHATS = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
     var queryParams = {

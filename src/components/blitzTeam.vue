@@ -7,11 +7,11 @@
         </q-card-title>
         <q-card-separator />
         <div class="card-main bg-white">
-          <q-item link separator v-for="player in startersOld" :key="player.id" @click.native="goToPlayer(player.id)">
-            <q-btn @click.stop="showAS(playerLookup[player.id].name)" round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">{{ player.position }}</q-btn>
+          <q-item link separator v-for="(player, index) in startersOld" :key="player.id" @click.native="goToPlayer(player.id)">
+            <q-btn @click.stop="modalLogic(playerLookup[player.id].name, index)" round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">{{ player.position }}</q-btn>
             <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
             <div class="q-item-main q-item-section team-players">
-              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
               <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
             </div>
             <div class="q-item-side q-item-side-right q-item-section">
@@ -31,7 +31,7 @@
             <q-btn @click.stop="showAS(playerLookup[player.id].name)" round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">BN</q-btn>
             <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
             <div class="q-item-main q-item-section team-players">
-              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
               <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
             </div>
             <div class="q-item-side q-item-side-right q-item-section">
@@ -51,7 +51,7 @@
             <q-btn round small style="font-size: 14px; font-weight:400" class="q-item-avatar q-btn-flat text-primary">IR</q-btn>
             <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
             <div class="q-item-main q-item-section team-players">
-              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
               <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
             </div>
             <q-item-side right>-</q-item-side>
@@ -68,7 +68,7 @@
             <q-btn round small style="font-size: 14px; font-weight:400" class="q-item-avatar q-btn-flat text-primary">TS</q-btn>
             <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
             <div class="q-item-main q-item-section team-players">
-              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
               <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
             </div>
             <q-item-side right>-</q-item-side>
@@ -76,6 +76,26 @@
         </div>
       </q-card>
     </q-list>
+    <q-modal position="bottom" v-model="swapModal">
+      <q-list link class="no-border no-pad">
+        <q-list-header>
+          Swap {{swapPlayer}} with the following player:
+        </q-list-header>
+        <div v-for="player in modalPlayers" :key="player.id">
+          <q-item @click.native="movePlayerToBench()" link>
+            <q-btn round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">BN</q-btn>
+            <div class="q-item-main q-item-section team-players">
+              <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+              <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
+            </div>
+            <div class="q-item-side q-item-side-right q-item-section">
+              <div class="q-item-label" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;">{{scoringLookup[player.id].score}}</div>
+              <div class="q-item-sublabel" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;"><small>{{ updatedProjection[player.id].projection }}</small></div>
+            </div>
+          </q-item>
+        </div>
+      </q-list>
+    </q-modal>
   </div>
 </template>
 
@@ -95,7 +115,10 @@ export default {
   },
   data () {
     return {
-      response: null
+      response: null,
+      swapModal: false,
+      modalPlayers: [],
+      swapPlayer: ''
     }
   },
   computed: {
@@ -107,7 +130,8 @@ export default {
       league: 'main/league',
       liveScoring: 'main/liveScoring',
       projectedScores: 'main/projectedScores',
-      teamMap: 'main/teamMap'
+      teamMap: 'main/teamMap',
+      currentWeek: 'main/currentWeek'
     }),
     rosterLookup () {
       var array = this.rosters.franchise
@@ -308,23 +332,64 @@ export default {
       }
       return lookup
     },
-    showAS (name) {
-      var actions = []
-      this.startersSorted.forEach((el) => {
-        var action = {
-          label: this.playerLookup[el.id].name,
-          avatar: 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + this.playerLookup[el.id].cbs_id + '.jpg'
-        }
-        actions.push(action)
+    modalLogic (name, index) {
+      var players = []
+
+      this.positions[index].forEach((pos) => {
+        this.startersSorted.forEach((el) => {
+          if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name) {
+            players.push(el)
+          }
+        })
       })
+      this.swapPlayer = name.split(', ').reverse().join(' ')
+      this.modalPlayers = players
+      this.swapModal = true
+    },
+    movePlayerToBench () {
+      this.swapModal = false
+      const host = this.leagueData[this.activeLeague].host
+      const cookie = this.leagueData[this.activeLeague].cookie
+      const players = this.startersSorted
+      const week = this.currentWeek
+
+      this.$store.dispatch('main/API_LINEUP', { players: players, league: this.activeLeague, host: host, cookie: cookie, week: week })
+        .then((response) => {
+          this.$q.notify({
+            message: 'Lineup change submitted',
+            color: 'grey-8',
+            timeout: 500
+          })
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: 'Error submitting lineup',
+            color: 'grey-8',
+            timeout: 500
+          })
+        })
+    },
+    showAS (name, index) {
+      var actions = []
+
+      this.positions[index].forEach((pos) => {
+        this.startersSorted.forEach((el) => {
+          var action = {
+            label: this.playerLookup[el.id].name,
+            avatar: this.playerLookup[el.id].position === 'Def' ? './statics/' + this.teamMap[this.playerLookup[el.id].team] + '.svg' : this.playerLookup[el.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + this.playerLookup[el.id].cbs_id + '.jpg' : './statics/avatar.jpg'
+          }
+          if (pos === this.playerLookup[el.id].position) {
+            actions.push(action)
+          }
+        })
+      })
+
       this.$q.actionSheet({
         title: 'Move ' + name.split(', ').reverse().join(' ') + ' to the following slot',
         actions: actions,
         dismissLabel: 'Cancel'
       })
         .then(action => {
-          var str = JSON.stringify(action, null, 2)
-          console.log(str)
           // user picked an action
           this.$q.notify({
             message: action.label,
@@ -361,6 +426,6 @@ export default {
   padding-left 8px
   padding-right 8px
   background #ff1744
-.team-child .injury
+.injury
   display inline-block
 </style>
