@@ -1,13 +1,17 @@
 <template>
-  <div
-    v-if="!playerLookup[player].team.startsWith('FA')"
-  >
-    {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
-    <span
-      :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-green-14' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-yellow-9' : 'text-red-13'"
-    >
-      {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
-    </span>
+  <div>
+    <div v-if="!playerLookup[player].team.startsWith('FA') && gamesPlayedBool">
+      {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
+      <span
+        :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-green-14' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-yellow-9' : 'text-red-13'"
+      >
+        {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
+      </span>
+    </div>
+    <div v-if="!playerLookup[player].team.startsWith('FA') && !gamesPlayedBool">
+      {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
+      <span>{{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}}</span>
+    </div>
   </div>
 </template>
 
@@ -33,6 +37,14 @@ export default {
       pointsAllowed: 'main/pointsAllowed',
       currentWeek: 'main/currentWeek'
     }),
+    gamesPlayedBool () {
+      var obj = this.pointsAllowed
+      if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+        return false
+      } else {
+        return true
+      }
+    },
     playerLookup () {
       var array = this.players.player
       return this.lookup(array, 'id')

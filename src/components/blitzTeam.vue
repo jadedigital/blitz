@@ -3,7 +3,7 @@
     <q-list link class="no-border no-pad bg-grey-1">
       <q-card class="compact-card bg-white">
         <q-card-title>
-          Roster
+          Starters
         </q-card-title>
         <q-card-separator />
         <div class="card-main bg-white">
@@ -167,13 +167,15 @@ export default {
     },
     teamScoring () {
       var scoring = ''
-      this.liveScoring.matchup.forEach((el) => {
-        el.franchise.forEach((el2) => {
-          if (el2.id === this.thisTeam) {
-            scoring = el2
-          }
+      if (this.liveScoring.matchup) {
+        this.liveScoring.matchup.forEach((el) => {
+          el.franchise.forEach((el2) => {
+            if (el2.id === this.thisTeam) {
+              scoring = el2
+            }
+          })
         })
-      })
+      }
       if (this.liveScoring.franchise) {
         this.liveScoring.franchise.forEach((el) => {
           if (el.id === this.thisTeam) {
@@ -216,31 +218,33 @@ export default {
           players.push(el.id)
         }
       })
-      positions.forEach((elarray) => {
-        elarray.some((elPos) => {
-          players.some((elId) => {
-            if (playerObj[elId].position === elPos) {
-              var index = players.indexOf(elId)
-              players.splice(index, 1)
-              var position = elarray.length > 1 ? elarray.map((pos) => pos[0]).join('/') : elPos
-              var obj = {
-                id: playerObj[elId].id,
-                position: position
+      if (players.length !== 0) {
+        positions.forEach((elarray) => {
+          elarray.some((elPos) => {
+            players.some((elId) => {
+              if (playerObj[elId].position === elPos) {
+                var index = players.indexOf(elId)
+                players.splice(index, 1)
+                var position = elarray.length > 1 ? elarray.map((pos) => pos[0]).join('/') : elPos
+                var obj = {
+                  id: playerObj[elId].id,
+                  position: position
+                }
+                starters.push(obj)
               }
-              starters.push(obj)
-            }
-            playerCheck = elId
-            return playerObj[elId].position === elPos
+              playerCheck = elId
+              return playerObj[elId].position === elPos
+            })
+            return playerObj[playerCheck].position === elPos
           })
-          return playerObj[playerCheck].position === elPos
         })
-      })
+      }
       return starters
     },
     bench () {
       var bench = []
       this.teamScoring.players.player.forEach(el => {
-        if (el.status === 'nonstarter') {
+        if (el.status === ('nonstarter' || 'ROSTER')) {
           var obj = {
             id: el.id
           }

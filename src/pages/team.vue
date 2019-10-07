@@ -6,13 +6,13 @@
       </div>
       <q-tabs v-if="dataLoaded" inverted class="secondary-tabs">
         <q-tab default slot="title" name="tab-1" label="Roster" />
-        <q-tab slot="title" name="tab-2" label="Draft Picks" />
+        <q-tab v-if="draftPicksBool" slot="title" name="tab-2" label="Draft Picks" />
         <q-tab slot="title" name="tab-3" label="Pending Moves"/>
         <div class="contain-main">
           <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
             <blitz-team :thisTeam="myTeam"/>
           </q-tab-pane>
-          <q-tab-pane keep-alive name="tab-2" class="draft-picks no-border no-padding">
+          <q-tab-pane v-if="draftPicksBool" keep-alive name="tab-2" class="draft-picks no-border no-padding">
             <q-list
               v-for="(year, key) in pickYears"
               :key="key"
@@ -85,6 +85,14 @@ export default {
       var team = this.leagueData[this.activeLeague].teamId
       return team
     },
+    draftPicksBool () {
+      var pObj = this.futureDraftPicks
+      if (Object.keys(pObj).length === 0 && pObj.constructor === Object) {
+        return false
+      } else {
+        return true
+      }
+    },
     playerLookup () {
       var array = this.players.player
       return this.lookup(array, 'id')
@@ -94,54 +102,74 @@ export default {
       return this.lookup(array, 'id')
     },
     draftPicksLookup () {
-      var array = this.futureDraftPicks.franchise
-      return this.lookup(array, 'id')
+      var pObj = this.futureDraftPicks
+      if (Object.keys(pObj).length === 0 && pObj.constructor === Object) {
+        return ''
+      } else {
+        var array = this.futureDraftPicks.franchise
+        return this.lookup(array, 'id')
+      }
     },
     myPicks () {
-      var myPicks = this.draftPicksLookup[this.myTeam]
-      var arr = []
-      var obj = {}
-      myPicks.futureDraftPick.forEach(el => {
-        obj = {
-          round: el.round,
-          year: el.year,
-          originalPickFor: el.originalPickFor
-        }
-        arr.push(obj)
-      })
-      arr = this.order(arr, 'year')
-      return arr
+      var pObj = this.futureDraftPicks
+      if (Object.keys(pObj).length === 0 && pObj.constructor === Object) {
+        return ''
+      } else {
+        var myPicks = this.draftPicksLookup[this.myTeam]
+        var arr = []
+        var obj = {}
+        myPicks.futureDraftPick.forEach(el => {
+          obj = {
+            round: el.round,
+            year: el.year,
+            originalPickFor: el.originalPickFor
+          }
+          arr.push(obj)
+        })
+        arr = this.order(arr, 'year')
+        return arr
+      }
     },
     pickYears () {
-      var year = ''
-      var arr = []
-      this.myPicks.forEach(el => {
-        if (year !== el.year) {
-          arr.push(el.year)
-        }
-        year = el.year
-      })
-      return arr
+      var pObj = this.futureDraftPicks
+      if (Object.keys(pObj).length === 0 && pObj.constructor === Object) {
+        return ''
+      } else {
+        var year = ''
+        var arr = []
+        this.myPicks.forEach(el => {
+          if (year !== el.year) {
+            arr.push(el.year)
+          }
+          year = el.year
+        })
+        return arr
+      }
     },
     myPicksPerYear () {
-      var mainObj = {}
-      var obj = {}
-      var arr = []
-      this.pickYears.forEach(el => {
-        this.myPicks.forEach(el2 => {
-          if (el2.year === el) {
-            obj = {
-              round: el2.round,
-              originalPickFor: el2.originalPickFor
+      var pObj = this.futureDraftPicks
+      if (Object.keys(pObj).length === 0 && pObj.constructor === Object) {
+        return ''
+      } else {
+        var mainObj = {}
+        var obj = {}
+        var arr = []
+        this.pickYears.forEach(el => {
+          this.myPicks.forEach(el2 => {
+            if (el2.year === el) {
+              obj = {
+                round: el2.round,
+                originalPickFor: el2.originalPickFor
+              }
+              arr.push(obj)
+              mainObj[el] = arr
             }
-            arr.push(obj)
-            mainObj[el] = arr
-          }
+          })
+          mainObj[el] = this.order(mainObj[el], 'round')
+          arr = []
         })
-        mainObj[el] = this.order(mainObj[el], 'round')
-        arr = []
-      })
-      return mainObj
+        return mainObj
+      }
     }
   },
   methods: {
