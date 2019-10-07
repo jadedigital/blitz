@@ -5,22 +5,27 @@ export const AUTH_REQUEST = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
     var userParams = {
       USERNAME: payload.username,
-      PASSWORD: payload.password
+      PASSWORD: payload.password,
+      season: '2019'
     }
     var url = 'https://keepersync.com/auth/mfl'
     axios.get(url, {params: userParams})
       .then(response => {
-        const data = response.data.leagues
+        const data = response.data.leagues.league
         const array = arrayCheck(data)
+        const str = JSON.stringify(array)
+        console.log(str)
         const token = response.data.cookie
-        const firstLeague = array[0].league.url.substring(array[0].league.url.lastIndexOf('/') + 1)
+        const firstLeague = array[0].url.substring(array[0].url.lastIndexOf('/') + 1)
+        console.log(firstLeague)
         var leagueData = {}
         array.forEach(el => {
-          var str = el.league.url
+          var str = el.url
           var host = str.substring(str.lastIndexOf('//') + 2, str.indexOf('.'))
           var leagueId = str.substring(str.lastIndexOf('/') + 1)
-          leagueData[leagueId] = {host: host, teamId: el.league.franchise_id}
+          leagueData[leagueId] = {host: host, teamId: el.franchise_id}
         })
+        console.log(leagueData)
 
         commit('SET_DATA', {type: 'token', data: token})
         commit('SET_DATA', {type: 'leagueData', data: leagueData})
@@ -46,7 +51,8 @@ export const GET_LEAGUE_DATA = ({ commit, getters }) => {
       host: data[leagueId].host,
       TYPE: 'league',
       L: leagueId,
-      JSON: 1
+      JSON: 1,
+      season: '2019'
     }
     var url = 'https://keepersync.com/mfl/export'
 
@@ -75,7 +81,8 @@ export const GET_WEEK = ({ commit, getters }) => {
       cookie: token,
       host: data[leagueId].host,
       TYPE: 'nflSchedule',
-      JSON: 1
+      JSON: 1,
+      season: '2019'
     }
     var url = 'https://keepersync.com/mfl/export'
 
@@ -118,6 +125,7 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
   requests.forEach(el => {
     let timeCheck = Date.now()
     let apiParams = getters.params[el.params]
+    apiParams['season'] = '2019'
     if (payload.week) {
       apiParams['W'] = payload.week
     }
