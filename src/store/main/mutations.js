@@ -1,5 +1,8 @@
 export const SET_DATA = (state, payload) => {
-  if (payload.data !== '') {
+  let obj = payload.data
+  if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+    console.log('Empty object. Maintaining current state')
+  } else {
     state[payload.type] = payload.data
   }
 }

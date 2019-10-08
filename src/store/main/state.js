@@ -956,7 +956,7 @@ export default {
   playerScores: '',
   playerStatus: '',
   currentWeek: '',
-  futureDraftPicks: '',
+  futureDraftPicks: {},
   activePlayer: '',
   transactions: '',
   messageBoard: '',

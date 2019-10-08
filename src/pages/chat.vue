@@ -65,6 +65,7 @@ import {
   date,
   format
 } from 'quasar'
+import { arrayCheck } from '../plugins/utils'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -119,6 +120,10 @@ export default {
       }
       return obj
     },
+    chatLoopable () {
+      const chatLoopable = arrayCheck(this.chat.message)
+      return chatLoopable
+    },
     chatList () {
       var chatList = {}
       var chatArray = []
@@ -127,9 +132,10 @@ export default {
         name: 'Commissioner'
       }
       const franchiseArray = [...this.league.franchises.franchise]
+      const chatLoopable = arrayCheck(this.chat.message)
       franchiseArray.unshift(commish)
       franchiseArray.forEach(el => {
-        this.chat.message.forEach(el2 => {
+        chatLoopable.forEach(el2 => {
           if (el2._attributes.to && (el2._attributes.franchise_id === el.id || el2._attributes.to === el.id)) {
             chatArray.push(el2._attributes)
           }
@@ -145,7 +151,8 @@ export default {
       let timeStamp = Date.now()
       var today = date.formatDate(timeStamp, 'MMM DD')
       var chatArray = []
-      this.chat.message.forEach(el => {
+      const chatLoopable = arrayCheck(this.chat.message)
+      chatLoopable.forEach(el => {
         if (!el._attributes.to) {
           chatArray.push(el._attributes)
         }

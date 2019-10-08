@@ -61,6 +61,7 @@ import {
   date,
   format
 } from 'quasar'
+import { arrayCheck } from '../plugins/utils'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -101,9 +102,10 @@ export default {
       const { pad } = format
       let timeStamp = Date.now()
       var today = date.formatDate(timeStamp, 'MMM DD')
+      const chatLoopable = arrayCheck(this.chat.message)
 
       if (this.activeThread === '1000') {
-        this.chat.message.forEach(el => {
+        chatLoopable.forEach(el => {
           if (!el._attributes.to) {
             if (today === el._attributes.posted.split(' ')[1] + ' ' + pad(el._attributes.posted.split(' ')[2], 2)) {
               el._attributes['timestamp'] = el._attributes.posted.split(' ')[3].split(':')[0] + ':' + el._attributes.posted.split(' ')[3].split(':')[1] + ' ' + el._attributes.posted.split(' ')[4].split('.').join('')
@@ -114,7 +116,7 @@ export default {
           }
         })
       } else {
-        this.chat.message.forEach(el => {
+        chatLoopable.forEach(el => {
           if (el._attributes.to && (el._attributes.franchise_id === this.activeThread || el._attributes.to === this.activeThread)) {
             if (today === el._attributes.posted.split(' ')[1] + ' ' + pad(el._attributes.posted.split(' ')[2], 2)) {
               el._attributes['timestamp'] = el._attributes.posted.split(' ')[3].split(':')[0] + ':' + el._attributes.posted.split(' ')[3].split(':')[1] + ' ' + el._attributes.posted.split(' ')[4].split('.').join('')

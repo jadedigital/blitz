@@ -143,6 +143,9 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
       })
         .then((response) => {
           const responseData = JSON.parse(response.data)
+          var str = JSON.stringify(responseData[el.value])
+          console.log(el.type)
+          console.log(str)
           commit('SET_DATA', {type: el.type, data: responseData[el.value]})
           commit('API_TIMESTAMP', {type: el.type, data: timeCheck})
           return responseData
@@ -225,7 +228,8 @@ export const GET_CHATS = ({ commit }, payload) => {
     var queryParams = {
       host: payload.host,
       league: payload.league,
-      cookie: payload.cookie
+      cookie: payload.cookie,
+      season: '2019'
     }
     var url = 'https://keepersync.com/mfl/chat'
 
