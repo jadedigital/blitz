@@ -174,7 +174,7 @@ export const GET_MFL = ({ commit }, payload) => {
         cookie: payload.cookie
       }
     }
-    var url = 'https://' + payload.host + '.myfantasyleague.com/2017/export'
+    var url = 'https://' + payload.host + '.myfantasyleague.com/2019/export'
 
     axios.get(url, data, config)
       .then((response) => {

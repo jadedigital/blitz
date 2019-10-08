@@ -17,7 +17,942 @@ export default {
   liveScoring: '',
   matchupLiveScoring: '',
   fullNflSchedule: '',
-  pointsAllowed: '',
+  pointsAllowed: {
+    'team': [
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'MIN'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'DAL'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'TBB'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'NEP'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'CIN'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'SEA'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'BAL'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'DET'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'DEN'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'PHI'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'NYJ'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'CLE'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'HOU'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'ARI'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'SFO'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'CAR'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'OAK'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': ''
+          },
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'CHI'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'JAC'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'BUF'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'LAC'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'PIT'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'ATL'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'WAS'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'LAR'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'NYG'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'NOS'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'GBP'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'KCC'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'IND'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'TEN'
+      },
+      {
+        'position': [
+          {
+            'points': '0',
+            'name': 'Def'
+          },
+          {
+            'points': '0',
+            'name': 'RB'
+          },
+          {
+            'points': '0',
+            'name': 'PK'
+          },
+          {
+            'points': '0',
+            'name': 'QB'
+          },
+          {
+            'points': '0',
+            'name': 'TE'
+          },
+          {
+            'points': '0',
+            'name': 'WR'
+          }
+        ],
+        'id': 'MIA'
+      }
+    ]
+  },
   playerScores: '',
   playerStatus: '',
   currentWeek: '',

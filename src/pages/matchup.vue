@@ -18,8 +18,10 @@
           </div>
         </div>
         <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
-          <div v-if="byeWeek">
-            Bye Week
+          <div v-if="byeWeek" style="height: calc(100vh - 112px)">
+            <div class="absolute-center text-center light-paragraph">
+              No matchup this week
+            </div>
           </div>
           <blitz-matchup v-if="!byeWeek" :teamA="teamA" :teamB="teamB"/>
         </q-tab-pane>
@@ -129,10 +131,12 @@ export default {
     },
     winners () {
       var obj = {}
-      this.displayScoring.matchup.forEach(el => {
-        parseFloat(el.franchise[0].score) > parseFloat(el.franchise[1].score) ? obj[el.franchise[0].id] = true : obj[el.franchise[0].id] = false
-        parseFloat(el.franchise[0].score) < parseFloat(el.franchise[1].score) ? obj[el.franchise[1].id] = true : obj[el.franchise[1].id] = false
-      })
+      if (this.displayScoring.matchup) {
+        this.displayScoring.matchup.forEach(el => {
+          parseFloat(el.franchise[0].score) > parseFloat(el.franchise[1].score) ? obj[el.franchise[0].id] = true : obj[el.franchise[0].id] = false
+          parseFloat(el.franchise[0].score) < parseFloat(el.franchise[1].score) ? obj[el.franchise[1].id] = true : obj[el.franchise[1].id] = false
+        })
+      }
       return obj
     },
     weekOptions () {
@@ -154,20 +158,22 @@ export default {
       var myTeam = this.leagueData[this.activeLeague].teamId
       var array = []
       var opponent = ''
-      this.displayScoring.matchup.forEach((el) => {
-        el.franchise.forEach((el2) => {
-          if (el2.id === myTeam) {
-            array.push(el)
-          }
+      if (this.displayScoring.matchup) {
+        this.displayScoring.matchup.forEach((el) => {
+          el.franchise.forEach((el2) => {
+            if (el2.id === myTeam) {
+              array.push(el)
+            }
+          })
         })
-      })
-      array.forEach(el => {
-        el.franchise.forEach((el2) => {
-          if (el2.id !== myTeam) {
-            opponent = el2.id
-          }
+        array.forEach(el => {
+          el.franchise.forEach((el2) => {
+            if (el2.id !== myTeam) {
+              opponent = el2.id
+            }
+          })
         })
-      })
+      }
       this.teamA = myTeam
       this.teamB = opponent
       if (!opponent) {

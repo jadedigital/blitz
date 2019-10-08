@@ -1,5 +1,7 @@
 export const SET_DATA = (state, payload) => {
-  state[payload.type] = payload.data
+  if (payload.data !== '') {
+    state[payload.type] = payload.data
+  }
 }
 export const API_TIMESTAMP = (state, payload) => {
   state.api[payload.type].timeStamp = payload.data

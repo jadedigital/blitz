@@ -3,7 +3,13 @@
     <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
       <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
     </div>
-    <q-tabs v-if="dataLoaded" inverted class="secondary-tabs">
+    <div v-if="error" style="height: calc(100vh - 112px)">
+      <div class="absolute-center text-center light-paragraph">
+        Can't fetch data.<br>
+        Try again later.
+      </div>
+    </div>
+    <q-tabs v-if="dataLoaded && !error" inverted class="secondary-tabs">
       <!-- Tabs - notice slot="title" -->
       <q-tab
         default
@@ -33,11 +39,12 @@
               <div class="q-table horizontal-separator">
                 <div class="row header-row border-bottom">
                   <div @click="sort(key, 'rank', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'rank'}">W-L-T</div>
-                  <div @click="sort(key, 'streakSort', 1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">Streak</div>
-                  <div @click="sort(key, 'pf', 1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pf'}">PF</div>
-                  <div @click="sort(key, 'pa', 1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">PA</div>
-                  <div @click="sort(key, 'budget', 1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">Budget</div>
-                  <div v-if="league.divisions.count > 1" @click="sort(key, 'divw', 1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">Division</div>
+                  <div @click="sort(key, 'streakSort', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">Streak</div>
+                  <div @click="sort(key, 'pf', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pf'}">PF</div>
+                  <div @click="sort(key, 'pa', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">PA</div>
+                  <div v-if="teamLookup['0001'].bbidAvailableBalance" @click="sort(key, 'budget', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">Budget</div>
+                  <div v-if="teamLookup['0001'].waiverSortOrder" @click="sort(key, 'waiver', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'waiver'}">Waiver</div>
+                  <div v-if="league.divisions.count > 1" @click="sort(key, 'divw', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">Division</div>
                 </div>
                 <div
                   class="border-bottom main-row"
@@ -56,11 +63,12 @@
                   </div>
                   <div class="row stat-row">
                     <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'rank'}">{{team.h2hw}}-{{team.h2hl}}-{{team.h2ht}}</div>
-                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">{{team.streak_type}}{{team.streak_len}}</div>
+                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">{{team.streak_type ? team.streak_type + team.streak_len : '-'}}</div>
                     <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pf'}">{{team.pf}}</div>
-                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">{{team.pa}}</div>
-                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">{{teamLookup[team.id].bbidAvailableBalance}}</div>
-                    <div v-if="league.divisions.count > 1" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">{{team.divw}}-{{team.divl}}-{{team.divt}}</div>
+                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">{{team.pa ? team.pa : 0}}</div>
+                    <div v-if="teamLookup[team.id].bbidAvailableBalance" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">{{teamLookup[team.id].bbidAvailableBalance}}</div>
+                    <div v-if="teamLookup[team.id].waiverSortOrder" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'waiver'}">{{teamLookup[team.id].waiverSortOrder}}</div>
+                    <div v-if="league.divisions.count > 1" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">{{team.divw ? team.divw : 0}}-{{team.divl ? team.divl : 0}}-{{team.divt ? team.divt : 0}}</div>
                   </div>
                 </div>
               </div>
@@ -146,6 +154,7 @@ export default {
   data () {
     return {
       response: null,
+      error: false,
       colSortKeys: {},
       colSortOrders: {},
       dataLoaded: false,
@@ -173,6 +182,7 @@ export default {
           if (this.teamLookup[el2.id].division === el.id) {
             el2['rank'] = index
             el2['budget'] = this.teamLookup[el2.id].bbidAvailableBalance
+            el2['waiver'] = this.teamLookup[el2.id].waiverSortOrder
             if (el2.streak_type === 'L') {
               el2['streakSort'] = el2.streak_len * -1
             } else {
@@ -276,7 +286,7 @@ export default {
     },
     sort (id, key, order) {
       this.colSortKeys[id] = key
-      this.colSortOrders[id] = order
+      this.colSortOrders[id] = this.colSortOrders[id] * order
     },
     refresher (done) {
       this.fetchStandings()
@@ -308,6 +318,11 @@ export default {
       this.$store.dispatch('main/API_REQUEST', { types: requests })
         .then((response) => {
           this.dataLoaded = true
+          this.error = false
+        })
+        .catch(() => {
+          this.dataLoaded = true
+          this.error = true
         })
     }
   },

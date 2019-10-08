@@ -1,16 +1,13 @@
 <template>
   <div>
-    <div v-if="!playerLookup[player].team.startsWith('FA') && gamesPlayedBool">
+    <div v-if="!faBool && !byeBool">
       {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
-      <span
-        :class="matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 11 ? 'text-green-14' : matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rank < 21 ? 'text-yellow-9' : 'text-red-13'"
-      >
-        {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
+      <span :class="versusClass">
+        {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank && gamesPlayedBool">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
       </span>
     </div>
-    <div v-if="!playerLookup[player].team.startsWith('FA') && !gamesPlayedBool">
-      {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
-      <span>{{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}}</span>
+    <div v-if="!faBool && byeBool">
+      BYE
     </div>
   </div>
 </template>
@@ -44,6 +41,27 @@ export default {
       } else {
         return true
       }
+    },
+    byeBool () {
+      if (this.matchupLookup[this.playerLookup[this.player].team]) {
+        return false
+      } else {
+        return true
+      }
+    },
+    faBool () {
+      if (this.playerLookup[this.player].team.startsWith('FA')) {
+        return true
+      } else {
+        return false
+      }
+    },
+    versusClass () {
+      var rankClass = ''
+      if (this.gamesPlayedBool) {
+        rankClass = this.matchupPoints[this.playerLookup[this.player].position][this.matchupLookup[this.playerLookup[this.player].team].vs].rank < 11 ? 'text-green-14' : this.matchupPoints[this.playerLookup[this.player].position][this.matchupLookup[this.playerLookup[this.player].team].vs].rank < 21 ? 'text-yellow-9' : 'text-red-13'
+      }
+      return rankClass
     },
     playerLookup () {
       var array = this.players.player
