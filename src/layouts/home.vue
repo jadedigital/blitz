@@ -38,12 +38,27 @@
         <div class="bg-gradient-opacity">
           <div class="team-heading">
             {{this.teamLookup[myTeam].name}}
-            <span>
+            <span class="sub-headind">
               {{this.league.name}}
             </span>
           </div>
         </div>
       </div>
+      <q-list separator>
+        <q-collapsible icon="mdi-football-helmet" :label="this.teamLookup[myTeam].name" :sublabel="this.league.name">
+          <q-item
+            link
+          >
+            <q-item-side icon="mdi-football-helmet"/>
+            <q-item-main
+              class="ellipses"
+              :label="'Team Name'"
+              :sublabel="'League Name'"
+              :sublabel-lines="1"
+              />
+          </q-item>
+        </q-collapsible>
+      </q-list>
       <q-list no-border link>
         <q-item to="/user/team">
           <q-item-side icon="mdi-football-helmet" />
@@ -241,3 +256,8 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.team-heading .sub-heading
+  display block
+</style>
