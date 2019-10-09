@@ -13,17 +13,14 @@ export const AUTH_REQUEST = ({ commit }, payload) => {
       .then(response => {
         const data = response.data.leagues.league
         const array = arrayCheck(data)
-        const str = JSON.stringify(array)
-        console.log(str)
         const token = response.data.cookie
         const firstLeague = array[0].url.substring(array[0].url.lastIndexOf('/') + 1)
-        console.log(firstLeague)
         var leagueData = {}
         array.forEach(el => {
           var str = el.url
           var host = str.substring(str.lastIndexOf('//') + 2, str.indexOf('.'))
           var leagueId = str.substring(str.lastIndexOf('/') + 1)
-          leagueData[leagueId] = {host: host, teamId: el.franchise_id}
+          leagueData[leagueId] = {host: host, teamId: el.franchise_id, leagueName: el.name, teamName: el.franchise_name}
         })
         console.log(leagueData)
 
@@ -143,9 +140,6 @@ export const API_REQUEST = ({ commit, getters }, payload) => {
       })
         .then((response) => {
           const responseData = JSON.parse(response.data)
-          var str = JSON.stringify(responseData[el.value])
-          console.log(el.type)
-          console.log(str)
           commit('SET_DATA', {type: el.type, data: responseData[el.value]})
           commit('API_TIMESTAMP', {type: el.type, data: timeCheck})
           return responseData

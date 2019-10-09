@@ -18,3 +18,8 @@ export const LOGOUT = (state) => {
 export const SAVE_SETTINGS = (state, payload) => {
   state.settings[payload.type] = payload.data
 }
+export const CLEAR_TIMESTAMPS = (state, payload) => {
+  payload.types.forEach(el => {
+    state.api[el].timeStamp = 0
+  })
+}

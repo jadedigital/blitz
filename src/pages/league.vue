@@ -116,6 +116,11 @@
           class="no-pad no-border msg-board"
           name="tab-3"
         >
+          <div v-if="!msgBoardPretty[0]" style="height: calc(100vh - 112px)">
+            <div class="absolute-center text-center light-paragraph">
+              No messages
+            </div>
+          </div>
           <q-list highlight v-if="msgBoardPretty">
             <q-item
               v-for="chat in msgBoardPretty"
@@ -172,6 +177,14 @@ export default {
       transactions: 'main/transactions',
       messageBoard: 'main/messageBoard'
     }),
+    messagesBool () {
+      var obj = this.messageBoard
+      if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+        return false
+      } else {
+        return true
+      }
+    },
     standings () {
       var obj = {}
       var array = []

@@ -79,7 +79,8 @@ export default {
       rosters: 'main/rosters',
       players: 'main/players',
       currentWeek: 'main/currentWeek',
-      futureDraftPicks: 'main/futureDraftPicks'
+      futureDraftPicks: 'main/futureDraftPicks',
+      api: 'main/api'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -187,6 +188,17 @@ export default {
       })
     },
     refresher (done) {
+      var requests = [
+        'rosters',
+        'futureDraftPicks',
+        'liveScoring',
+        'projectedScores',
+        'fullNflSchedule',
+        'pointsAllowed',
+        'injuries'
+      ]
+      this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+      console.log(this.api)
       this.fetchData()
       done()
     },

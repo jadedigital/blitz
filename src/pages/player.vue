@@ -242,7 +242,6 @@ export default {
     },
     fetchData () {
       var player = this.playerLookup[this.activePlayer].rotoworld_id
-      var host = this.leagueData[this.activeLeague].host
 
       this.$store.dispatch('main/GET_PLAYER_NEWS', { player: player })
         .then((response) => {
@@ -260,15 +259,6 @@ export default {
         })
         .catch(() => {
           console.log('error loading stats')
-        })
-
-      this.$store.dispatch('main/GET_MFL', { player: this.activePlayer, league: this.activeLeague, host: host })
-        .then((response) => {
-          this.playerRoster = response.data
-          this.playerRosterLoaded = true
-        })
-        .catch(() => {
-          console.log('error loading player roster data')
         })
 
       var requests = [

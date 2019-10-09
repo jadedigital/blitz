@@ -38,7 +38,7 @@
         <div class="bg-gradient-opacity">
           <div class="team-heading">
             {{this.teamLookup[myTeam].name}}
-            <span class="sub-headind">
+            <span class="sub-heading">
               {{this.league.name}}
             </span>
           </div>
@@ -46,17 +46,25 @@
       </div>
       <q-list separator>
         <q-collapsible icon="mdi-football-helmet" :label="this.teamLookup[myTeam].name" :sublabel="this.league.name">
-          <q-item
-            link
+          <div
+            v-for="(team, index) in leagueData"
+            :key="index"
           >
-            <q-item-side icon="mdi-football-helmet"/>
-            <q-item-main
-              class="ellipses"
-              :label="'Team Name'"
-              :sublabel="'League Name'"
-              :sublabel-lines="1"
-              />
-          </q-item>
+            <q-item
+              v-if="index !== activeLeague"
+              link
+              style="padding:0"
+              @click.native="changeLeague(index)"
+            >
+              <q-item-side icon="mdi-football-helmet"/>
+              <q-item-main
+                class="ellipses"
+                :label="team.teamName"
+                :sublabel="team.leagueName"
+                :sublabel-lines="1"
+                />
+            </q-item>
+          </div>
         </q-collapsible>
       </q-list>
       <q-list no-border link>
@@ -104,7 +112,9 @@
       <q-search color="primary" v-model="playerSearch" placeholder="Search" stack-label="Search All Players" ref="search">
       </q-search>
       <div v-if="!playerSearch" class="row flex-center"><i class="info">Start typing to search</i></div>
-      <div v-if="playerSearch" v-for="player in playerSearchLookup" :key="player.id" class="row flex-center">{{player.name}} ({{player.team}}) - {{player.sportsdata_id}}</div>
+      <div v-if="playerSearch">
+        <div v-for="player in playerSearchLookup" :key="player.id" class="row flex-center">{{player.name}} ({{player.team}}) - {{player.sportsdata_id}}</div>
+      </div>
       <q-btn outline color="primary" @click="toggleModal">Cancel</q-btn>
     </q-modal>
 
@@ -230,6 +240,30 @@ export default {
       return list.filter(function (el) {
         return positions.some(x => el['position'] === x)
       })
+    },
+    changeLeague (id) {
+      var requests = [
+        'rosters',
+        'leagueStandings',
+        'freeAgents',
+        'league',
+        'projectedScores',
+        'liveScoring',
+        'matchupLiveScoring',
+        'pointsAllowed',
+        'futureDraftPicks',
+        'transactions',
+        'messageBoard',
+        'playerScores',
+        'playerStatus',
+        'messageBoardThread'
+      ]
+      console.log(id)
+      this.$store.commit('main/SET_DATA', {type: 'activeLeague', data: id})
+      console.log('active league:' + this.activeLeague)
+
+      this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+      this.$store.dispatch('main/API_REQUEST', { types: requests })
     },
     logout () {
       this.$q.dialog({
