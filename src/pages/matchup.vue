@@ -11,7 +11,7 @@
       <div class="contain-main">
         <div
           class="q-if row no-wrap items-center relative-position q-input q-search q-if-has-label text-primary"
-          @click="weekDialog"
+          @click="showModal"
         >
           <div class="q-if-inner col row no-wrap items-center relative-position week-select-wrap">
             <span class="text-primary text-weight-regular week-select q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}<q-btn dense flat icon="mdi-menu-down" /></span>
@@ -27,54 +27,77 @@
         </q-tab-pane>
         <q-tab-pane keep-alive class="no-pad no-border all-matchups" name="tab-2">
           <div>
-            <q-list
-              v-for="(match, key) in displayScoring.matchup"
-              :key="key"
-              @click.native="goToMatchup(match.franchise)"
-            >
-              <div>
+            <div v-if="displayScoring.matchup">
+              <q-list
+                v-for="(match, key) in displayScoring.matchup"
+                :key="key"
+                @click.native="goToMatchup(match.franchise)"
+              >
+                <div>
+                  <q-item
+                    v-for="(team, key2) in match.franchise"
+                    :key="key2"
+                  >
+                    <q-item-side v-if="teamLookup[team.id].icon" :avatar="teamLookup[team.id].icon"/>
+                    <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[team.id].owner_name ? teamLookup[team.id].owner_name[0] : teamLookup[team.id].name[0] }}</q-btn>
+                    <q-item-main
+                      v-ripple
+                      :label="teamLookup[team.id].name"
+                      :sublabel="standingsLookup[team.id].h2hw + '-' + standingsLookup[team.id].h2hl + '-' + standingsLookup[team.id].h2ht"
+                    />
+                    <q-item-side right>
+                      <q-item-tile :class="winners[team.id] === true ? 'strong text-dark' : 'text-dark'">
+                        {{team.score}}
+                      </q-item-tile>
+                    </q-item-side>
+                  </q-item>
+                </div>
+              </q-list>
+            </div>
+            <div v-if="displayScoring.franchise" class="separator-title text-center border-bottom uppercase">Bye Week</div>
+            <div v-if="displayScoring.franchise">
+              <q-list class="bye">
                 <q-item
-                  v-for="(team, key2) in match.franchise"
-                  :key="key2"
+                  link
+                  v-for="(match, key) in displayScoring.franchise"
+                  :key="key"
+                  class="border-bottom"
+                  @click.native="goToTeam(match.id)"
                 >
-                  <q-item-side v-if="teamLookup[team.id].icon" :avatar="teamLookup[team.id].icon"/>
-                  <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[team.id].owner_name ? teamLookup[team.id].owner_name[0] : teamLookup[team.id].name[0] }}</q-btn>
-                  <q-item-main
-                    v-ripple
-                    :label="teamLookup[team.id].name"
-                    :sublabel="standingsLookup[team.id].h2hw + '-' + standingsLookup[team.id].h2hl + '-' + standingsLookup[team.id].h2ht"
-                  />
+                  <q-item-side v-if="teamLookup[match.id].icon" :avatar="teamLookup[match.id].icon"/>
+                  <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[match.id].owner_name ? teamLookup[match.id].owner_name[0] : teamLookup[match.id].name[0] }}</q-btn>
+                  <q-item-main :label="teamLookup[match.id].name" />
                   <q-item-side right>
-                    <q-item-tile :class="winners[team.id] === true ? 'strong text-dark' : 'text-dark'">
-                      {{team.score}}
+                    <q-item-tile class="text-dark">
+                      {{match.score}}
                     </q-item-tile>
                   </q-item-side>
                 </q-item>
-              </div>
-            </q-list>
-            <div v-if="displayScoring.franchise" class="separator-title text-center border-bottom uppercase">Bye Week</div>
-            <q-list class="bye">
-              <q-item
-                link
-                v-for="(match, key) in displayScoring.franchise"
-                :key="key"
-                class="border-bottom"
-                @click.native="goToTeam(match.id)"
-              >
-                <q-item-side v-if="teamLookup[match.id].icon" :avatar="teamLookup[match.id].icon"/>
-                <q-btn v-else round small style="font-size: 14px; font-weight:400; height: 38px; width: 38px;" class="q-btn-outline bg-white text-primary q-item-avatar q-item-section">{{ teamLookup[match.id].owner_name ? teamLookup[match.id].owner_name[0] : teamLookup[match.id].name[0] }}</q-btn>
-                <q-item-main :label="teamLookup[match.id].name" />
-                <q-item-side right>
-                  <q-item-tile class="text-dark">
-                    {{match.score}}
-                  </q-item-tile>
-                </q-item-side>
-              </q-item>
-            </q-list>
+              </q-list>
+            </div>
           </div>
         </q-tab-pane>
       </div>
     </q-tabs>
+    <q-modal position="bottom" v-model="weekModal">
+      <q-card class="compact-card bg-white">
+        <div class="card-main bg-white">
+          <q-list separator link class="no-border no-pad">
+            <q-card-title>
+              Select Week
+            </q-card-title>
+            <div v-for="week in weekOptions" :key="week.value">
+              <q-item @click.native="changeWeek(week.value)" link>
+                <q-item-main>
+                  {{week.label}}
+                </q-item-main>
+                <q-item-side v-if="week.value === weekSelect" right icon="check_box" color="primary" />
+              </q-item>
+            </div>
+          </q-list>
+        </div>
+      </q-card>
+    </q-modal>
   </q-pull-to-refresh>
 </template>
 
@@ -97,7 +120,8 @@ export default {
       weekSelect: '',
       byeWeek: false,
       teamA: '',
-      teamB: ''
+      teamB: '',
+      weekModal: false
     }
   },
   computed: {
@@ -205,9 +229,28 @@ export default {
         console.log('canceled...')
       })
     },
+    showModal () {
+      this.weekModal = true
+    },
+    modalLogic (name, index) {
+      var players = []
+
+      this.positions[index].forEach((pos) => {
+        this.startersSorted.forEach((el) => {
+          if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name) {
+            players.push(el)
+          }
+        })
+      })
+      this.swapPlayer = name.split(', ').reverse().join(' ')
+      this.modalPlayers = players
+      this.swapModal = true
+    },
     changeWeek (week) {
+      this.weekModal = false
       this.weekSelect = week
       this.dataLoaded = false
+      console.log(week)
 
       var requests = [
         'matchupLiveScoring'
@@ -228,6 +271,7 @@ export default {
       var requests = [
         'rosters',
         'liveScoring',
+        'matchupLiveScoring',
         'leagueStandings'
       ]
 
@@ -237,8 +281,23 @@ export default {
         })
     },
     refresher (done) {
-      this.fetchdata()
-      done()
+      var requests = [
+        'rosters',
+        'liveScoring',
+        'matchupLiveScoring',
+        'leagueStandings'
+      ]
+      this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+      this.$store.dispatch('main/API_REQUEST', { types: requests })
+        .then((response) => {
+          done()
+        })
+    }
+  },
+  watch: {
+    activeLeague () {
+      console.log('destroy cache here?')
+      this.$destroy()
     }
   },
   created () {

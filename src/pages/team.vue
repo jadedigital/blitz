@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-pull-to-refresh :handler="refresher" class="team">
-      <div v-if="!dataLoaded || leagueChange" style="height: calc(100vh - 112px)">
+      <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
         <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
       </div>
       <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
@@ -13,40 +13,50 @@
             <blitz-team :thisTeam="myTeam"/>
           </q-tab-pane>
           <q-tab-pane v-if="draftPicksBool" keep-alive name="tab-2" class="draft-picks no-border no-padding">
-            <q-list
-              v-for="(year, key) in pickYears"
-              :key="key"
-              highlight
-              class="no-border"
-            >
-              <q-list-header class="text-center bg-grey-2 border-bottom">{{year}}</q-list-header>
-              <q-item
-                v-for="(pick, key) in myPicksPerYear[year]"
-                :key="key"
-                class="border-bottom"
-              >
-                <q-item-main
-                  :label="'Round ' + pick.round"
-                  class="text-primary"
+            <q-card class="compact-card bg-white">
+              <div class="card-main bg-white">
+                <q-list
+                  v-for="(year, key) in pickYears"
+                  :key="key"
+                  highlight
+                  class="no-border"
                 >
-                  <q-item-tile class="owner text-dark">
-                    Original owner: <span>{{teamLookup[pick.originalPickFor].name}}</span>
-                  </q-item-tile>
-                </q-item-main>
-              </q-item>
-            </q-list>
+                  <q-card-title>
+                    {{year}}
+                  </q-card-title>
+                  <q-item
+                    v-for="(pick, key) in myPicksPerYear[year]"
+                    :key="key"
+                    class="border-bottom"
+                  >
+                    <q-item-main
+                      :label="'Round ' + pick.round"
+                      class="text-primary"
+                    >
+                      <q-item-tile class="owner text-dark">
+                        Original owner: <span>{{teamLookup[pick.originalPickFor].name}}</span>
+                      </q-item-tile>
+                    </q-item-main>
+                  </q-item>
+                </q-list>
+              </div>
+            </q-card>
           </q-tab-pane>
           <q-tab-pane keep-alive class="no-border no-padding" name="tab-3">
-            <q-list class="no-border no-padding no-margin">
-              <q-list-header class="text-center bg-grey-2 border-bottom">
-                Pending Waivers
-              </q-list-header>
-              <div class="no-pending light-paragraph text-italic text-center">No pending waiver requests </div>
-              <q-list-header class="text-center bg-grey-2 border-bottom">
-                Pending Trades
-              </q-list-header>
-              <div class="no-pending light-paragraph text-italic text-center">No pending trades </div>
-            </q-list>
+            <q-card class="compact-card bg-white">
+              <div class="card-main bg-white">
+                <q-list class="no-border no-padding no-margin">
+                  <q-card-title>
+                    Pending Waivers
+                  </q-card-title>
+                  <div class="no-pending light-paragraph text-center">No pending waiver requests </div>
+                  <q-card-title>
+                    Pending Trades
+                  </q-card-title>
+                  <div class="no-pending light-paragraph text-center">No pending trades </div>
+                </q-list>
+              </div>
+            </q-card>
           </q-tab-pane>
         </div>
       </q-tabs>
@@ -221,30 +231,19 @@ export default {
         .then((response) => {
           this.dataLoaded = true
         })
-    },
-    reload () {
-      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
-      setTimeout(this.fetchData, 500)
     }
   },
   watch: {
-    leagueChange (val) {
-      if (val === true) {
-        this.dataLoaded = false
-        this.reload()
-      }
+    activeLeague () {
+      console.log('destroy cache here?')
+      this.$destroy()
     }
   },
   created () {
-    this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
     setTimeout(this.fetchData, 500)
   },
   activated () {
-    if (this.leagueChange === true) {
-      this.dataLoaded = false
-      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
-      setTimeout(this.fetchData, 500)
-    }
+    setTimeout(this.fetchData, 500)
   }
 }
 </script>
@@ -261,12 +260,6 @@ export default {
 .team .draft-picks .q-list
   margin 0
   padding 0
-.team .q-list-header
-  font-size 14px
-  font-weight 300
-  padding 0
-  line-height 2rem
-  color #0c0c0c
 .team .injury
   display inline
 .team .team-player-name

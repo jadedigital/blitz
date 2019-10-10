@@ -109,13 +109,6 @@ export default {
 .q-item-side-right .q-item-label
   color #0c0c0c
   font-weight 500
-.compact-card .q-card-title
-  text-align center
-  font-size 14px
-  font-weight 300
-.compact-card .q-card-primary
-  padding 0
-  background-color #f7f7f7
 .q-card.compact-card
   box-shadow none
   margin 0

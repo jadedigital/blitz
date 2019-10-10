@@ -4,49 +4,48 @@
       <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
     </div>
     <div v-if="dataLoaded" class="contain-main players">
-      <q-collapsible
-        icon="filter_list"
-        label="Filter Players"
-        sublabel="by name, position, status"
-        class="border-bottom"
-      >
-        <q-search
-          v-model="query"
-          icon="search"
-          float-label="Filter by name"
-        />
-        <div
-          class="q-if row no-wrap items-center relative-position q-input q-search q-if-has-label text-primary"
-          @click="showDialog"
-        >
-          <div class="q-if-inner col row no-wrap items-center relative-position">
-            <span :class="positionFilter[0] ? 'q-if-label-above' : ''" class="q-if-label ellipsis full-width absolute self-start">Positions</span>
-            <q-chip
-              closable
-              small
-              color="primary"
-              v-for="(chip, key) in positionFilter"
-              :key="key"
-              @hide="removeChip(chip)"
-            >
-              {{chip}}
-            </q-chip>
+      <q-card class="compact-card">
+        <div class="row">
+          <div class="col-6">
+            <q-card-title>
+              {{statusFilter === 'fa' ? 'Free Agents' : 'All Players'}}
+            </q-card-title>
+          </div>
+          <div class="col-6 filter-button text-right">
+            <q-btn @click="filterCollapse=!filterCollapse" class="bg-grey-3 text-primary" flat size="sm" round color="primary" icon="filter_list" />
           </div>
         </div>
-        <q-select
-          v-model="statusFilter"
-          float-label="Status"
-          @focus="overlay = true"
-          @change="overlay = false"
-          radio
-          :options="statusOptions"
+        <q-collapsible v-model="filterCollapse" :header-style="'display: none;'" class="players-header">
+          <div class="row small-pad">
+            <q-btn
+              v-for="(pos, index) in selectOptions"
+              :key="index"
+              flat
+              size="md"
+              rounded
+              :label="pos.label"
+              :class="[positionFilter.includes(pos.value) ? 'bg-primary text-white' : 'bg-grey-3 text-dark']"
+              @click="togglePos(pos.value)"
+            />
+          </div>
+          <div class="row small-pad">
+            <div class="col-6">
+              <q-btn @click.native="statusFilter = 'fa'" :class="[statusFilter === 'fa' ? 'bg-primary text-white' : 'bg-grey-3 text-dark', 'full-width']" flat size="md" rounded label="Free Agents" />
+            </div>
+            <div class="col-6">
+              <q-btn @click.native="statusFilter = 'all'" :class="[statusFilter === 'all' ? 'bg-primary text-white' : 'bg-grey-3 text-dark', 'full-width']" flat size="md" rounded label="All Players" />
+            </div>
+          </div>
+        </q-collapsible>
+        <q-search
+          hide-underline
+          class="player-search-main"
+          v-model="query"
+          icon="search"
+          inverted-light
+          color="grey-2"
         />
-      </q-collapsible>
-      <q-card class="compact-card">
-        <q-card-title>
-          {{statusFilter === 'fa' ? 'Free Agents' : 'All Players'}}
-        </q-card-title>
-        <q-card-separator />
+
         <div class="card-main bg-white relative-position no-overflow">
           <div class="q-table">
             <div class="row header-row border-bottom">
@@ -123,6 +122,7 @@ export default {
       playersDetails: [],
       overlay: false,
       selectedPlayer: '',
+      filterCollapse: false,
       statusOptions: [
         {
           label: 'All Players',
@@ -372,6 +372,15 @@ export default {
       this.fetchData()
       done()
     },
+    togglePos (val) {
+      let list = this.positionFilter
+      if (list.includes(val)) {
+        list.splice(list.indexOf(val), 1)
+      } else {
+        list.push(val)
+      }
+      this.positionFilter = list
+    },
     showDialog () {
       this.$q.dialog({
         title: 'Positions',
@@ -438,6 +447,12 @@ export default {
         })
     }
   },
+  watch: {
+    activeLeague () {
+      console.log('destroy cache here?')
+      this.$destroy()
+    }
+  },
   created () {
     setTimeout(this.fetchData, 500)
   },
@@ -449,6 +464,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~variables'
 .players .main-row
   padding 8px 0
 .players .header-row
@@ -503,8 +519,26 @@ export default {
   padding 5px 16px
 .players .action-btn
   margin-right 20px
+.players .q-if.player-search-main
+  margin 0 16px 16px 16px
+  border-radius 22px
+  box-shadow none
 .players .q-if
   margin 10px 0
 .players .q-chip
   margin 2px
+.filter-button
+  padding 16px
+.q-popover
+  border-radius 10px
+  box-shadow 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
+.q-popover .q-item
+  padding 2px 16px
+  min-height: 36px
+.q-popover .q-list-separator
+  padding 0
+.players-header .q-card-container
+  padding 16px 0
+.small-pad
+  padding 4px 0
 </style>

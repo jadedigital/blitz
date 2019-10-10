@@ -121,7 +121,7 @@
     <q-page-container>
       <transition :name="transitionName">
         <keep-alive>
-          <router-view class="child-view"></router-view>
+          <router-view :key="$route.name + activeLeague + keyCounter" class="child-view"></router-view>
         </keep-alive>
       </transition>
     </q-page-container>
@@ -152,6 +152,7 @@ export default {
       modal: false,
       leagueCollapse: false,
       playerSearch: '',
+      keyCounter: 1,
       routeOrder: {
         team: 1,
         league: 2,
@@ -262,10 +263,9 @@ export default {
       this.leftDrawerOpen = false
       this.leagueCollapse = false
       this.$store.commit('main/SET_DATA', {type: 'activeLeague', data: id})
-      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: true})
       this.$store.commit('main/SET_DATA', {type: 'chat', data: ''})
       this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
-      this.$router.push('team')
+      this.keyCounter += 1
     },
     logout () {
       this.$q.dialog({

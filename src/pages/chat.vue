@@ -244,6 +244,12 @@ export default {
         })
     }
   },
+  watch: {
+    activeLeague () {
+      console.log('destroy cache here?')
+      this.$destroy()
+    }
+  },
   created () {
     setTimeout(this.fetchData, 500)
   },

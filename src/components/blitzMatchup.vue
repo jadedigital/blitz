@@ -18,8 +18,10 @@
             <img :src="teamLookup[teamA].icon ? teamLookup[teamA].icon : './statics/avatar.jpg'" class="q-item-avatar"/>
           </div>
           <div class="col-6">
-            <div :class="[parseFloat(allScoring[teamA].score) > parseFloat(allScoring[teamB].score)? 'strong' : '', 'total-score', 'float-right']">{{allScoring[teamA].score}}</div>
-            <div class="total-projection float-right">{{totalProjected[teamA]}}</div>
+            <div class="row">
+              <div :class="[parseFloat(allScoring[teamA].score) > parseFloat(allScoring[teamB].score)? 'strong' : '', 'text-right total-score col-12']">{{allScoring[teamA].score}}</div>
+              <div class="total-projection text-right col-12">{{totalProjected[teamA]}}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -39,8 +41,10 @@
         </div>
         <div class="row items-center">
           <div class="col-6">
-            <div :class="[parseFloat(allScoring[teamA].score) < parseFloat(allScoring[teamB].score)? 'strong' : '', 'total-score']">{{allScoring[teamB].score}}</div>
-            <div class="total-projection">{{totalProjected[teamB]}}</div>
+            <div class="row">
+              <div :class="[parseFloat(allScoring[teamA].score) < parseFloat(allScoring[teamB].score)? 'strong' : '', 'total-score text-left col-12']">{{allScoring[teamB].score}}</div>
+              <div class="total-projection text-left col-12">{{totalProjected[teamB]}}</div>
+            </div>
           </div>
           <div class="col-6">
             <img :src="teamLookup[teamB].icon ? teamLookup[teamB].icon : './statics/avatar.jpg'" class="q-item-avatar float-right"/>
@@ -50,7 +54,9 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <div class="separator-title text-center border-bottom uppercase">Starters</div>
+        <q-card-title>
+          Starters
+        </q-card-title>
       </div>
     </div>
     <div v-for="player in combinedStarters" :key="player.id">
@@ -64,12 +70,16 @@
             <div class="list-item border-bottom">
               <div class="row">
                 <div class="col-9 team-name-container">
-                  <div class="team-name float-left" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
-                  <blitz-versus class="team-matchup float-left" :player="player.id"></blitz-versus>
+                  <div class="row">
+                    <div class="team-name text-left col-12" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
+                    <blitz-versus class="team-matchup text-left col-12" :player="player.id"></blitz-versus>
+                  </div>
                 </div>
                 <div class="col-3">
-                  <div class="team-score float-right" >{{scoringLookupTeamA[player.id].score}}</div>
-                  <div class="team-projection float-right">{{ updatedProjection[player.id].projection }}</div>
+                  <div class="row">
+                    <div class="team-score text-right col-12" >{{scoringLookupTeamA[player.id].score}}</div>
+                    <div class="team-projection text-right col-12">{{ updatedProjection[player.id].projection }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -93,12 +103,16 @@
             <div class="list-item border-bottom">
               <div class="row">
                 <div class="col-3">
-                  <div class="team-score float-left" >{{scoringLookupTeamB[player.opp].score}}</div>
-                  <div class="team-projection float-left" >{{ updatedProjection[player.opp].projection }}</div>
+                  <div class="row">
+                    <div class="team-score text-left col-12" >{{scoringLookupTeamB[player.opp].score}}</div>
+                    <div class="team-projection text-left col-12" >{{ updatedProjection[player.opp].projection }}</div>
+                  </div>
                 </div>
                 <div class="col-9 team-name-container">
-                  <div class="team-name float-right" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
-                  <blitz-versus class="team-matchup float-right" :player="player.opp"></blitz-versus>
+                  <div class="row">
+                    <div class="team-name text-right col-12" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
+                    <blitz-versus class="team-matchup text-right col-12" :player="player.opp"></blitz-versus>
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,22 +122,28 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <div class="separator-title text-center border-bottom uppercase">Bench</div>
+        <q-card-title>
+          Bench
+        </q-card-title>
       </div>
     </div>
     <div v-for="player in combinedBench" :key="player.id">
       <div class="row">
         <div class="col-5 matchup" @click="goToPlayer(player.id)">
           <div class="matchup-list">
-            <div class="list-item border-bottom bg-grey-3">
+            <div class="list-item border-bottom">
               <div class="row">
                 <div class="col-9 team-name-container">
-                  <div class="team-name float-left" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
-                  <blitz-versus class="team-matchup float-left" :player="player.id"></blitz-versus>
+                  <div class="row">
+                    <div class="team-name text-left col-12" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
+                    <blitz-versus class="team-matchup text-left col-12" :player="player.id"></blitz-versus>
+                  </div>
                 </div>
                 <div class="col-3">
-                  <div class="team-score float-right" >{{scoringLookupTeamA[player.id].score}}</div>
-                  <div class="team-projection float-right">{{ updatedProjection[player.id].projection }}</div>
+                  <div class="row">
+                    <div class="team-score text-right col-12" >{{scoringLookupTeamA[player.id].score}}</div>
+                    <div class="team-projection text-right col-12">{{ updatedProjection[player.id].projection }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -140,15 +160,19 @@
         </div>
         <div class="col-5 matchup" @click="goToPlayer(player.opp)">
           <div class="matchup-list">
-            <div class="list-item border-bottom bg-grey-3">
+            <div class="list-item border-bottom">
               <div class="row">
                 <div class="col-3">
-                  <div class="team-score float-left" >{{scoringLookupTeamB[player.opp].score}}</div>
-                  <div class="team-projection float-left" >{{ updatedProjection[player.opp].projection }}</div>
+                  <div class="row">
+                    <div class="team-score text-left col-12" >{{scoringLookupTeamB[player.opp].score}}</div>
+                    <div class="team-projection text-left col-12" >{{ updatedProjection[player.opp].projection }}</div>
+                  </div>
                 </div>
                 <div class="col-9 team-name-container">
-                  <div class="team-name float-right" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
-                  <blitz-versus class="team-matchup float-right" :player="player.opp"></blitz-versus>
+                  <div class="row">
+                    <div class="team-name text-right col-12" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
+                    <blitz-versus class="team-matchup text-right col-12" :player="player.opp"></blitz-versus>
+                  </div>
                 </div>
               </div>
             </div>
@@ -452,7 +476,6 @@ export default {
 .matchup-header .team
   height 100%
   padding 20px 0
-<style lang="stylus" scoped>
 .matchup-header
   height 100px
 .matchup-header .team-name

@@ -6,7 +6,6 @@
           <q-card-title>
             Starters
           </q-card-title>
-          <q-card-separator />
           <div class="card-main bg-white">
             <div v-for="(player, index) in startersNew" :key="index">
               <div v-if="player.id">
@@ -39,7 +38,6 @@
           <q-card-title>
             Bench
           </q-card-title>
-          <q-card-separator />
           <div class="card-main bg-white">
             <q-item link separator v-for="player in bench" :key="player.id" @click.native="goToPlayer(player.id)">
               <q-btn @click.stop="showAS(playerLookup[player.id].name)" round small style="font-size: 12px; font-weight:400" :class="buttonClass(player.id)">BN</q-btn>
@@ -525,4 +523,6 @@ export default {
   background #ff1744
 .injury
   display inline-block
+.card-main .q-item-separator
+  border-top 1px solid #e0e0e0
 </style>
