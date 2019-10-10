@@ -31,20 +31,20 @@
       <div class="contain-main bg-white">
         <q-tab-pane keep-alive class="no-pad no-border standings" name="tab-1">
           <q-card class="compact-card bg-white" v-for="(division, key) in standings" :key="key">
-            <q-card-title>
+            <q-card-title v-if="league.divisions">
               {{divisionLookup[key].name}}
             </q-card-title>
             <q-card-separator />
             <div class="card-main bg-white">
               <div class="q-table horizontal-separator">
                 <div class="row header-row border-bottom">
-                  <div @click="sort(key, 'rank', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'rank'}">W-L-T</div>
+                  <div @click="sort(key, 'rank', -1)" nowrap :class="[colSortKeys[key] === 'rank' ? 'text-tertiary' : '', colClass]">W-L-T</div>
                   <div @click="sort(key, 'streakSort', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">Streak</div>
                   <div @click="sort(key, 'pf', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pf'}">PF</div>
                   <div @click="sort(key, 'pa', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">PA</div>
                   <div v-if="teamLookup['0001'].bbidAvailableBalance" @click="sort(key, 'budget', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">Budget</div>
                   <div v-if="teamLookup['0001'].waiverSortOrder" @click="sort(key, 'waiver', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'waiver'}">Waiver</div>
-                  <div v-if="league.divisions.count > 1" @click="sort(key, 'divw', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">Division</div>
+                  <div v-if="league.divisions" @click="sort(key, 'divw', -1)" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">Division</div>
                 </div>
                 <div
                   class="border-bottom main-row"
@@ -62,13 +62,13 @@
                     </q-item>
                   </div>
                   <div class="row stat-row">
-                    <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'rank'}">{{team.h2hw}}-{{team.h2hl}}-{{team.h2ht}}</div>
+                    <div nowrap :class="[colSortKeys[key] === 'rank' ? 'text-tertiary' : '', colClass]">{{team.h2hw}}-{{team.h2hl}}-{{team.h2ht}}</div>
                     <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'streakSort'}">{{team.streak_type ? team.streak_type + team.streak_len : '-'}}</div>
                     <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pf'}">{{team.pf}}</div>
                     <div nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'pa'}">{{team.pa ? team.pa : 0}}</div>
                     <div v-if="teamLookup[team.id].bbidAvailableBalance" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'budget'}">{{teamLookup[team.id].bbidAvailableBalance}}</div>
                     <div v-if="teamLookup[team.id].waiverSortOrder" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'waiver'}">{{teamLookup[team.id].waiverSortOrder}}</div>
-                    <div v-if="league.divisions.count > 1" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">{{team.divw ? team.divw : 0}}-{{team.divl ? team.divl : 0}}-{{team.divt ? team.divt : 0}}</div>
+                    <div v-if="league.divisions" nowrap class="text-center col-2" :class="{'text-tertiary': colSortKeys[key] === 'divw'}">{{team.divw ? team.divw : 0}}-{{team.divl ? team.divl : 0}}-{{team.divt ? team.divt : 0}}</div>
                   </div>
                 </div>
               </div>
@@ -185,14 +185,31 @@ export default {
         return true
       }
     },
+    divisionsArray () {
+      if (this.league.divisions) {
+        return this.league.divisions.division
+      } else {
+        var array = [{'name': 'Division 1', 'id': '00'}]
+        return array
+      }
+    },
+    colClass () {
+      if (this.league.divisions) {
+        var sixCol = 'text-center col-2'
+        return sixCol
+      } else {
+        var fiveCol = 'text-center col-4'
+        return fiveCol
+      }
+    },
     standings () {
       var obj = {}
       var array = []
       var index = ''
-      this.league.divisions.division.forEach(el => {
+      this.divisionsArray.forEach(el => {
         index = 1
         this.leagueStandings.franchise.forEach(el2 => {
-          if (this.teamLookup[el2.id].division === el.id) {
+          if (this.teamLookup[el2.id].division === el.id || !this.league.divisions) {
             el2['rank'] = index
             el2['budget'] = this.teamLookup[el2.id].bbidAvailableBalance
             el2['waiver'] = this.teamLookup[el2.id].waiverSortOrder
@@ -281,7 +298,7 @@ export default {
       return obj
     },
     divisionLookup () {
-      var array = this.league.divisions.division
+      var array = this.divisionsArray
       return this.lookup(array, 'id')
     }
   },
@@ -346,7 +363,7 @@ export default {
     this.selectedTeam = ''
   },
   mounted () {
-    this.league.divisions.division.forEach(el => {
+    this.divisionsArray.forEach(el => {
       this.$set(this.colSortKeys, el.id, 'rank')
       this.$set(this.colSortOrders, el.id, -1)
     })

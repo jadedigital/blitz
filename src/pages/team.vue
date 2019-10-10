@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <q-pull-to-refresh :handler="refresher" class="team">
-      <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
+      <div v-if="!dataLoaded || leagueChange" style="height: calc(100vh - 112px)">
         <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
       </div>
-      <q-tabs v-if="dataLoaded" inverted class="secondary-tabs">
+      <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
         <q-tab default slot="title" name="tab-1" label="Roster" />
         <q-tab v-if="draftPicksBool" slot="title" name="tab-2" label="Draft Picks" />
         <q-tab slot="title" name="tab-3" label="Pending Moves"/>
@@ -80,7 +80,8 @@ export default {
       players: 'main/players',
       currentWeek: 'main/currentWeek',
       futureDraftPicks: 'main/futureDraftPicks',
-      api: 'main/api'
+      api: 'main/api',
+      leagueChange: 'main/leagueChange'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -189,6 +190,7 @@ export default {
     },
     refresher (done) {
       var requests = [
+        'league',
         'rosters',
         'futureDraftPicks',
         'liveScoring',
@@ -198,12 +200,14 @@ export default {
         'injuries'
       ]
       this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
-      console.log(this.api)
-      this.fetchData()
-      done()
+      this.$store.dispatch('main/API_REQUEST', { types: requests })
+        .then((response) => {
+          done()
+        })
     },
     fetchData () {
       var requests = [
+        'league',
         'rosters',
         'futureDraftPicks',
         'liveScoring',
@@ -217,10 +221,30 @@ export default {
         .then((response) => {
           this.dataLoaded = true
         })
+    },
+    reload () {
+      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
+      setTimeout(this.fetchData, 500)
+    }
+  },
+  watch: {
+    leagueChange (val) {
+      if (val === true) {
+        this.dataLoaded = false
+        this.reload()
+      }
     }
   },
   created () {
+    this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
     setTimeout(this.fetchData, 500)
+  },
+  activated () {
+    if (this.leagueChange === true) {
+      this.dataLoaded = false
+      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: false})
+      setTimeout(this.fetchData, 500)
+    }
   }
 }
 </script>

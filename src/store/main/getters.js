@@ -38,6 +38,7 @@ export const playerStatus = state => state.playerStatus
 export const chat = state => state.chat
 export const draftResults = state => state.draftResults
 export const settings = state => state.settings
+export const leagueChange = state => state.leagueChange
 export const endWeek = state => {
   return state.league.endWeek
 }

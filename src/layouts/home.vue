@@ -45,7 +45,7 @@
         </div>
       </div>
       <q-list separator>
-        <q-collapsible icon="mdi-football-helmet" :label="this.teamLookup[myTeam].name" :sublabel="this.league.name">
+        <q-collapsible icon="mdi-football-helmet" v-model="leagueCollapse" :label="this.teamLookup[myTeam].name" :sublabel="this.league.name">
           <div
             v-for="(team, index) in leagueData"
             :key="index"
@@ -150,6 +150,7 @@ export default {
     return {
       leftDrawerOpen: false,
       modal: false,
+      leagueCollapse: false,
       playerSearch: '',
       routeOrder: {
         team: 1,
@@ -258,12 +259,13 @@ export default {
         'playerStatus',
         'messageBoardThread'
       ]
-      console.log(id)
+      this.leftDrawerOpen = false
+      this.leagueCollapse = false
       this.$store.commit('main/SET_DATA', {type: 'activeLeague', data: id})
-      console.log('active league:' + this.activeLeague)
-
+      this.$store.commit('main/SET_DATA', {type: 'leagueChange', data: true})
+      this.$store.commit('main/SET_DATA', {type: 'chat', data: ''})
       this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
-      this.$store.dispatch('main/API_REQUEST', { types: requests })
+      this.$router.push('team')
     },
     logout () {
       this.$q.dialog({

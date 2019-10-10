@@ -3,13 +3,7 @@
     <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
       <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
     </div>
-    <div v-if="error" style="height: calc(100vh - 112px)">
-      <div class="absolute-center text-center light-paragraph">
-        Can't fetch data.<br>
-        Try again later.
-      </div>
-    </div>
-    <div v-if="dataLoaded && !error" class="contain-main bg-white">
+    <div v-if="dataLoaded" class="contain-main bg-white">
       <q-list link class="no-padding">
         <q-card class="compact-card bg-white">
           <q-item
@@ -102,7 +96,8 @@ export default {
       activeLeague: 'main/activeLeague',
       leagueData: 'main/leagueData',
       league: 'main/league',
-      chat: 'main/chat'
+      chat: 'main/chat',
+      token: 'main/token'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -132,14 +127,17 @@ export default {
         name: 'Commissioner'
       }
       const franchiseArray = [...this.league.franchises.franchise]
-      const chatLoopable = arrayCheck(this.chat.message)
+
       franchiseArray.unshift(commish)
       franchiseArray.forEach(el => {
-        chatLoopable.forEach(el2 => {
-          if (el2._attributes.to && (el2._attributes.franchise_id === el.id || el2._attributes.to === el.id)) {
-            chatArray.push(el2._attributes)
-          }
-        })
+        if (this.chat.message) {
+          const chatLoopable = arrayCheck(this.chat.message)
+          chatLoopable.forEach(el2 => {
+            if (el2._attributes.to && (el2._attributes.franchise_id === el.id || el2._attributes.to === el.id)) {
+              chatArray.push(el2._attributes)
+            }
+          })
+        }
         chatList[el.id] = chatArray
         chatArray = []
       })
@@ -151,16 +149,21 @@ export default {
       let timeStamp = Date.now()
       var today = date.formatDate(timeStamp, 'MMM DD')
       var chatArray = []
-      const chatLoopable = arrayCheck(this.chat.message)
-      chatLoopable.forEach(el => {
-        if (!el._attributes.to) {
-          chatArray.push(el._attributes)
+
+      if (this.chat.message) {
+        const chatLoopable = arrayCheck(this.chat.message)
+        chatLoopable.forEach(el => {
+          if (!el._attributes.to) {
+            chatArray.push(el._attributes)
+          }
+        })
+      }
+      if (chatArray[0]) {
+        if (today === chatArray[0].posted.split(' ')[1] + ' ' + pad(chatArray[0].posted.split(' ')[2], 2)) {
+          chatArray[0]['timestamp'] = chatArray[0].posted.split(' ')[3].split(':')[0] + ':' + chatArray[0].posted.split(' ')[3].split(':')[1] + ' ' + chatArray[0].posted.split(' ')[4].split('.').join('')
+        } else {
+          chatArray[0]['timestamp'] = chatArray[0].posted.split(' ')[1] + ' ' + chatArray[0].posted.split(' ')[2]
         }
-      })
-      if (today === chatArray[0].posted.split(' ')[1] + ' ' + pad(chatArray[0].posted.split(' ')[2], 2)) {
-        chatArray[0]['timestamp'] = chatArray[0].posted.split(' ')[3].split(':')[0] + ':' + chatArray[0].posted.split(' ')[3].split(':')[1] + ' ' + chatArray[0].posted.split(' ')[4].split('.').join('')
-      } else {
-        chatArray[0]['timestamp'] = chatArray[0].posted.split(' ')[1] + ' ' + chatArray[0].posted.split(' ')[2]
       }
       return chatArray
     },
@@ -226,7 +229,7 @@ export default {
     },
     fetchData () {
       const host = this.leagueData[this.activeLeague].host
-      const cookie = this.leagueData[this.activeLeague].cookie
+      const cookie = this.token
       const league = this.activeLeague
 
       this.$store.dispatch('main/GET_CHATS', { host: host, cookie: cookie, league: league })
@@ -235,12 +238,16 @@ export default {
           this.error = false
         })
         .catch(() => {
+          console.log('peek')
           this.dataLoaded = true
           this.error = true
         })
     }
   },
   created () {
+    setTimeout(this.fetchData, 500)
+  },
+  activated () {
     setTimeout(this.fetchData, 500)
   }
 }

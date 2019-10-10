@@ -970,6 +970,7 @@ export default {
     navbar: ['team', 'league', 'matchup', 'players', 'chat'],
     toolbarHide: false
   },
+  leagueChange: false,
   teamMap: {
     ARI: 'ARI',
     ATL: 'ATL',
