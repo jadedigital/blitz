@@ -1,11 +1,14 @@
 <template>
-  <q-pull-to-refresh :handler="refresher" class="chat-layout">
+  <q-pull-to-refresh class="chat-layout">
     <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
       <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
     </div>
     <div v-if="dataLoaded" class="contain-main bg-white">
       <q-list link class="no-padding">
         <q-card class="compact-card bg-white">
+          <q-card-title>
+            League Chat
+          </q-card-title>
           <q-item
             link
             @click.native="goToThread('1000')"
@@ -15,8 +18,8 @@
             </div>
             <q-item-main
               class="ellipses"
-              label="League Chat"
-              :sublabel="leagueChat[0] ? (leagueChat[0].franchise_id === myTeam ? 'You' : teamLookup[leagueChat[0].franchise_id].owner_name.split(' ')[0]) + ': ' + leagueChat[0].message : ''"
+              :label="league.name"
+              :sublabel="leagueChat[0] ? (leagueChat[0].franchise_id === myTeam ? 'You' : teamLookup[leagueChat[0].franchise_id].owner_name.split(' ')[0]) + ': ' + leagueChat[0].message : 'Start a chat'"
               :sublabel-lines="1"
               />
             <q-item-side right>
@@ -39,7 +42,7 @@
             <q-item-main
               class="ellipses"
               :label="chat.name"
-              :sublabel="chatList[chat.id][0] ? (chatList[chat.id][0].franchise_id === myTeam ? 'You' : teamLookup[chatList[chat.id][0].franchise_id].owner_name.split(' ')[0]) + ': ' + chatList[chat.id][0].message : ''"
+              :sublabel="chatList[chat.id][0] ? (chatList[chat.id][0].franchise_id === myTeam ? 'You' : teamLookup[chatList[chat.id][0].franchise_id].owner_name.split(' ')[0]) + ': ' + chatList[chat.id][0].message : 'Start a chat'"
               :sublabel-lines="1"
               />
             <q-item-side right>
@@ -196,8 +199,9 @@ export default {
       return franchiseArraySorted
     },
     logoUrl () {
+      let url = this.league.leagueLogo ? this.league.leagueLogo : './statics/blitz-logo.svg'
       var style = {
-        background: 'url(' + this.league.leagueLogo + ') center no-repeat',
+        background: 'url(' + url + ') center no-repeat',
         backgroundSize: 'cover'
       }
       return style
