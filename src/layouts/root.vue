@@ -131,17 +131,6 @@ export default {
 .player-bg-pic
   background-size: cover;
   overflow: hidden;
-.search-modal .info
-  font-size 120%
-  font-weight 300
-  margin 20px
-.search-modal .q-btn
-  margin 20px
-  width 90%
-.search-modal .q-if
-  margin 16px 0
-.search-modal.fullscreen
-  top 50px
 .main-avatar .q-item-avatar
   height 46px
   width 46px
@@ -150,19 +139,6 @@ export default {
 }
 .fade-enter, .fade-leave-active {
   opacity: 0
-}
-.child-view {
-  width: 100%;
-  position: absolute;
-  transition: all .3s;
-}
-.slide-left-enter, .slide-right-leave-active {
-  opacity: 0;
-  transform: translate(200px, 0);
-}
-.slide-left-leave-active, .slide-right-enter {
-  opacity: 0;
-  transform: translate(-200px, 0);
 }
 .layout-aside-right
   width 100%
@@ -192,16 +168,6 @@ export default {
   width 33%
 .team .secondary-tabs .q-tab
   width 33%
-.slide-fade-enter-active {
-  transition: all .2s ease;
-}
-.slide-fade-leave-active {
-  transition: all .2s ease;
-}
-.slide-fade-enter, .slide-fade-leave-to
-{
-  transform: translateX(100%);
-}
 .no-header-shadow .q-layout-header
   box-shadow none
 .header-shadow .layout-header
