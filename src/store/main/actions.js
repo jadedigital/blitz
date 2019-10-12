@@ -187,24 +187,14 @@ export const GET_MFL = ({ commit }, payload) => {
   })
 }
 
-export const API_LINEUP = ({ commit }, payload) => {
+export const API_POST = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
-    let data = {
-      params: {
-        L: payload.league,
-        STARTERS: payload.starters,
-        W: payload.week,
-        TYPE: 'lineup'
-      }
-    }
-    let config = {
-      headers: {
-        cookie: payload.cookie
-      }
-    }
-    var url = 'https://' + payload.host + '.myfantasyleague.com/2017/import'
+    var queryParams = payload.data
+    var url = 'https://keepersync.com/mfl/import'
 
-    axios.get(url, data, config)
+    axios.get(url, {
+      params: queryParams
+    })
       .then((response) => {
         var responseData = response.data
         resolve(responseData)

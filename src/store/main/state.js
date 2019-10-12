@@ -966,6 +966,9 @@ export default {
   matchupTeams: {teamA: '', teamB: ''},
   chat: '',
   draftResults: '',
+  lineupLocal: [],
+  lineupResponse: '',
+  lineupSynced: true,
   settings: {
     navbar: ['team', 'league', 'matchup', 'players', 'chat'],
     toolbarHide: false
