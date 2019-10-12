@@ -108,14 +108,43 @@
       </q-list>
     </q-layout-drawer>
 
-    <q-modal class="search-modal" @show="$refs.search.focus()" v-model="modal">
-      <q-search color="primary" v-model="playerSearch" placeholder="Search" stack-label="Search All Players" ref="search">
-      </q-search>
-      <div v-if="!playerSearch" class="row flex-center"><i class="info">Start typing to search</i></div>
-      <div v-if="playerSearch">
-        <div v-for="player in playerSearchLookup" :key="player.id" class="row flex-center">{{player.name}} ({{player.team}}) - {{player.sportsdata_id}}</div>
-      </div>
-      <q-btn outline color="primary" @click="toggleModal">Cancel</q-btn>
+    <q-modal @show="$refs.search.focus()" v-model="modal" class="no-header-shadow">
+      <q-modal-layout content-class="row">
+        <q-toolbar slot="header" class="bg-white text-dark">
+          <q-btn dense flat>
+            <q-icon @click.native="toggleModal" name="arrow_back" />
+          </q-btn>
+          <q-toolbar-title>
+            Search
+          </q-toolbar-title>
+        </q-toolbar>
+        <div class="search-modal col">
+          <q-search color="primary" v-model="playerSearch" placeholder="Search" stack-label="Search All Players" ref="search">
+          </q-search>
+          <div v-if="!playerSearch" class="row flex-center"><i class="info">Start typing to search</i></div>
+          <div v-if="playerSearch.length < 3 && playerSearch.length > 0" class="row flex-center"><i class="info">Enter at least 3 letters to search</i></div>
+          <div v-if="playerSearch.length > 2">
+            <q-list class="no-border">
+              <q-list-header>Players</q-list-header>
+              <q-item
+                link
+                v-for="player in playerSearchLookup"
+                :key="player.id"
+                class="row flex-center"
+                @click.native="goToPlayer(player.id)"
+              >
+                <q-item-side class="player-avatar" :avatar="player.position === 'Def' ? './statics/' + teamMap[player.team] + '.svg' : player.cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + player.cbs_id + '.jpg' : './statics/avatar.jpg'" />
+                <q-item-main :label="player.name" :sublabel="player.team + ' - ' + player.position"/>
+                <q-item-side right>
+                  <q-item-tile icon="info" />
+                </q-item-side>
+              </q-item>
+            </q-list>
+
+          </div>
+          <q-btn outline rounded color="primary" @click="toggleModal">Cancel</q-btn>
+        </div>
+      </q-modal-layout>
     </q-modal>
 
     <q-page-container>
@@ -170,6 +199,10 @@ export default {
     const toRoute = this.routeOrder[to.path.split('/')[2]]
     const fromRoute = this.routeOrder[from.path.split('/')[2]]
     this.transitionName = toRoute < fromRoute ? 'slide-right' : 'slide-left'
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    this.transitionName = ''
     next()
   },
   computed: {
@@ -243,6 +276,10 @@ export default {
         return positions.some(x => el['position'] === x)
       })
     },
+    goToPlayer (id) {
+      this.toggleModal()
+      this.$router.push('/player/' + id)
+    },
     changeLeague (id) {
       var requests = [
         'rosters',
@@ -296,4 +333,28 @@ export default {
 <style lang="stylus" scoped>
 .team-heading .sub-heading
   display block
+.child-view {
+  width: 100%;
+  position: absolute;
+  transition: all .3s;
+}
+.slide-left-enter, .slide-right-leave-active {
+  opacity: 0;
+  transform: translate(200px, 0);
+}
+.slide-left-leave-active, .slide-right-enter {
+  opacity: 0;
+  transform: translate(-200px, 0);
+}
+.search-modal .info
+  font-size 120%
+  font-weight 300
+  margin 20px
+.search-modal .q-btn
+  margin 20px
+  width 90%
+.search-modal .q-if
+  margin 16px 0
+.search-modal .q-if
+  margin 16px 10px
 </style>
