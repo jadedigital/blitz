@@ -90,7 +90,7 @@ export const GET_WEEK = ({ commit, getters }) => {
         var responseData = JSON.parse(response.data)
         var timeLeft = 0
         var week = ''
-        var schedule = arrayCheck(responseData.nflSchedule.week)
+        var schedule = arrayCheck(responseData.nflSchedule.matchup)
         schedule.forEach(el => {
           timeLeft += parseFloat(el.gameSecondsRemaining)
         })
