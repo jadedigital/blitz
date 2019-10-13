@@ -9,7 +9,7 @@
                 Starters
               </q-card-title>
             </div>
-            <div v-if="lineupResponse.includes('Error')" class="col-6 error-button text-right">
+            <div v-if="lineupResponse.includes('Error') && myTeam === thisTeam" class="col-6 error-button text-right">
               <q-btn @click="errorModal = true" flat size="lg" round color="tertiary" icon="error" />
             </div>
           </div>
@@ -17,7 +17,8 @@
             <div v-for="(player, index) in startersRendered" :key="index">
               <div v-if="player.id">
                 <q-item link separator @click.native="goToPlayer(player.id)">
-                  <q-btn @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
                   <div class="q-item-main q-item-section team-players">
                     <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -31,7 +32,8 @@
               </div>
               <div v-if="!player.id">
                 <q-item link separator>
-                  <q-btn @click.stop="modalLogic('', index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam === thisTeam" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam !== thisTeam" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="'./statics/avatar.jpg'" />
                   <div class="q-item-main q-item-section team-players">
                     <div class="q-item-label team-player-name">Empty</div>
@@ -47,7 +49,8 @@
           </q-card-title>
           <div class="card-main bg-white">
             <q-item link separator v-for="player in bench" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn @click.stop="submitLineup()" round small style="font-size: 12px; font-weight:400" :class="buttonClass(player.id)">BN</q-btn>
+              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">BN</q-btn>
+              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">BN</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -71,7 +74,8 @@
           <q-card-separator />
           <div class="card-main bg-white">
             <q-item link separator v-for="player in injuredReserve" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn round small style="font-size: 14px; font-weight:400" class="q-item-avatar q-btn-flat text-primary">IR</q-btn>
+              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">IR</q-btn>
+              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">IR</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -88,7 +92,8 @@
           <q-card-separator />
           <div class="card-main bg-white">
             <q-item link separator v-for="player in taxiSquad" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn round small style="font-size: 14px; font-weight:400" class="q-item-avatar q-btn-flat text-primary">TS</q-btn>
+              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">TS</q-btn>
+              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">TS</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -99,7 +104,7 @@
           </div>
         </q-card>
       </q-list>
-      <q-modal position="bottom" v-model="swapModal">
+      <q-modal v-if="myTeam === thisTeam" position="bottom" v-model="swapModal">
         <q-list link class="no-border no-pad">
           <q-list-header>
             Swap {{swapPlayer.name}} with another player:
@@ -173,6 +178,10 @@ export default {
       lineupLocal: 'main/lineupLocal',
       lineupSynced: 'main/lineupSynced'
     }),
+    myTeam () {
+      var team = this.leagueData[this.activeLeague].teamId
+      return team
+    },
     rosterCheck () {
       if (this.rosterLookup[this.thisTeam].player) {
         return true
@@ -328,7 +337,7 @@ export default {
       return positions
     },
     startersRendered () {
-      if (this.lineupSynced) {
+      if (this.lineupSynced || this.myTeam !== this.thisTeam) {
         return this.startersServer
       } else {
         return this.lineupLocal
