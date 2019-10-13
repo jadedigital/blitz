@@ -1,5 +1,5 @@
 <template>
-  <q-pull-to-refresh :handler="refresher" class="matchup">
+  <div class="matchup">
     <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
       <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
     </div>
@@ -98,7 +98,7 @@
         </div>
       </q-card>
     </q-modal>
-  </q-pull-to-refresh>
+  </div>
 </template>
 
 <script>
@@ -166,7 +166,7 @@ export default {
     weekOptions () {
       var options = []
       var obj = {}
-      var endWeek = this.currentWeek
+      var endWeek = Math.max(parseFloat(this.league.lastRegularSeasonWeek), this.currentWeek)
       for (let index = 1; index <= endWeek; index++) {
         obj = {
           label: 'Week ' + index,
@@ -272,26 +272,34 @@ export default {
         'rosters',
         'liveScoring',
         'matchupLiveScoring',
-        'leagueStandings'
+        'leagueStandings',
+        'fullNflSchedule'
       ]
-
       this.$store.dispatch('main/API_REQUEST', { types: requests })
         .then((response) => {
           this.setTeams()
         })
     },
     refresher (done) {
-      var requests = [
-        'rosters',
-        'liveScoring',
-        'matchupLiveScoring',
-        'leagueStandings'
-      ]
-      this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
-      this.$store.dispatch('main/API_REQUEST', { types: requests })
-        .then((response) => {
-          done()
-        })
+      return new Promise((resolve, reject) => {
+        var requests = [
+          'rosters',
+          'liveScoring',
+          'matchupLiveScoring',
+          'leagueStandings',
+          'fullNflSchedule'
+        ]
+        this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+        this.$store.dispatch('main/API_REQUEST', { types: requests })
+          .then((response) => {
+            resolve(response)
+          })
+          .catch((error) => {
+            if (error) {
+              reject(error)
+            }
+          })
+      })
     }
   },
   watch: {
