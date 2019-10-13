@@ -150,10 +150,10 @@
     <div v-touch-pan.mightPrevent="panHandler">
       <q-btn
         size="lg"
-        style="height: 1.8em; width: 1.8em; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
+        style="height: 1.8em; width: 1.8em; top:14px; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
         class="bg-white text-primary absolute"
-        :class="pullLoading ? 'animate-spin' : ''"
-        :style="'margin-top: '+ pullMargin + 'px; opacity:' + pullOpacity"
+        :loading="pullLoading"
+        :style="'transform: translate(0, '+ pullMargin + 'px) rotate(' + pullRotation + 'deg);'"
         round
         icon="refresh"
       />
@@ -205,10 +205,11 @@ export default {
       headerShadow: false,
       overlay: false,
       scrollSpot: 0,
-      pullMargin: 0,
+      pullMargin: 1,
       pullOpacity: 1,
       pullLoading: false,
-      panDelta: 0
+      panDelta: 0,
+      pullRotation: 0
     }
   },
   beforeRouteUpdate (to, from, next) {
@@ -289,6 +290,7 @@ export default {
         var marginAdd = Math.min(scrollDistance, max)
         console.log(marginAdd)
         this.pullMargin = marginInitial + marginAdd
+        this.pullRotation = (this.pullMargin / max) * 360
         if (pan.isFinal) {
           if (scrollDistance > triggerDistance) {
             this.pullMargin = 70
@@ -299,6 +301,7 @@ export default {
                 this.pullLoading = false
                 this.pullMargin = marginInitial
                 this.panDelta = 0
+                this.pullRotation = 0
               })
               .catch((error) => {
                 if (error) {
@@ -308,11 +311,13 @@ export default {
           } else {
             this.pullMargin = marginInitial
             this.panDelta = 0
+            this.pullRotation = 0
           }
         }
       } else {
         this.pullMargin = 0
         this.panDelta = 0
+        this.pullRotation = 0
       }
     },
     lookup (array, id) {
