@@ -86,7 +86,8 @@ module.exports = function (ctx) {
         'QChatMessage'
       ],
       directives: [
-        'Ripple'
+        'Ripple',
+        'TouchPan'
       ],
       plugins: [
         'LocalStorage',
