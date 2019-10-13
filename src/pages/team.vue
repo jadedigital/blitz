@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
-      <q-btn size="lg" style="height: 1.8em; width: 1.8em; margin-left: -20px;" class="animate-spin bg-white text-primary absolute-center" round icon="refresh" />
+      <q-btn loading size="lg" style="height: 1.8em; width: 1.8em; margin-left: -20px; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;" class="animate-spin bg-white text-primary absolute-center" round icon="refresh" />
     </div>
     <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
       <q-tab default slot="title" name="tab-1" label="Roster" />
