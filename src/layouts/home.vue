@@ -147,13 +147,24 @@
       </q-modal-layout>
     </q-modal>
 
-    <q-page-container>
-      <transition :name="transitionName">
-        <keep-alive>
-          <router-view :key="$route.name + activeLeague + keyCounter" class="child-view"></router-view>
-        </keep-alive>
-      </transition>
-    </q-page-container>
+    <div v-touch-pan.mightPrevent="panHandler">
+      <q-btn
+        size="lg"
+        style="height: 1.8em; width: 1.8em; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
+        class="bg-white text-primary absolute"
+        :class="pullLoading ? 'animate-spin' : ''"
+        :style="'margin-top: '+ pullMargin + 'px; opacity:' + pullOpacity"
+        round
+        icon="refresh"
+      />
+      <q-page-container>
+        <transition :name="transitionName">
+          <keep-alive>
+            <router-view :key="$route.name + activeLeague + keyCounter" ref="childHome" class="child-view"></router-view>
+          </keep-alive>
+        </transition>
+      </q-page-container>
+    </div>
 
     <q-layout-footer>
       <q-tabs inverted class="bg-white main-nav">
@@ -192,7 +203,12 @@ export default {
       },
       transitionName: '',
       headerShadow: false,
-      overlay: false
+      overlay: false,
+      scrollSpot: 0,
+      pullMargin: 0,
+      pullOpacity: 0,
+      pullLoading: false,
+      panDelta: 0
     }
   },
   beforeRouteUpdate (to, from, next) {
@@ -253,10 +269,53 @@ export default {
       this.modal = !this.modal
     },
     scrollHandler (scroll) {
+      this.scrollSpot = scroll.position
       if (scroll.position > 48) {
         this.headerShadow = true
       } else {
         this.headerShadow = false
+      }
+    },
+    panHandler (pan) {
+      if (this.scrollSpot === 0) {
+        pan.evt.preventDefault()
+        this.panDelta = this.panDelta + pan.delta.y
+        var scrollDistance = this.panDelta
+        var max = 120
+        var triggerDistance = 80
+        var opacityMax = 80
+        var marginInitial = 0
+        var marginAdd = Math.min(Math.max(scrollDistance, 0), max)
+        var opacityNeg = Math.min(Math.max(scrollDistance / opacityMax, 0), 1)
+        this.pullMargin = marginInitial + marginAdd
+        this.pullOpacity = opacityNeg
+        if (pan.isFinal) {
+          if (scrollDistance > triggerDistance) {
+            this.pullMargin = 70
+            this.pullLoading = true
+            this.$refs.childHome.refresher()
+              .then((response) => {
+                console.log(response)
+                this.pullLoading = false
+                this.pullMargin = marginInitial
+                this.pullOpacity = 0
+                this.panDelta = 0
+              })
+              .catch((error) => {
+                if (error) {
+                  console.log(error)
+                }
+              })
+          } else {
+            this.pullMargin = marginInitial
+            this.pullOpacity = 0
+            this.panDelta = 0
+          }
+        }
+      } else {
+        this.pullMargin = 0
+        this.pullOpacity = 0
+        this.panDelta = 0
       }
     },
     lookup (array, id) {

@@ -51,75 +51,87 @@
         <q-tabs inverted class="secondary-tabs">
           <q-tab default slot="title" name="tab-1" label="News" />
           <q-tab slot="title" name="tab-2" label="Game Log"/>
-          <div class="versus bg-grey-2"><span class="strong">Matchup: </span><b-versus v-if="activePlayer" class="b-versus" rank :player="activePlayer"></b-versus></div>
-          <q-tab-pane class="no-pad no-border news" name="tab-1">
-            <q-spinner
-              v-if="!dataLoaded"
-              color="primary"
-              size="40px"
-              class="absolute-center"
-              style="margin-left: -20px; margin-top: 100px;"
+          <div v-touch-pan="panHandler">
+            <q-btn
+              size="lg"
+              style="height: 1.8em; width: 1.8em; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);"
+              class="bg-white text-primary absolute"
+              :class="pullLoading ? 'animate-spin' : ''"
+              :style="'margin-top: '+ pullMargin + 'px; opacity:' + pullOpacity"
+              round
+              icon="refresh"
             />
-            <q-list
-              v-if="dataLoaded"
-              class="no-border"
-            >
-              <q-item
-                v-for="news in playerNews"
-                :key="news.rank"
+            <div class="versus bg-grey-2"><span class="strong">Matchup: </span><b-versus v-if="activePlayer" class="b-versus" rank :player="activePlayer"></b-versus></div>
+            <q-tab-pane class="no-pad no-border news" name="tab-1">
+              <q-btn
+                size="lg"
+                v-if="!dataLoaded"
+                style="height: 1.8em; width: 1.8em; margin-left: -20px; margin-top: 100px; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);"
+                class="animate-spin bg-white text-primary absolute-center"
+                round
+                icon="refresh"
+              />
+              <q-list
+                v-if="dataLoaded"
+                class="no-border"
               >
-                <q-item-main>
-                  <q-item-tile label>{{news.headline}}</q-item-tile>
-                  <q-item-tile sublabel class="timestamp text-red">{{news.timestamp}}</q-item-tile>
-                  <q-item-tile sublabel>{{news.body.replace(news.timestamp, '')}}<span class="text-primary" v-if="news.source" @click="launch(news.link)"> Source: {{news.source}}</span></q-item-tile>
-                </q-item-main>
-              </q-item>
-            </q-list>
-            <div
-              v-if="playerNews.length === 0 && dataLoaded"
-              class="no-news"
-            >
-              No recent news
-            </div>
-          </q-tab-pane>
-          <q-tab-pane class="no-pad no-border stat-pane" name="tab-2">
-            <q-spinner
-              v-if="!statsLoaded"
-              color="primary"
-              size="40px"
-              class="absolute-center"
-              style="margin-left: -20px;"
-            />
-            <table
-              class="stat-table"
-              v-if="statsLoaded"
-            >
-              <tbody>
-                <tr>
-                  <th
-                    v-for="(stat, statKey) in playerStatsHeader"
-                    :key="statKey"
-                    :colspan="stat.colspan"
-                  >
-                    {{stat.value}}
-                  </th>
-                </tr>
-                <tr
-                  v-for="(row, key) in playerStatsBody"
-                  :key="key"
-                  :class="[key % 2 === 0 ? 'even' : 'odd', key === 0 ? 'text-tertiary' : 'stat-body']"
-                  class="border-bottom"
+                <q-item
+                  v-for="news in playerNews"
+                  :key="news.rank"
                 >
-                  <td
-                    v-for="(stat, statKey) in row"
-                    :key="statKey"
+                  <q-item-main>
+                    <q-item-tile label>{{news.headline}}</q-item-tile>
+                    <q-item-tile sublabel class="timestamp text-red">{{news.timestamp}}</q-item-tile>
+                    <q-item-tile sublabel>{{news.body.replace(news.timestamp, '')}}<span class="text-primary" v-if="news.source" @click="launch(news.link)"> Source: {{news.source}}</span></q-item-tile>
+                  </q-item-main>
+                </q-item>
+              </q-list>
+              <div
+                v-if="playerNews.length === 0 && dataLoaded"
+                class="no-news"
+              >
+                No recent news
+              </div>
+            </q-tab-pane>
+            <q-tab-pane class="no-pad no-border stat-pane" name="tab-2">
+              <q-spinner
+                v-if="!statsLoaded"
+                color="primary"
+                size="40px"
+                class="absolute-center"
+                style="margin-left: -20px;"
+              />
+              <table
+                class="stat-table"
+                v-if="statsLoaded"
+              >
+                <tbody>
+                  <tr>
+                    <th
+                      v-for="(stat, statKey) in playerStatsHeader"
+                      :key="statKey"
+                      :colspan="stat.colspan"
+                    >
+                      {{stat.value}}
+                    </th>
+                  </tr>
+                  <tr
+                    v-for="(row, key) in playerStatsBody"
+                    :key="key"
+                    :class="[key % 2 === 0 ? 'even' : 'odd', key === 0 ? 'text-tertiary' : 'stat-body']"
+                    class="border-bottom"
                   >
-                    {{stat.value}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </q-tab-pane>
+                    <td
+                      v-for="(stat, statKey) in row"
+                      :key="statKey"
+                    >
+                      {{stat.value}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </q-tab-pane>
+          </div>
         </q-tabs>
       </div>
     </div>
@@ -174,8 +186,13 @@ export default {
       playerRoster: [],
       activePlayer: '',
       lastPlayer: '',
-      opacity: 0,
-      headerShadow: false
+      opacity: 1,
+      headerShadow: false,
+      scrollSpot: 0,
+      pullMargin: -36,
+      pullOpacity: 0,
+      pullLoading: false,
+      panDelta: 0
     }
   },
   computed: {
@@ -214,7 +231,43 @@ export default {
     }
   },
   methods: {
+    panHandler (pan) {
+      if (this.scrollSpot === 0) {
+        this.panDelta = this.panDelta + pan.delta.y
+        var scrollDistance = this.panDelta
+        var max = 120
+        var triggerDistance = 80
+        var opacityMax = 40
+        var marginInitial = -36
+        var marginAdd = Math.min(Math.max(scrollDistance, 0), max)
+        var opacityNeg = Math.min(Math.max(scrollDistance / opacityMax, 0), 1)
+        this.pullMargin = marginInitial + marginAdd
+        this.pullOpacity = opacityNeg
+        if (pan.isFinal) {
+          if (scrollDistance > triggerDistance) {
+            this.pullMargin = 20
+            this.pullLoading = true
+            setTimeout(() => {
+              // delay is over, now we reset loading state
+              this.pullLoading = false
+              this.pullMargin = marginInitial
+              this.pullOpacity = 0
+              this.panDelta = 0
+            }, 3000)
+          } else {
+            this.pullMargin = marginInitial
+            this.pullOpacity = 0
+            this.panDelta = 0
+          }
+        }
+      } else {
+        this.pullMargin = 0
+        this.pullOpacity = 0
+        this.panDelta = 0
+      }
+    },
     scrollHandler (scroll) {
+      this.scrollSpot = scroll.position
       var height = this.$refs.playerBg.clientHeight
       if (scroll.position === 0) {
         this.opacity = 0

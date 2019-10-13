@@ -1,66 +1,64 @@
 <template>
   <q-page>
-    <q-pull-to-refresh :handler="refresher" class="team">
-      <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
-        <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
-      </div>
-      <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
-        <q-tab default slot="title" name="tab-1" label="Roster" />
-        <q-tab v-if="draftPicksBool" slot="title" name="tab-2" label="Draft Picks" />
-        <q-tab slot="title" name="tab-3" label="Pending Moves"/>
-        <div class="contain-main">
-          <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
-            <blitz-team :thisTeam="myTeam"/>
-          </q-tab-pane>
-          <q-tab-pane v-if="draftPicksBool" keep-alive name="tab-2" class="draft-picks no-border no-padding">
-            <q-card class="compact-card bg-white">
-              <div class="card-main bg-white">
-                <q-list
-                  v-for="(year, key) in pickYears"
+    <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
+      <q-btn size="lg" style="height: 1.8em; width: 1.8em; margin-left: -20px;" class="animate-spin bg-white text-primary absolute-center" round icon="refresh" />
+    </div>
+    <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
+      <q-tab default slot="title" name="tab-1" label="Roster" />
+      <q-tab v-if="draftPicksBool" slot="title" name="tab-2" label="Draft Picks" />
+      <q-tab slot="title" name="tab-3" label="Pending Moves"/>
+      <div class="contain-main">
+        <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
+          <blitz-team :thisTeam="myTeam"/>
+        </q-tab-pane>
+        <q-tab-pane v-if="draftPicksBool" keep-alive name="tab-2" class="draft-picks no-border no-padding">
+          <q-card class="compact-card bg-white">
+            <div class="card-main bg-white">
+              <q-list
+                v-for="(year, key) in pickYears"
+                :key="key"
+                highlight
+                class="no-border"
+              >
+                <q-card-title>
+                  {{year}}
+                </q-card-title>
+                <q-item
+                  v-for="(pick, key) in myPicksPerYear[year]"
                   :key="key"
-                  highlight
-                  class="no-border"
+                  class="border-bottom"
                 >
-                  <q-card-title>
-                    {{year}}
-                  </q-card-title>
-                  <q-item
-                    v-for="(pick, key) in myPicksPerYear[year]"
-                    :key="key"
-                    class="border-bottom"
+                  <q-item-main
+                    :label="'Round ' + pick.round"
+                    class="text-primary"
                   >
-                    <q-item-main
-                      :label="'Round ' + pick.round"
-                      class="text-primary"
-                    >
-                      <q-item-tile class="owner text-dark">
-                        Original owner: <span>{{teamLookup[pick.originalPickFor].name}}</span>
-                      </q-item-tile>
-                    </q-item-main>
-                  </q-item>
-                </q-list>
-              </div>
-            </q-card>
-          </q-tab-pane>
-          <q-tab-pane keep-alive class="no-border no-padding" name="tab-3">
-            <q-card class="compact-card bg-white">
-              <div class="card-main bg-white">
-                <q-list class="no-border no-padding no-margin">
-                  <q-card-title>
-                    Pending Waivers
-                  </q-card-title>
-                  <div class="no-pending light-paragraph text-center">No pending waiver requests </div>
-                  <q-card-title>
-                    Pending Trades
-                  </q-card-title>
-                  <div class="no-pending light-paragraph text-center">No pending trades </div>
-                </q-list>
-              </div>
-            </q-card>
-          </q-tab-pane>
-        </div>
-      </q-tabs>
-    </q-pull-to-refresh>
+                    <q-item-tile class="owner text-dark">
+                      Original owner: <span>{{teamLookup[pick.originalPickFor].name}}</span>
+                    </q-item-tile>
+                  </q-item-main>
+                </q-item>
+              </q-list>
+            </div>
+          </q-card>
+        </q-tab-pane>
+        <q-tab-pane keep-alive class="no-border no-padding" name="tab-3">
+          <q-card class="compact-card bg-white">
+            <div class="card-main bg-white">
+              <q-list class="no-border no-padding no-margin">
+                <q-card-title>
+                  Pending Waivers
+                </q-card-title>
+                <div class="no-pending light-paragraph text-center">No pending waiver requests </div>
+                <q-card-title>
+                  Pending Trades
+                </q-card-title>
+                <div class="no-pending light-paragraph text-center">No pending trades </div>
+              </q-list>
+            </div>
+          </q-card>
+        </q-tab-pane>
+      </div>
+    </q-tabs>
   </q-page>
 </template>
 
@@ -199,21 +197,28 @@ export default {
       })
     },
     refresher (done) {
-      var requests = [
-        'league',
-        'rosters',
-        'futureDraftPicks',
-        'liveScoring',
-        'projectedScores',
-        'fullNflSchedule',
-        'pointsAllowed',
-        'injuries'
-      ]
-      this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
-      this.$store.dispatch('main/API_REQUEST', { types: requests })
-        .then((response) => {
-          done()
-        })
+      return new Promise((resolve, reject) => {
+        var requests = [
+          'league',
+          'rosters',
+          'futureDraftPicks',
+          'liveScoring',
+          'projectedScores',
+          'fullNflSchedule',
+          'pointsAllowed',
+          'injuries'
+        ]
+        this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+        this.$store.dispatch('main/API_REQUEST', { types: requests })
+          .then((response) => {
+            resolve(response)
+          })
+          .catch((error) => {
+            if (error) {
+              reject(error)
+            }
+          })
+      })
     },
     fetchData () {
       var requests = [
