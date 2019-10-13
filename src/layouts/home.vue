@@ -206,7 +206,7 @@ export default {
       overlay: false,
       scrollSpot: 0,
       pullMargin: 0,
-      pullOpacity: 0,
+      pullOpacity: 1,
       pullLoading: false,
       panDelta: 0
     }
@@ -278,17 +278,17 @@ export default {
     },
     panHandler (pan) {
       if (this.scrollSpot === 0) {
-        pan.evt.preventDefault()
-        this.panDelta = this.panDelta + pan.delta.y
-        var scrollDistance = this.panDelta
         var max = 120
         var triggerDistance = 80
-        var opacityMax = 80
         var marginInitial = 0
-        var marginAdd = Math.min(Math.max(scrollDistance, 0), max)
-        var opacityNeg = Math.min(Math.max(scrollDistance / opacityMax, 0), 1)
+        this.panDelta = Math.min(this.panDelta + pan.delta.y, max)
+        var scrollDistance = this.panDelta
+        if (scrollDistance > 0) {
+          pan.evt.preventDefault()
+        }
+        var marginAdd = Math.min(scrollDistance, max)
+        console.log(marginAdd)
         this.pullMargin = marginInitial + marginAdd
-        this.pullOpacity = opacityNeg
         if (pan.isFinal) {
           if (scrollDistance > triggerDistance) {
             this.pullMargin = 70
@@ -298,7 +298,6 @@ export default {
                 console.log(response)
                 this.pullLoading = false
                 this.pullMargin = marginInitial
-                this.pullOpacity = 0
                 this.panDelta = 0
               })
               .catch((error) => {
@@ -308,13 +307,11 @@ export default {
               })
           } else {
             this.pullMargin = marginInitial
-            this.pullOpacity = 0
             this.panDelta = 0
           }
         }
       } else {
         this.pullMargin = 0
-        this.pullOpacity = 0
         this.panDelta = 0
       }
     },
