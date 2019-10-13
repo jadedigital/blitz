@@ -1,7 +1,15 @@
 <template>
   <div>
     <div v-if="!faBool && !byeBool">
-      {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
+      <span v-if="matchupLookup[playerLookup[player].team].secondsRemaining === 3600">
+        {{matchupLookup[playerLookup[player].team].day}} {{matchupLookup[playerLookup[player].team].time}} -
+      </span>
+      <span v-if="matchupLookup[playerLookup[player].team].secondsRemaining < 3600 && matchupLookup[playerLookup[player].team].secondsRemaining > 0">
+        {{matchupLookup[playerLookup[player].team].remaining}} {{matchupLookup[playerLookup[player].team].score}}
+      </span>
+      <span v-if="matchupLookup[playerLookup[player].team].secondsRemaining === 0">
+        {{matchupLookup[playerLookup[player].team].result}} -
+      </span>
       <span :class="versusClass">
         {{matchupLookup[playerLookup[player].team].location}} {{matchupLookup[playerLookup[player].team].vs}} <span v-if="rank && gamesPlayedBool">({{matchupPoints[playerLookup[player].position][matchupLookup[playerLookup[player].team].vs].rankPretty}})</span>
       </span>
@@ -80,7 +88,9 @@ export default {
           time: date.formatDate(kickoff, 'h' + ':' + 'mm' + 'a'),
           result: parseInt(el.team[0].score) > parseInt(el.team[1].score) ? ('W' + ' ' + el.team[0].score + '-' + el.team[1].score) : ('L' + ' ' + el.team[0].score + '-' + el.team[1].score),
           location: ((el.team[0].isHome === '0') ? '@' : 'vs'),
-          remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2)
+          remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2),
+          secondsRemaining: seconds,
+          score: el.team[0].score + '-' + el.team[1].score
         }
         obj[el.team[1].id] = {
           vs: el.team[0].id,
@@ -88,7 +98,9 @@ export default {
           time: date.formatDate(kickoff, 'h' + ':' + 'mm' + 'a'),
           result: parseInt(el.team[1].score) > parseInt(el.team[0].score) ? ('W' + ' ' + el.team[1].score + '-' + el.team[0].score) : ('L' + ' ' + el.team[1].score + '-' + el.team[0].score),
           location: ((el.team[1].isHome === '0') ? '@' : 'vs'),
-          remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2)
+          remaining: this.pluralize(4 - Math.floor(seconds / 900)) + ' ' + Math.floor((seconds % 900) / 60) + ':' + pad((seconds % 900) % 60, 2),
+          secondsRemaining: seconds,
+          score: el.team[1].score + '-' + el.team[0].score
         }
       })
       return obj
