@@ -67,7 +67,7 @@
           :class="{'bg-grey-4': selectedPlayer === player.id}"
         >
           <div class="matchup-list">
-            <div class="list-item border-bottom">
+            <div class="list-item border-bottom" :class="player.id ? scoringLookupTeamA[player.id].gameSecondsRemaining < 3600 && scoringLookupTeamA[player.id].gameSecondsRemaining > 0 ? 'bg-cyan-1' : '' : ''">
               <div class="row">
                 <div class="col-9 team-name-container">
                   <div class="row">
@@ -75,10 +75,20 @@
                     <blitz-versus v-if="player.id" class="team-matchup text-left col-12" :player="player.id"></blitz-versus>
                   </div>
                 </div>
-                <div class="col-3">
+                <div v-if="player.id" class="col-3">
+                  <div v-if="matchupLookup[playerLookup[player.id].team]" class="row">
+                    <div class="team-score text-right col-12" >{{scoringLookupTeamA[player.id].gameSecondsRemaining === '3600' ? '-' : scoringLookupTeamA[player.id].score}}</div>
+                    <div :class="updatedProjection[player.id].projection > updatedProjection[player.id].original ? 'text-green-14' : updatedProjection[player.id].projection < updatedProjection[player.id].original ? 'text-red-13' : ''" class="team-projection text-right col-12">{{ updatedProjection[player.id].projection }}</div>
+                  </div>
+                  <div v-if="!matchupLookup[playerLookup[player.id].team]" class="row">
+                    <div class="team-score text-right col-12" >-</div>
+                    <div class="team-projection text-right col-12">-</div>
+                  </div>
+                </div>
+                <div v-else class="col-3">
                   <div class="row">
-                    <div class="team-score text-right col-12" >{{player.id ? scoringLookupTeamA[player.id].score : ''}}</div>
-                    <div class="team-projection text-right col-12">{{player.id ? updatedProjection[player.id].projection : ''}}</div>
+                    <div class="team-score text-right col-12" ></div>
+                    <div class="team-projection text-right col-12"></div>
                   </div>
                 </div>
               </div>
@@ -100,12 +110,22 @@
           :class="{'bg-grey-4': selectedPlayer === player.opp}"
         >
           <div class="matchup-list">
-            <div class="list-item border-bottom">
+            <div class="list-item border-bottom" :class="player.opp ? scoringLookupTeamB[player.opp].gameSecondsRemaining < 3600 && scoringLookupTeamA[player.id].gameSecondsRemaining > 0 ? 'bg-cyan-1' : '' : ''">
               <div class="row">
-                <div class="col-3">
+                <div v-if="player.opp" class="col-3">
+                  <div v-if="matchupLookup[playerLookup[player.opp].team]" class="row">
+                    <div class="team-score text-left col-12" >{{scoringLookupTeamB[player.opp].gameSecondsRemaining === '3600' ? '-' : scoringLookupTeamB[player.opp].score}}</div>
+                    <div :class="updatedProjection[player.opp].projection > updatedProjection[player.opp].original ? 'text-green-14' : updatedProjection[player.opp].projection < updatedProjection[player.opp].original ? 'text-red-13' : ''" class="team-projection text-left col-12" >{{ updatedProjection[player.opp].projection }}</div>
+                  </div>
+                  <div v-if="!matchupLookup[playerLookup[player.opp].team]" class="row">
+                    <div class="team-score text-left col-12" >-</div>
+                    <div class="team-projection text-left col-12" >-</div>
+                  </div>
+                </div>
+                <div v-else class="col-3">
                   <div class="row">
-                    <div class="team-score text-left col-12" >{{player.opp ? scoringLookupTeamB[player.opp].score : ''}}</div>
-                    <div class="team-projection text-left col-12" >{{player.opp ? updatedProjection[player.opp].projection: ''}}</div>
+                    <div class="team-score text-left col-12" ></div>
+                    <div class="team-projection text-left col-12" ></div>
                   </div>
                 </div>
                 <div class="col-9 team-name-container">
@@ -131,7 +151,7 @@
       <div class="row">
         <div class="col-5 matchup" @click="goToPlayer(player.id)">
           <div class="matchup-list">
-            <div class="list-item border-bottom">
+            <div class="list-item border-bottom" :class="scoringLookupTeamA[player.id].gameSecondsRemaining < 3600 && scoringLookupTeamA[player.id].gameSecondsRemaining > 0 ? 'bg-cyan-1' : ''">
               <div class="row">
                 <div class="col-9 team-name-container">
                   <div class="row">
@@ -140,9 +160,13 @@
                   </div>
                 </div>
                 <div class="col-3">
-                  <div class="row">
-                    <div class="team-score text-right col-12" >{{scoringLookupTeamA[player.id].score}}</div>
-                    <div class="team-projection text-right col-12">{{ updatedProjection[player.id].projection }}</div>
+                  <div v-if="matchupLookup[playerLookup[player.id].team]" class="row">
+                    <div class="team-score text-right col-12" >{{scoringLookupTeamA[player.id].gameSecondsRemaining === '3600' ? '-' : scoringLookupTeamA[player.id].score}}</div>
+                    <div :class="updatedProjection[player.id].projection > updatedProjection[player.id].original ? 'text-green-14' : updatedProjection[player.id].projection < updatedProjection[player.id].original ? 'text-red-13' : ''" class="team-projection text-right col-12">{{ updatedProjection[player.id].projection }}</div>
+                  </div>
+                  <div v-if="!matchupLookup[playerLookup[player.id].team]" class="row">
+                    <div class="team-score text-right col-12" >-</div>
+                    <div class="team-projection text-right col-12">-</div>
                   </div>
                 </div>
               </div>
@@ -160,12 +184,16 @@
         </div>
         <div class="col-5 matchup" @click="goToPlayer(player.opp)">
           <div class="matchup-list">
-            <div class="list-item border-bottom">
+            <div class="list-item border-bottom" :class="scoringLookupTeamB[player.opp].gameSecondsRemaining < 3600 && scoringLookupTeamB[player.opp].gameSecondsRemaining > 0 ? 'bg-cyan-1' : ''">
               <div class="row">
                 <div class="col-3">
-                  <div class="row">
-                    <div class="team-score text-left col-12" >{{scoringLookupTeamB[player.opp].score}}</div>
-                    <div class="team-projection text-left col-12" >{{ updatedProjection[player.opp].projection }}</div>
+                  <div v-if="matchupLookup[playerLookup[player.opp].team]" class="row">
+                    <div class="team-score text-left col-12" >{{scoringLookupTeamB[player.opp].gameSecondsRemaining === '3600' ? '-' : scoringLookupTeamB[player.opp].score}}</div>
+                    <div :class="updatedProjection[player.opp].projection > updatedProjection[player.opp].original ? 'text-green-14' : updatedProjection[player.opp].projection < updatedProjection[player.opp].original ? 'text-red-13' : ''" class="team-projection text-left col-12" >{{ updatedProjection[player.opp].projection }}</div>
+                  </div>
+                  <div v-if="!matchupLookup[playerLookup[player.opp].team]" class="row">
+                    <div class="team-score text-left col-12" >-</div>
+                    <div class="team-projection text-left col-12" >-</div>
                   </div>
                 </div>
                 <div class="col-9 team-name-container">
@@ -212,7 +240,9 @@ export default {
       league: 'main/league',
       liveScoring: 'main/liveScoring',
       matchupLiveScoring: 'main/matchupLiveScoring',
-      projectedScores: 'main/projectedScores'
+      projectedScores: 'main/projectedScores',
+      currentWeek: 'main/currentWeek',
+      fullNflSchedule: 'main/fullNflSchedule'
     }),
     playerLookup () {
       var array = this.players.player
@@ -280,7 +310,10 @@ export default {
         }
         var rate = projection / 3600
         newProjection = timeRemaining === 0 ? projection : ((timeRemaining * rate) + score).toFixed(2)
-        obj[el.id] = {projection: newProjection}
+        obj[el.id] = {
+          projection: newProjection,
+          original: projection
+        }
       })
       this.allScoring[this.teamB].players.player.forEach(el => {
         var score = parseFloat(this.scoringLookupTeamB[el.id].score)
@@ -295,7 +328,10 @@ export default {
         }
         var rate = projection / 3600
         newProjection = timeRemaining === 0 ? projection : ((timeRemaining * rate) + score).toFixed(2)
-        obj[el.id] = {projection: newProjection}
+        obj[el.id] = {
+          projection: newProjection,
+          original: projection
+        }
       })
       return obj
     },
@@ -467,6 +503,19 @@ export default {
         n++
       })
       return combined
+    },
+    matchupLookup () {
+      var obj = {}
+      var weekNumb = this.currentWeek - 1
+      this.fullNflSchedule.nflSchedule[weekNumb].matchup.forEach((el, i) => {
+        obj[el.team[0].id] = {
+          vs: el.team[1].id
+        }
+        obj[el.team[1].id] = {
+          vs: el.team[0].id
+        }
+      })
+      return obj
     },
     positions () {
       var pos = []
