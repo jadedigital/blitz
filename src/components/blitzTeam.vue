@@ -9,16 +9,22 @@
                 Starters
               </q-card-title>
             </div>
-            <div v-if="lineupResponse.includes('Error') && myTeam === thisTeam" class="col-6 error-button text-right">
-              <q-btn @click="errorModal = true" flat size="lg" round color="tertiary" icon="error" />
+            <div class="col-6 error-button text-right" style="padding: 18px 10px 0 0;">
+              <q-btn v-if="lineupResponse.includes('Error') && myTeam === thisTeam" @click="errorModal = true" flat round icon="warning" class="text-dark bg-grey-3">
+                <q-chip class="q-chip-dense" floating small square color="tertiary">{{lineupErrorCount}}</q-chip>
+              </q-btn>
+              <q-btn flat round icon="today" class="text-dark bg-grey-3" />
+              <q-btn flat round icon="swap_horiz" class="text-dark bg-grey-3" >
+                <q-chip class="q-chip-dense" floating small square color="tertiary">10</q-chip>
+              </q-btn>
             </div>
           </div>
           <div class="card-main bg-white">
             <div v-for="(player, index) in startersRendered" :key="index">
               <div v-if="player.id">
                 <q-item link separator @click.native="goToPlayer(player.id)">
-                  <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
-                  <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam === thisTeam && (parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600 || byeBool(player.id))" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-else round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
                   <div class="q-item-main q-item-section team-players">
                     <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -32,8 +38,8 @@
               </div>
               <div v-if="!player.id">
                 <q-item link separator>
-                  <q-btn v-if="myTeam === thisTeam" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
-                  <q-btn v-if="myTeam !== thisTeam" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam === thisTeam" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
+                  <q-btn v-if="myTeam !== thisTeam" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="'./statics/avatar.jpg'" />
                   <div class="q-item-main q-item-section team-players">
                     <div class="q-item-label team-player-name">Empty</div>
@@ -49,8 +55,8 @@
           </q-card-title>
           <div class="card-main bg-white">
             <q-item link separator v-for="player in bench" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">BN</q-btn>
-              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">BN</q-btn>
+              <q-btn v-if="myTeam === thisTeam && (parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600 || byeBool(player.id))" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">BN</q-btn>
+              <q-btn v-else round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">BN</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -74,8 +80,8 @@
           <q-card-separator />
           <div class="card-main bg-white">
             <q-item link separator v-for="player in injuredReserve" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">IR</q-btn>
-              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">IR</q-btn>
+              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">IR</q-btn>
+              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">IR</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -92,8 +98,8 @@
           <q-card-separator />
           <div class="card-main bg-white">
             <q-item link separator v-for="player in taxiSquad" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400" class="q-btn-outline bg-white text-primary q-item-avatar">TS</q-btn>
-              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">TS</q-btn>
+              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">TS</q-btn>
+              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">TS</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -104,14 +110,14 @@
           </div>
         </q-card>
       </q-list>
-      <q-modal v-if="myTeam === thisTeam" position="bottom" v-model="swapModal">
+      <q-modal @hide="clearSwapModal" v-if="myTeam === thisTeam" position="bottom" v-model="swapModal">
         <q-list link class="no-border no-pad">
           <q-list-header>
             Swap {{swapPlayer.name}} with another player:
           </q-list-header>
-          <div v-for="player in modalPlayers" :key="player.id">
-            <q-item @click.native="movePlayer(player.id, player.index)" link>
-              <q-btn round small style="font-size: 12px; font-weight:400" :class="[ parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600 ? 'q-btn-flat text-primary' : 'q-btn-outline bg-white text-primary', 'q-item-avatar']">{{player.slot}}</q-btn>
+          <div v-for="(player, index) in modalPlayers" :key="index">
+            <q-item :class="player.slot === 'BN' ? 'bg-blue-1' : ''" v-if="player.pos !== 'BN' && player.id" @click.native="movePlayer(player.id, player.index)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.slot}}</q-btn>
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
                 <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
@@ -121,7 +127,22 @@
                 <div class="q-item-sublabel" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;"><small>{{ updatedProjection[player.id].projection }}</small></div>
               </div>
             </q-item>
+            <q-item v-else-if="player.pos !== 'BN'" @click.native="movePlayerEmptySlot(player.index)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">Empty Slot</div>
+              </div>
+            </q-item>
+            <q-item v-else @click.native="movePlayerToBench()" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">Move To Bench</div>
+              </div>
+            </q-item>
           </div>
+          <q-item v-if="!modalPlayers[0]">
+            No eligible players
+          </q-item>
         </q-list>
       </q-modal>
       <q-modal position="bottom" v-model="errorModal">
@@ -314,7 +335,7 @@ export default {
       })
       return starters
     },
-    startersServer () {
+    startersOld () {
       var players = []
       var positions = this.startingPosObject
       let playerObj = this.playerLookup
@@ -335,6 +356,34 @@ export default {
         })
       })
       return positions
+    },
+    startersServer () {
+      var starters = JSON.parse(JSON.stringify(this.startingPosObject))
+      var players = []
+      let playerObj = this.playerLookup
+      var playerCheck = ''
+      this.teamScoring.players.player.forEach(el => {
+        if (el.status === 'starter') {
+          players.push(el.id)
+        }
+      })
+      var n = 0
+      this.positions.forEach((elarray) => {
+        elarray.some((elPos) => {
+          players.some((elId) => {
+            if (playerObj[elId].position === elPos) {
+              var index = players.indexOf(elId)
+              players.splice(index, 1)
+              starters[n]['id'] = playerObj[elId].id
+            }
+            playerCheck = elId
+            return playerObj[elId].position === elPos
+          })
+          return playerObj[playerCheck].position === elPos
+        })
+        n++
+      })
+      return starters
     },
     startersRendered () {
       if (this.lineupSynced || this.myTeam !== this.thisTeam) {
@@ -434,6 +483,12 @@ export default {
       search = '<error>'
       replacement = '<div>'
       return response.split(search).join(replacement)
+    },
+    lineupErrorCount () {
+      let search = '&lt;br/&gt;'
+      let response = this.lineupResponse.split(search)
+      let count = response.length - 1
+      return count
     }
   },
   methods: {
@@ -464,28 +519,66 @@ export default {
       return lookup
     },
     modalLogic (pid, index) {
-      var localLookup = this.lineLookup
+      var bnObj = {}
+      var posObj = {}
+      var startersCopy = JSON.parse(JSON.stringify(this.startersSorted))
       var players = []
       var name = this.playerLookup[pid] ? this.playerLookup[pid].name : ''
 
       this.positions[index].forEach((pos) => {
-        this.startersSorted.forEach((el) => {
-          if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name) {
-            if (localLookup[el.id]) {
-              el.slot = localLookup[el.id].position
-              el.index = localLookup[el.id].index
+        startersCopy.forEach((el) => {
+          if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name && (parseFloat(this.scoringLookup[el.id].gameSecondsRemaining) === 3600 || this.byeBool(el.id))) {
+            if (this.lineLookup[el.id] && pid) {
+              this.positions[this.lineLookup[el.id].index].forEach((posL) => {
+                if (posL === this.playerLookup[pid].position) {
+                  console.log('test')
+                  el.slot = this.lineLookup[el.id].position
+                  el.index = this.lineLookup[el.id].index
+                  players.push(el)
+                }
+              })
+            } else if (this.lineLookup[el.id]) {
+              console.log('test2')
+              el.slot = this.lineLookup[el.id].position
+              el.index = this.lineLookup[el.id].index
+              players.push(el)
             } else {
+              console.log('test3')
               el.slot = 'BN'
+              players.push(el)
             }
-            players.push(el)
           }
         })
       })
+      if (pid) {
+        var i = 0
+        this.positions.forEach((posArray) => {
+          posArray.forEach((posit) => {
+            if (posit === this.playerLookup[pid].position && !this.startersRendered[i].id) {
+              posObj = {
+                pos: this.startersRendered[i].position,
+                index: this.startersRendered[i].index
+              }
+              players.push(posObj)
+            }
+          })
+          i++
+        })
+
+        bnObj = {
+          pos: 'BN'
+        }
+        players.push(bnObj)
+      }
+
       this.swapPlayer['name'] = name.split(', ').reverse().join(' ')
       this.swapPlayer['id'] = pid
       this.modalPlayers = players
       this.modalPositionIndex = index
       this.swapModal = true
+    },
+    clearSwapModal () {
+      this.modalPlayers = []
     },
     movePlayer (newId, newPos) {
       this.swapModal = false
@@ -493,16 +586,78 @@ export default {
 
       var index = this.modalPositionIndex
       if (this.lineupSynced) {
-        starters = this.startersServer
+        starters = JSON.parse(JSON.stringify(this.startersServer))
       } else {
-        starters = this.lineupLocal
+        starters = JSON.parse(JSON.stringify(this.lineupLocal))
       }
 
       var startersCSV = ''
+
       starters[index].id = newId
-      if (newPos) {
+      if (newPos && this.swapPlayer['id']) {
         starters[newPos].id = this.swapPlayer['id']
       }
+      if (newPos && !this.swapPlayer['id']) {
+        delete starters[newPos].id
+      }
+      console.log(starters)
+      starters.forEach((el) => {
+        if (el.id) {
+          if (startersCSV === '') {
+            startersCSV = el.id
+          } else {
+            startersCSV = startersCSV + ',' + el.id
+          }
+        }
+      })
+      console.log(startersCSV)
+      this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
+      this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
+      this.submitLineup(startersCSV)
+    },
+    movePlayerEmptySlot (newIndex) {
+      this.swapModal = false
+      let starters = []
+
+      var oldIndex = this.modalPositionIndex
+      if (this.lineupSynced) {
+        starters = JSON.parse(JSON.stringify(this.startersServer))
+      } else {
+        starters = JSON.parse(JSON.stringify(this.lineupLocal))
+      }
+
+      var startersCSV = ''
+      delete starters[oldIndex].id
+      starters[newIndex].id = this.swapPlayer['id']
+
+      starters.forEach((el) => {
+        if (el.id) {
+          if (startersCSV === '') {
+            startersCSV = el.id
+          } else {
+            startersCSV = startersCSV + ',' + el.id
+          }
+        }
+      })
+      console.log(startersCSV)
+      this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
+      this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
+      this.submitLineup(startersCSV)
+    },
+    movePlayerToBench () {
+      this.swapModal = false
+      let starters = []
+
+      if (this.lineupSynced) {
+        starters = JSON.parse(JSON.stringify(this.startersServer))
+      } else {
+        starters = JSON.parse(JSON.stringify(this.lineupLocal))
+      }
+
+      var index = this.modalPositionIndex
+      var startersCSV = ''
+      delete starters[index].id
+
       console.log(starters)
       starters.forEach((el) => {
         if (el.id) {
@@ -551,6 +706,11 @@ export default {
           }
           this.$store.commit('main/SET_DATA', {type: 'lineupResponse', data: response})
         })
+        .catch((error) => {
+          if (error) {
+            console.log(error)
+          }
+        })
     }
   }
 }
@@ -567,16 +727,28 @@ export default {
   height 40px
   border-radius 0
   margin 0 5px
-.team-child .q-chip
+.team-child .card-main .q-chip
   min-height 16px
   font-size 10px
   padding-left 8px
   padding-right 8px
   background #ff1744
+.q-chip-dense
+  min-height 1px
+  max-height 16px
+  padding 0 3px
+  font-size 12px
+  top -.8em
+  right -.3em
+  left initial
 .injury
   display inline-block
 .card-main .q-item-separator
   border-top 1px solid #e0e0e0
 .error-button
   padding 2px
+.error-button .q-btn
+  font-size 16px
+  height 2em
+  width 2em
 </style>
