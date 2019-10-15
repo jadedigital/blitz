@@ -232,20 +232,6 @@ export default {
     showModal () {
       this.weekModal = true
     },
-    modalLogic (name, index) {
-      var players = []
-
-      this.positions[index].forEach((pos) => {
-        this.startersSorted.forEach((el) => {
-          if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name) {
-            players.push(el)
-          }
-        })
-      })
-      this.swapPlayer = name.split(', ').reverse().join(' ')
-      this.modalPlayers = players
-      this.swapModal = true
-    },
     changeWeek (week) {
       this.weekModal = false
       this.weekSelect = week
