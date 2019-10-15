@@ -71,7 +71,7 @@
               <div class="row">
                 <div class="col-9 team-name-container">
                   <div class="row">
-                    <div class="team-name text-left col-12" >{{player.id ? playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0) + '.' + playerLookup[player.id].name.split(', ').slice(0, -1).join(' ') : 'Empty'}} <div class="team">{{player.id ? playerLookup[player.id].team : ''}}</div></div>
+                    <div class="team-name text-left col-12" >{{player.id ? playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0) + '. ' + playerLookup[player.id].name.split(', ').slice(0, -1).join(' ') : 'Empty'}} <div class="team">{{player.id ? playerLookup[player.id].team : ''}}</div></div>
                     <blitz-versus v-if="player.id" class="team-matchup text-left col-12" :player="player.id"></blitz-versus>
                   </div>
                 </div>
@@ -130,7 +130,7 @@
                 </div>
                 <div class="col-9 team-name-container">
                   <div class="row">
-                    <div class="team-name text-right col-12" >{{player.opp ? playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0) + '.' + playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ') : 'Empty'}}<div class="team"> {{player.opp ? playerLookup[player.opp].team : ''}}</div></div>
+                    <div class="team-name text-right col-12" >{{player.opp ? playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0) + '. ' + playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ') : 'Empty'}}<div class="team"> {{player.opp ? playerLookup[player.opp].team : ''}}</div></div>
                     <blitz-versus v-if="player.opp" class="team-matchup text-right col-12" :player="player.opp"></blitz-versus>
                   </div>
                 </div>
@@ -149,13 +149,13 @@
     </div>
     <div v-for="player in combinedBench" :key="player.id">
       <div class="row">
-        <div class="col-5 matchup" @click="goToPlayer(player.id)">
+        <div v-if="player.id" class="col-5 matchup" @click="goToPlayer(player.id)">
           <div class="matchup-list">
             <div class="list-item border-bottom" :class="scoringLookupTeamA[player.id].gameSecondsRemaining < 3600 && scoringLookupTeamA[player.id].gameSecondsRemaining > 0 ? 'bg-cyan-1' : ''">
               <div class="row">
                 <div class="col-9 team-name-container">
                   <div class="row">
-                    <div class="team-name text-left col-12" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
+                    <div class="team-name text-left col-12" >{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <div class="team">{{playerLookup[player.id].team}}</div></div>
                     <blitz-versus class="team-matchup text-left col-12" :player="player.id"></blitz-versus>
                   </div>
                 </div>
@@ -173,6 +173,19 @@
             </div>
           </div>
         </div>
+        <div v-if="!player.id" class="col-5 matchup">
+          <div class="matchup-list">
+            <div class="list-item border-bottom">
+              <div class="row">
+                <div class="col-12 team-name-container">
+                  <div class="row">
+                    <div class="team-name text-left col-12">Empty</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="col-2 matchup">
           <div class="position-list bg-grey-2 text-grey-8">
             <div class="row items-center positions border-bottom">
@@ -182,7 +195,7 @@
             </div>
           </div>
         </div>
-        <div class="col-5 matchup" @click="goToPlayer(player.opp)">
+        <div v-if="player.opp" class="col-5 matchup" @click="goToPlayer(player.opp)">
           <div class="matchup-list">
             <div class="list-item border-bottom" :class="scoringLookupTeamB[player.opp].gameSecondsRemaining < 3600 && scoringLookupTeamB[player.opp].gameSecondsRemaining > 0 ? 'bg-cyan-1' : ''">
               <div class="row">
@@ -198,8 +211,21 @@
                 </div>
                 <div class="col-9 team-name-container">
                   <div class="row">
-                    <div class="team-name text-right col-12" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}} . {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
+                    <div class="team-name text-right col-12" >{{playerLookup[player.opp].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.opp].name.split(', ').slice(0, -1).join(' ')}}<div class="team"> {{playerLookup[player.opp].team}}</div></div>
                     <blitz-versus class="team-matchup text-right col-12" :player="player.opp"></blitz-versus>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="!player.opp" class="col-5 matchup">
+          <div class="matchup-list">
+            <div class="list-item border-bottom">
+              <div class="row">
+                <div class="col-12 team-name-container">
+                  <div class="row">
+                    <div class="team-name text-right col-12">Empty</div>
                   </div>
                 </div>
               </div>
@@ -285,11 +311,10 @@ export default {
       var team1 = 0
       var team2 = 0
       this.startersTeamA.forEach(el => {
-        team1 += parseFloat(this.updatedProjection[el.id].projection)
+        team1 += parseFloat(this.updatedProjection[el.id] ? this.updatedProjection[el.id].projection : 0)
       })
-      console.log()
       this.startersTeamB.forEach(el => {
-        team2 += parseFloat(this.updatedProjection[el.id].projection)
+        team2 += parseFloat(this.updatedProjection[el.id] ? this.updatedProjection[el.id].projection : 0)
       })
       obj[this.teamA] = parseFloat(Math.round(team1 * 100) / 100).toFixed(2)
       obj[this.teamB] = parseFloat(Math.round(team2 * 100) / 100).toFixed(2)
@@ -351,13 +376,14 @@ export default {
       return starters
     },
     startersTeamA () {
-      var starters = []
       var players = []
+      var starters = JSON.parse(JSON.stringify(this.startingPosObject))
       this.allScoring[this.teamA].players.player.forEach(el => {
         if (el.status === 'starter') {
           players.push(el.id)
         }
       })
+      var n = 0
       let playerLook = this.playerLookup
 
       this.positions.forEach((elarray) => {
@@ -366,22 +392,18 @@ export default {
             if (playerLook[elId].position === elPos) {
               var index = players.indexOf(elId)
               players.splice(index, 1)
-              var position = elarray.length > 1 ? elarray.map((pos) => pos[0]).join('/') : elPos
-              var obj = {
-                id: playerLook[elId].id,
-                position: position
-              }
-              starters.push(obj)
+              starters[n]['id'] = playerLook[elId].id
             }
             return playerLook[elId].position === elPos
           })
         })
+        n++
       })
       return starters
     },
     startersTeamANew () {
       var players = []
-      var positions = this.startingPosObject
+      var positions = JSON.parse(JSON.stringify(this.startingPosObject))
       let playerObj = this.playerLookup
       this.allScoring[this.teamA].players.player.forEach(el => {
         if (el.status === 'starter') {
@@ -402,13 +424,14 @@ export default {
       return positions
     },
     startersTeamB () {
-      var starters = []
       var players = []
+      var starters = JSON.parse(JSON.stringify(this.startingPosObject))
       this.allScoring[this.teamB].players.player.forEach(el => {
         if (el.status === 'starter') {
           players.push(el.id)
         }
       })
+      var n = 0
       let playerLook = this.playerLookup
       this.positions.forEach((elarray) => {
         elarray.forEach((elPos) => {
@@ -416,22 +439,18 @@ export default {
             if (playerLook[elId].position === elPos) {
               var index = players.indexOf(elId)
               players.splice(index, 1)
-              var position = elarray.length > 1 ? elarray.map((pos) => pos[0]).join('/') : elPos
-              var obj = {
-                id: playerLook[elId].id,
-                position: position
-              }
-              starters.push(obj)
+              starters[n]['id'] = playerLook[elId].id
             }
             return playerLook[elId].position === elPos
           })
         })
+        n++
       })
       return starters
     },
     startersTeamBNew () {
       var players = []
-      var positions = this.startingPosObject
+      var positions = JSON.parse(JSON.stringify(this.startingPosObject))
       let playerObj = this.playerLookup
       this.allScoring[this.teamB].players.player.forEach(el => {
         if (el.status === 'starter') {
@@ -452,8 +471,8 @@ export default {
       return positions
     },
     combinedStarters () {
-      var teamA = this.startersTeamANew
-      var teamB = this.startersTeamBNew
+      var teamA = JSON.parse(JSON.stringify(this.startersTeamA))
+      var teamB = JSON.parse(JSON.stringify(this.startersTeamB))
       var combined = []
       var n = 0
       teamA.forEach(el => {
@@ -490,17 +509,24 @@ export default {
       return bench
     },
     combinedBench () {
-      var benchTeamA = this.benchTeamA
-      var benchTeamB = this.benchTeamB
+      var benchTeamA = JSON.parse(JSON.stringify(this.benchTeamA))
+      var benchTeamB = JSON.parse(JSON.stringify(this.benchTeamB))
       var combined = []
       var n = 0
+      var i = 0
+      var arrayLong = benchTeamA.length > benchTeamB.length ? benchTeamA : benchTeamB
+      arrayLong.forEach(el => {
+        combined.push({})
+      })
       benchTeamA.forEach(el => {
-        if (benchTeamB[n]) {
-          el['opp'] = benchTeamB[n].id
-          el['position'] = 'BN'
-          combined.push(el)
-        }
+        combined[n]['id'] = el.id
+        combined[n]['position'] = 'BN'
         n++
+      })
+      benchTeamB.forEach(el => {
+        combined[i]['opp'] = el.id
+        combined[i]['position'] = 'BN'
+        i++
       })
       return combined
     },
