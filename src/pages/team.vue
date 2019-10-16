@@ -1,24 +1,29 @@
 <template>
   <q-page>
-    <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
-      <q-btn
-        loading
-        size="lg"
-        style="height: 1.8em; width: 1.8em; top:84px; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
-        class="animate-spin bg-white text-primary absolute-center"
-        round
-        icon="refresh"
-      />
-    </div>
-    <q-tabs v-if="dataLoaded && !leagueChange" inverted class="secondary-tabs">
-      <q-tab default slot="title" name="tab-1" label="Roster" />
-      <q-tab v-if="draftPicksBool" slot="title" name="tab-2" label="Draft Picks" />
-      <q-tab slot="title" name="tab-3" label="Pending Moves"/>
+    <blitz-spinner v-if="!dataLoaded">
+    </blitz-spinner>
+    <div v-if="dataLoaded">
+      <div class="row">
+        <div class="col-6">
+          <q-card-title>
+            Starters
+          </q-card-title>
+        </div>
+        <div class="col-6 action-buttons text-right" style="padding: 18px 10px 0 0;">
+          <q-btn @click="weekModal = true" flat rounded :label="'Week ' + currentWeek" class="b-text text-dark bg-grey-3" />
+          <q-btn @click="transactionModal = true" flat round icon="swap_horiz" class="b-icon text-dark bg-grey-3" >
+            <q-chip class="q-chip-dense" floating small square color="tertiary">10</q-chip>
+          </q-btn>
+          <q-btn v-if="lineupResponse.includes('Error')" @click="errorModal = true" flat round icon="warning" class="b-icon text-dark bg-grey-3">
+            <q-chip class="q-chip-dense" floating small square color="tertiary">{{lineupErrorCount}}</q-chip>
+          </q-btn>
+        </div>
+      </div>
       <div class="contain-main">
-        <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
+        <div class="no-pad no-border">
           <blitz-team :thisTeam="myTeam"/>
-        </q-tab-pane>
-        <q-tab-pane v-if="draftPicksBool" keep-alive name="tab-2" class="draft-picks no-border no-padding">
+        </div>
+        <div v-if="draftPicksBool" class="draft-picks no-border no-padding">
           <q-card class="compact-card bg-white">
             <div class="card-main bg-white">
               <q-list
@@ -47,43 +52,72 @@
               </q-list>
             </div>
           </q-card>
-        </q-tab-pane>
-        <q-tab-pane keep-alive class="no-border no-padding" name="tab-3">
-          <q-card class="compact-card bg-white">
-            <div class="card-main bg-white">
-              <q-list class="no-border no-padding no-margin">
-                <q-card-title>
-                  Pending Waivers
-                </q-card-title>
-                <div class="no-pending light-paragraph text-center">No pending waiver requests </div>
-                <q-card-title>
-                  Pending Trades
-                </q-card-title>
-                <div class="no-pending light-paragraph text-center">No pending trades </div>
-              </q-list>
-            </div>
-          </q-card>
-        </q-tab-pane>
+        </div>
       </div>
-    </q-tabs>
+    </div>
+    <q-modal position="bottom" v-model="errorModal">
+      <div style="padding:20px;" class="text-justify light-paragraph" v-html="lineupResponseFormatted"></div>
+    </q-modal>
+    <q-modal position="bottom" v-model="transactionModal">
+      <div class="no-border no-padding">
+        <q-card class="compact-card bg-white">
+          <div class="card-main bg-white">
+            <q-list class="no-border no-padding no-margin">
+              <q-card-title>
+                Pending Waivers
+              </q-card-title>
+              <div class="no-pending light-paragraph text-center">No pending waiver requests </div>
+              <q-card-title>
+                Pending Trades
+              </q-card-title>
+              <div class="no-pending light-paragraph text-center">No pending trades </div>
+            </q-list>
+          </div>
+        </q-card>
+      </div>
+    </q-modal>
+    <q-modal position="bottom" v-model="weekModal">
+      <q-card class="compact-card bg-white">
+        <div class="card-main bg-white">
+          <q-list separator link class="no-border no-pad">
+            <q-card-title>
+              Select Week
+            </q-card-title>
+            <div v-for="week in weekOptions" :key="week.value">
+              <q-item link>
+                <q-item-main>
+                  {{week.label}}
+                </q-item-main>
+                <q-item-side v-if="week.value === currentWeek" right icon="check_box" color="primary" />
+              </q-item>
+            </div>
+          </q-list>
+        </div>
+      </q-card>
+    </q-modal>
   </q-page>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import blitzTeam from '../components/blitzTeam.vue'
+import blitzSpinner from '../components/blitzSpinner.vue'
 
 export default {
   name: 'team',
   components: {
-    blitzTeam
+    blitzTeam,
+    blitzSpinner
   },
   data () {
     return {
       response: null,
       dataLoaded: false,
       newWeek: '',
-      search: ''
+      search: '',
+      errorModal: false,
+      weekModal: false,
+      transactionModal: false
     }
   },
   computed: {
@@ -96,7 +130,8 @@ export default {
       currentWeek: 'main/currentWeek',
       futureDraftPicks: 'main/futureDraftPicks',
       api: 'main/api',
-      leagueChange: 'main/leagueChange'
+      leagueChange: 'main/leagueChange',
+      lineupResponse: 'main/lineupResponse'
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -187,6 +222,33 @@ export default {
         })
         return mainObj
       }
+    },
+    weekOptions () {
+      var options = []
+      var obj = {}
+      var endWeek = Math.max(parseFloat(this.league.lastRegularSeasonWeek), this.currentWeek)
+      for (let index = 1; index <= endWeek; index++) {
+        obj = {
+          label: 'Week ' + index,
+          value: index
+        }
+        options.push(obj)
+      }
+      return options
+    },
+    lineupResponseFormatted () {
+      let search = '&lt;br/&gt;'
+      let replacement = '<br>'
+      let response = this.lineupResponse.split(search).join(replacement)
+      search = '<error>'
+      replacement = '<div>'
+      return response.split(search).join(replacement)
+    },
+    lineupErrorCount () {
+      let search = '&lt;br/&gt;'
+      let response = this.lineupResponse.split(search)
+      let count = response.length - 1
+      return count
     }
   },
   methods: {
@@ -280,4 +342,20 @@ export default {
   -webkit-box-orient vertical
 .team .no-pending
   padding 24px 0
+.action-buttons
+  padding 2px
+.action-buttons .b-icon
+  font-size 16px
+  height 2em
+  width 2em
+.action-buttons .b-text
+  font-size 12px
+.q-chip-dense
+  min-height 1px
+  max-height 16px
+  padding 0 3px
+  font-size 12px
+  top -.8em
+  right -.3em
+  left initial
 </style>

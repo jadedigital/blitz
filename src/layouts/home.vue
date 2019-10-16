@@ -3,7 +3,7 @@
     @scroll="scrollHandler"
     ref="layout"
     view="lHh Lpr lFf"
-    :class="[(headerShadow || $route.name === 'chat' || $route.name === 'players') ? 'header-shadow' : 'no-header-shadow', 'main-layout']"
+    class="no-header-shadow main-layout"
   >
     <q-layout-header :reveal="settings.toolbarHide">
       <q-toolbar class="toolbar border-bottom" color="primary">
@@ -152,10 +152,10 @@
         size="lg"
         style="height: 1.8em; width: 1.8em; top:14px; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
         class="bg-white text-primary absolute"
-        :loading="pullLoading"
-        :style="'transform: translate(0, '+ pullMargin + 'px) rotate(' + pullRotation + 'deg);'"
+        :class="pullLoading ? 'b-spinner' : ''"
+        :style="'transform: translate(0, '+ pullMargin + 'px) rotate(' + pullRotation + 'deg) scale(' + pullScale +');'"
         round
-        icon="refresh"
+        :icon="!pullLoading ? 'refresh' : ''"
       />
       <q-page-container>
         <transition :name="transitionName">
@@ -205,11 +205,12 @@ export default {
       headerShadow: false,
       overlay: false,
       scrollSpot: 0,
-      pullMargin: 1,
+      pullMargin: 0,
       pullOpacity: 1,
       pullLoading: false,
       panDelta: 0,
-      pullRotation: 0
+      pullRotation: 0,
+      pullScale: 1
     }
   },
   beforeRouteUpdate (to, from, next) {
@@ -288,7 +289,6 @@ export default {
           pan.evt.preventDefault()
         }
         var marginAdd = Math.min(scrollDistance, max)
-        console.log(marginAdd)
         this.pullMargin = marginInitial + marginAdd
         this.pullRotation = (this.pullMargin / max) * 360
         if (pan.isFinal) {
@@ -298,10 +298,16 @@ export default {
             this.$refs.childHome.refresher()
               .then((response) => {
                 console.log(response)
-                this.pullLoading = false
-                this.pullMargin = marginInitial
-                this.panDelta = 0
-                this.pullRotation = 0
+                this.pullScale = 0
+                setTimeout(() => {
+                  this.pullLoading = false
+                  this.pullMargin = marginInitial
+                  this.panDelta = 0
+                  this.pullRotation = 0
+                }, 600)
+                setTimeout(() => {
+                  this.pullScale = 1
+                }, 900)
               })
               .catch((error) => {
                 if (error) {
@@ -392,6 +398,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~variables'
 .team-heading .sub-heading
   display block
 .child-view {
@@ -418,4 +425,19 @@ export default {
   margin 16px 0
 .search-modal .q-if
   margin 16px 10px
+.b-spinner:before
+  content ''
+  box-sizing border-box
+  position absolute
+  top 50%
+  left 50%
+  width 1.2em
+  height 1.2em
+  margin-top 6px
+  margin-left 6px
+  border-radius 50%
+  border 2px solid #fff
+  border-top-color $primary
+  border-right-color $primary
+  animation q-spin 1s infinite linear
 </style>

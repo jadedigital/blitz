@@ -44,6 +44,9 @@
     <q-pull-to-refresh :handler="refresher">
       <div class="contain-main">
         <div style="height: calc(100vh - 50px); background-color: #fff;">
+          <q-card-title>
+            Starters
+          </q-card-title>
           <blitz-team v-if="dataLoaded && thisTeam" :thisTeam="thisTeam"/>
           <q-spinner
             v-if="!dataLoaded"

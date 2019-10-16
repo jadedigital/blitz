@@ -3,26 +3,10 @@
     <div v-if="rosterCheck" class="team-child">
       <q-list link class="no-border no-pad bg-grey-1">
         <q-card class="compact-card bg-white">
-          <div class="row">
-            <div class="col-6">
-              <q-card-title>
-                Starters
-              </q-card-title>
-            </div>
-            <div class="col-6 error-button text-right" style="padding: 18px 10px 0 0;">
-              <q-btn v-if="lineupResponse.includes('Error') && myTeam === thisTeam" @click="errorModal = true" flat round icon="warning" class="text-dark bg-grey-3">
-                <q-chip class="q-chip-dense" floating small square color="tertiary">{{lineupErrorCount}}</q-chip>
-              </q-btn>
-              <q-btn flat round icon="today" class="text-dark bg-grey-3" />
-              <q-btn flat round icon="swap_horiz" class="text-dark bg-grey-3" >
-                <q-chip class="q-chip-dense" floating small square color="tertiary">10</q-chip>
-              </q-btn>
-            </div>
-          </div>
           <div class="card-main bg-white">
             <div v-for="(player, index) in startersRendered" :key="index">
               <div v-if="player.id">
-                <q-item link separator @click.native="goToPlayer(player.id)">
+                <q-item link @click.native="goToPlayer(player.id)">
                   <q-btn v-if="myTeam === thisTeam && (parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600 || byeBool(player.id))" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-btn v-else round small style="font-size: 12px; font-weight:400" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
@@ -37,7 +21,7 @@
                 </q-item>
               </div>
               <div v-if="!player.id">
-                <q-item link separator>
+                <q-item link>
                   <q-btn v-if="myTeam === thisTeam" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-btn v-if="myTeam !== thisTeam" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{ player.position }}</q-btn>
                   <q-item-side class="player-avatar" :avatar="'./statics/avatar.jpg'" />
@@ -145,9 +129,6 @@
           </q-item>
         </q-list>
       </q-modal>
-      <q-modal position="bottom" v-model="errorModal">
-        <div style="padding:20px;" class="text-justify light-paragraph" v-html="lineupResponseFormatted"></div>
-      </q-modal>
     </div>
     <div v-if="!rosterCheck" style="height: calc(100vh - 112px)">
       <div class="absolute-center text-center light-paragraph">
@@ -178,8 +159,7 @@ export default {
       swapModal: false,
       modalPositionIndex: '',
       modalPlayers: [],
-      swapPlayer: {},
-      errorModal: false
+      swapPlayer: {}
     }
   },
   computed: {
@@ -223,7 +203,7 @@ export default {
       return this.lookup(array, 'id')
     },
     lineLookup () {
-      var array = this.lineupLocal
+      var array = this.startersRendered
       var key = 'id'
       var lookup = {}
       for (var i = 0, len = array.length; i < len; i++) {
@@ -360,8 +340,7 @@ export default {
     startersServer () {
       var starters = JSON.parse(JSON.stringify(this.startingPosObject))
       var players = []
-      let playerObj = this.playerLookup
-      var playerCheck = ''
+      let playerLook = this.playerLookup
       this.teamScoring.players.player.forEach(el => {
         if (el.status === 'starter') {
           players.push(el.id)
@@ -369,17 +348,15 @@ export default {
       })
       var n = 0
       this.positions.forEach((elarray) => {
-        elarray.some((elPos) => {
+        elarray.forEach((elPos) => {
           players.some((elId) => {
-            if (playerObj[elId].position === elPos) {
+            if (playerLook[elId].position === elPos) {
               var index = players.indexOf(elId)
               players.splice(index, 1)
-              starters[n]['id'] = playerObj[elId].id
+              starters[n]['id'] = playerLook[elId].id
             }
-            playerCheck = elId
-            return playerObj[elId].position === elPos
+            return playerLook[elId].position === elPos
           })
-          return playerObj[playerCheck].position === elPos
         })
         n++
       })
@@ -393,10 +370,10 @@ export default {
       }
     },
     bench () {
-      var localLookup = this.lookup(this.lineupLocal, 'id')
+      var localLookup = this.lookup(this.startersRendered, 'id')
       var bench = []
       this.teamScoring.players.player.forEach(el => {
-        if (el.status === ('nonstarter' || 'ROSTER') && !localLookup[el.id]) {
+        if (!localLookup[el.id]) {
           var obj = {
             id: el.id
           }
@@ -475,20 +452,6 @@ export default {
       })
       var positions = pos.concat(flex, kick, def)
       return positions
-    },
-    lineupResponseFormatted () {
-      let search = '&lt;br/&gt;'
-      let replacement = '<br>'
-      let response = this.lineupResponse.split(search).join(replacement)
-      search = '<error>'
-      replacement = '<div>'
-      return response.split(search).join(replacement)
-    },
-    lineupErrorCount () {
-      let search = '&lt;br/&gt;'
-      let response = this.lineupResponse.split(search)
-      let count = response.length - 1
-      return count
     }
   },
   methods: {
@@ -594,10 +557,10 @@ export default {
       var startersCSV = ''
 
       starters[index].id = newId
-      if (newPos && this.swapPlayer['id']) {
+      if ((newPos || newPos === 0) && this.swapPlayer['id']) {
         starters[newPos].id = this.swapPlayer['id']
       }
-      if (newPos && !this.swapPlayer['id']) {
+      if ((newPos || newPos === 0) && !this.swapPlayer['id']) {
         delete starters[newPos].id
       }
       console.log(starters)
@@ -733,22 +696,8 @@ export default {
   padding-left 8px
   padding-right 8px
   background #ff1744
-.q-chip-dense
-  min-height 1px
-  max-height 16px
-  padding 0 3px
-  font-size 12px
-  top -.8em
-  right -.3em
-  left initial
 .injury
   display inline-block
 .card-main .q-item-separator
   border-top 1px solid #e0e0e0
-.error-button
-  padding 2px
-.error-button .q-btn
-  font-size 16px
-  height 2em
-  width 2em
 </style>
