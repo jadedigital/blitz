@@ -207,6 +207,26 @@ export const API_POST = ({ commit }, payload) => {
   })
 }
 
+export const API_GET = ({ commit }, payload) => {
+  return new Promise((resolve, reject) => {
+    var queryParams = payload.data
+    var url = 'https://keepersync.com/mfl/export'
+
+    axios.get(url, {
+      params: queryParams
+    })
+      .then((response) => {
+        var responseData = response.data
+        resolve(responseData)
+      })
+      .catch((error) => {
+        if (error) {
+          reject(error)
+        }
+      })
+  })
+}
+
 export const GET_CHATS = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
     var queryParams = {
