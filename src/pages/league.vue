@@ -1,8 +1,7 @@
 <template>
   <q-pull-to-refresh :handler="refresher" class="league">
-    <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
-      <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
-    </div>
+    <blitz-spinner v-if="!dataLoaded">
+    </blitz-spinner>
     <div v-if="error" style="height: calc(100vh - 112px)">
       <div class="absolute-center text-center light-paragraph">
         Can't fetch data.<br>
@@ -153,9 +152,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import blitzSpinner from '../components/blitzSpinner.vue'
 
 export default {
   name: 'league',
+  components: {
+    blitzSpinner
+  },
   data () {
     return {
       response: null,
