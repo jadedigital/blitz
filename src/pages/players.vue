@@ -11,12 +11,12 @@
               {{statusFilter === 'fa' ? 'Free Agents' : 'All Players'}}
             </q-card-title>
           </div>
-          <div class="col-6 filter-button text-right">
-            <q-btn @click="filterCollapse=!filterCollapse" class="bg-grey-3 text-primary" flat size="sm" round color="primary" icon="filter_list" />
+          <div class="col-6 action-buttons text-right">
+            <q-btn @click="filterCollapse=!filterCollapse" class="b-icon bg-grey-3 text-dark" flat round color="primary" icon="filter_list" />
           </div>
         </div>
-        <q-collapsible v-model="filterCollapse" :header-style="'display: none;'" class="players-header">
-          <div class="row small-pad">
+        <q-collapsible v-model="filterCollapse" :header-style="'display: none;'" class="filter-buttons">
+          <div class="row small-pad no-wrap b-overflow">
             <q-btn
               v-for="(pos, index) in selectOptions"
               :key="index"
@@ -24,15 +24,15 @@
               size="md"
               rounded
               :label="pos.label"
-              :class="[positionFilter.includes(pos.value) ? 'bg-primary text-white' : 'bg-grey-3 text-dark']"
+              :class="[positionFilter.includes(pos.value) ? 'bg-primary text-white' : 'bg-grey-3 text-dark', 'b-text']"
               @click="togglePos(pos.value)"
             />
           </div>
           <div class="row small-pad">
-            <div class="col-6">
+            <div class="col-6" style="padding-right: 2px;">
               <q-btn @click.native="statusFilter = 'fa'" :class="[statusFilter === 'fa' ? 'bg-primary text-white' : 'bg-grey-3 text-dark', 'full-width']" flat size="md" rounded label="Free Agents" />
             </div>
-            <div class="col-6">
+            <div class="col-6" style="padding-left: 2px;">
               <q-btn @click.native="statusFilter = 'all'" :class="[statusFilter === 'all' ? 'bg-primary text-white' : 'bg-grey-3 text-dark', 'full-width']" flat size="md" rounded label="All Players" />
             </div>
           </div>
@@ -527,8 +527,12 @@ export default {
   margin 10px 0
 .players .q-chip
   margin 2px
-.filter-button
-  padding 16px
+.action-buttons
+  padding 18px 16px 0 0
+.action-buttons .b-icon
+  font-size 16px
+  height 2em
+  width 2em
 .q-popover
   border-radius 10px
   box-shadow 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
@@ -537,8 +541,13 @@ export default {
   min-height: 36px
 .q-popover .q-list-separator
   padding 0
-.players-header .q-card-container
+.filter-buttons .q-card-container
   padding 16px 0
+.filter-buttons .b-text
+  margin-right 4px
+.filter-buttons .b-overflow
+  overflow auto
+  -webkit-overflow-scrolling touch
 .small-pad
   padding 4px 0
 </style>
