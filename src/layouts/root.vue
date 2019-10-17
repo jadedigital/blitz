@@ -186,4 +186,11 @@ export default {
   padding-right 80px
 .main-layout .q-toolbar
   padding-right 6px
+.matchup .q-tabs-head
+  display none
+.modal-content
+  border-top-left-radius 10px
+  border-top-right-radius 10px
+.search-modal-wrap .modal-content
+  border-radius 0
 </style>
