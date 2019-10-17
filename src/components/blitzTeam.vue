@@ -3,6 +3,9 @@
     <div v-if="rosterCheck" class="team-child">
       <q-list link class="no-border no-pad bg-grey-1">
         <q-card class="compact-card bg-white">
+          <q-card-title>
+            Starters
+          </q-card-title>
           <div class="card-main bg-white">
             <div v-for="(player, index) in startersRendered" :key="index">
               <div v-if="player.id">
@@ -38,8 +41,8 @@
             Bench
           </q-card-title>
           <div class="card-main bg-white">
-            <q-item link separator v-for="player in bench" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn v-if="myTeam === thisTeam && (parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600 || byeBool(player.id))" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">BN</q-btn>
+            <q-item link v-for="player in bench" :key="player.id" @click.native="goToPlayer(player.id)">
+              <q-btn v-if="myTeam === thisTeam && (parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600 || byeBool(player.id))" @click.stop="modalBenchLogic(player.id)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">BN</q-btn>
               <q-btn v-else round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">BN</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
@@ -57,15 +60,14 @@
             </q-item>
           </div>
         </q-card>
-        <q-card v-if="league.injuredReserve !== '0' && injuredReserve.length < 0" class="compact-card bg-white">
+        <q-card v-if="league.injuredReserve !== '0' && injuredReserve.length > 0" class="compact-card bg-white">
           <q-card-title>
             Injured Reserve
           </q-card-title>
-          <q-card-separator />
           <div class="card-main bg-white">
-            <q-item link separator v-for="player in injuredReserve" :key="player.id" @click.native="goToPlayer(player.id)">
-              <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">IR</q-btn>
-              <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">IR</q-btn>
+            <q-item link v-for="player in injuredReserve" :key="player.id" @click.native="goToPlayer(player.id)">
+              <q-btn v-if="myTeam === thisTeam" @click.stop="modalIRLogic(player.id)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">IR</q-btn>
+              <q-btn v-if="myTeam !== thisTeam" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">IR</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -79,9 +81,8 @@
           <q-card-title>
             Taxi Squad
           </q-card-title>
-          <q-card-separator />
           <div class="card-main bg-white">
-            <q-item link separator v-for="player in taxiSquad" :key="player.id" @click.native="goToPlayer(player.id)">
+            <q-item link v-for="player in taxiSquad" :key="player.id" @click.native="goToPlayer(player.id)">
               <q-btn v-if="myTeam === thisTeam && parseFloat(scoringLookup[player.id].gameSecondsRemaining) === 3600" @click.stop="modalLogic(player.id, index)" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-outline bg-white text-primary q-item-avatar">TS</q-btn>
               <q-btn v-if="myTeam !== thisTeam || parseFloat(scoringLookup[player.id].gameSecondsRemaining) < 3600" round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">TS</q-btn>
               <q-item-side class="player-avatar" :avatar="playerLookup[player.id].position === 'Def' ? './statics/' + teamMap[playerLookup[player.id].team] + '.svg' : playerLookup[player.id].cbs_id ? 'https://sports.cbsimg.net/images/football/nfl/players/100x100/' + playerLookup[player.id].cbs_id + '.jpg' : './statics/avatar.jpg'" />
@@ -95,12 +96,12 @@
         </q-card>
       </q-list>
       <q-modal @hide="clearSwapModal" v-if="myTeam === thisTeam" position="bottom" v-model="swapModal">
-        <q-list link class="no-border no-pad">
+        <q-list v-if="swapModal" link class="no-border no-pad">
           <q-list-header>
             Swap {{swapPlayer.name}} with another player:
           </q-list-header>
           <div v-for="(player, index) in modalPlayers" :key="index">
-            <q-item :class="player.slot === 'BN' ? 'bg-blue-1' : ''" v-if="player.pos !== 'BN' && player.id" @click.native="movePlayer(player.id, player.index)" link>
+            <q-item :class="player.slot === 'BN' ? 'bg-blue-1' : ''" v-if="player.pos !== 'BN' && player.pos !== 'IR' && player.id" @click.native="movePlayer(player.id, player.index)" link>
               <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.slot}}</q-btn>
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
@@ -111,6 +112,25 @@
                 <div class="q-item-sublabel" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;"><small>{{ updatedProjection[player.id].projection }}</small></div>
               </div>
             </q-item>
+            <q-item v-else-if="player.pos === 'IR' && player.id" @click.native="movePlayerToIR(player.id, swapPlayer.id)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-tertiary q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+                <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
+              </div>
+            </q-item>
+            <q-item v-else-if="player.pos === 'IR'" @click.native="movePlayerToIR('', swapPlayer.id)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-tertiary q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">Move To Injured Reserve</div>
+              </div>
+            </q-item>
+            <q-item v-else-if="player.pos === 'TX'" @click.native="movePlayerToTX(player.id)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-green-9 q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">Move To Taxi Squad</div>
+              </div>
+            </q-item>
             <q-item v-else-if="player.pos !== 'BN'" @click.native="movePlayerEmptySlot(player.index)" link>
               <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.pos}}</q-btn>
               <div class="q-item-main q-item-section team-players">
@@ -118,6 +138,35 @@
               </div>
             </q-item>
             <q-item v-else @click.native="movePlayerToBench()" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.pos}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">Move To Bench</div>
+              </div>
+            </q-item>
+          </div>
+          <q-item v-if="!modalPlayers[0]">
+            No eligible players
+          </q-item>
+        </q-list>
+      </q-modal>
+      <q-modal @hide="clearSwapModal" v-if="myTeam === thisTeam" position="bottom" v-model="irModal">
+        <q-list v-if="irModal" link class="no-border no-pad">
+          <q-list-header>
+            Swap {{swapPlayer.name}} with another player:
+          </q-list-header>
+          <div v-for="(player, index) in modalPlayers" :key="index">
+            <q-item v-if="player.id" @click.native="movePlayerToIR(swapPlayer.id, player.id)" link>
+              <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.slot}}</q-btn>
+              <div class="q-item-main q-item-section team-players">
+                <div class="q-item-label team-player-name">{{playerLookup[player.id].name.split(', ').slice(1).join(' ').charAt(0)}}. {{playerLookup[player.id].name.split(', ').slice(0, -1).join(' ')}} <blitz-injury class="injury" :player="player.id"></blitz-injury><small> {{playerLookup[player.id].team}}  -  {{playerLookup[player.id].position}}</small></div>
+                <blitz-versus class="q-item-sublabel" rank :player="player.id"></blitz-versus>
+              </div>
+              <div class="q-item-side q-item-side-right q-item-section">
+                <div class="q-item-label" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;">{{scoringLookup[player.id].score}}</div>
+                <div class="q-item-sublabel" style="overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;"><small>{{ updatedProjection[player.id].projection }}</small></div>
+              </div>
+            </q-item>
+            <q-item v-else @click.native="movePlayerToIR(swapPlayer.id, '')" link>
               <q-btn round small style="font-size: 12px; font-weight:400; margin-right: 10px;" class="q-btn-flat text-primary q-item-avatar">{{player.pos}}</q-btn>
               <div class="q-item-main q-item-section team-players">
                 <div class="q-item-label team-player-name">Move To Bench</div>
@@ -157,9 +206,12 @@ export default {
     return {
       response: null,
       swapModal: false,
+      irModal: false,
       modalPositionIndex: '',
       modalPlayers: [],
-      swapPlayer: {}
+      swapPlayer: {},
+      firstLineupChange: true,
+      firstLineupChangeMsg: 'Your league does not allow partial lineups. Your lineup changes will not be saved to MFL servers until you submit a legal lineup. Making other roster moves (IR, Taxi, Waiver) will cause you to lose your local unsaved lineup changes.'
     }
   },
   computed: {
@@ -481,16 +533,45 @@ export default {
       }
       return lookup
     },
+    modalIRLogic (pid) {
+      var players = []
+      var startersCopy = JSON.parse(JSON.stringify(this.startersSorted))
+      startersCopy.forEach((el) => {
+        if (this.lineLookup[el.id]) {
+          el.index = this.lineLookup[el.id].index
+          el.slot = this.lineLookup[el.id].position
+        } else {
+          el.slot = 'BN'
+        }
+        players.push(el)
+      })
+
+      var bnObj = {
+        pos: 'BN'
+      }
+      players.push(bnObj)
+
+      var name = this.playerLookup[pid] ? this.playerLookup[pid].name : ''
+      this.swapPlayer['name'] = name.split(', ').reverse().join(' ')
+      this.swapPlayer['id'] = pid
+      this.modalPlayers = players
+      this.irModal = true
+    },
     modalLogic (pid, index) {
       var bnObj = {}
+      var irObj = {}
+      var irObjEmpty = {}
+      var txObj = {}
       var posObj = {}
       var startersCopy = JSON.parse(JSON.stringify(this.startersSorted))
       var players = []
       var name = this.playerLookup[pid] ? this.playerLookup[pid].name : ''
 
+      // swap starter with another player (starter or bench)
       this.positions[index].forEach((pos) => {
         startersCopy.forEach((el) => {
           if (pos === this.playerLookup[el.id].position && name !== this.playerLookup[el.id].name && (parseFloat(this.scoringLookup[el.id].gameSecondsRemaining) === 3600 || this.byeBool(el.id))) {
+            // Only show players in positions where it is legal to move both players
             if (this.lineLookup[el.id] && pid) {
               this.positions[this.lineLookup[el.id].index].forEach((posL) => {
                 if (posL === this.playerLookup[pid].position) {
@@ -500,11 +581,13 @@ export default {
                   players.push(el)
                 }
               })
+            // If an empty starting position was selected, show starters in other positions that can be moved there
             } else if (this.lineLookup[el.id]) {
               console.log('test2')
               el.slot = this.lineLookup[el.id].position
               el.index = this.lineLookup[el.id].index
               players.push(el)
+            // If an empty starting position was selected, show bench players that can be moved there
             } else {
               console.log('test3')
               el.slot = 'BN'
@@ -513,6 +596,7 @@ export default {
           }
         })
       })
+      // move starter to bench, IR, Taxi or empty roster slot
       if (pid) {
         var i = 0
         this.positions.forEach((posArray) => {
@@ -532,6 +616,25 @@ export default {
           pos: 'BN'
         }
         players.push(bnObj)
+
+        this.injuredReserve.forEach((el) => {
+          irObj = {
+            id: el.id,
+            pos: 'IR'
+          }
+          players.push(irObj)
+        })
+        if (parseFloat(this.league.injuredReserve) > this.injuredReserve.length) {
+          irObjEmpty = {
+            pos: 'IR'
+          }
+          players.push(irObjEmpty)
+        }
+
+        txObj = {
+          pos: 'TX'
+        }
+        players.push(txObj)
       }
 
       this.swapPlayer['name'] = name.split(', ').reverse().join(' ')
@@ -540,23 +643,81 @@ export default {
       this.modalPositionIndex = index
       this.swapModal = true
     },
+    modalBenchLogic (pid) {
+      var posObj = {}
+      var players = []
+      var name = this.playerLookup[pid] ? this.playerLookup[pid].name : ''
+
+      var i = 0
+      this.positions.forEach((posArray) => {
+        posArray.forEach((posit) => {
+          if (posit === this.playerLookup[pid].position) {
+            posObj = {
+              slot: this.startersRendered[i].position,
+              index: this.startersRendered[i].index,
+              pos: posit
+            }
+            console.log(this.startersRendered[i].index)
+            if (this.startersRendered[i].id) {
+              posObj['id'] = this.startersRendered[i].id
+            }
+            players.push(posObj)
+          }
+        })
+        i++
+      })
+
+      var irObj = {}
+      var irObjEmpty = {}
+      var txObj = {}
+
+      this.injuredReserve.forEach((el) => {
+        irObj = {
+          id: el.id,
+          pos: 'IR'
+        }
+        players.push(irObj)
+      })
+      if (parseFloat(this.league.injuredReserve) > this.injuredReserve.length) {
+        irObjEmpty = {
+          pos: 'IR'
+        }
+        players.push(irObjEmpty)
+      }
+
+      txObj = {
+        pos: 'TX'
+      }
+      players.push(txObj)
+
+      this.swapPlayer['name'] = name.split(', ').reverse().join(' ')
+      this.swapPlayer['id'] = pid
+      this.modalPlayers = players
+      this.modalPositionIndex = ''
+      this.swapModal = true
+    },
     clearSwapModal () {
       this.modalPlayers = []
     },
     movePlayer (newId, newPos) {
       this.swapModal = false
+      this.$q.loading.show()
       let starters = []
 
-      var index = this.modalPositionIndex
       if (this.lineupSynced) {
         starters = JSON.parse(JSON.stringify(this.startersServer))
       } else {
         starters = JSON.parse(JSON.stringify(this.lineupLocal))
       }
 
+      // if original selected player is not on the bench, move the new player to his slot
+      if (this.modalPositionIndex || this.modalPositionIndex === 0) {
+        var index = this.modalPositionIndex
+        starters[index].id = newId
+      }
+
       var startersCSV = ''
 
-      starters[index].id = newId
       if ((newPos || newPos === 0) && this.swapPlayer['id']) {
         starters[newPos].id = this.swapPlayer['id']
       }
@@ -575,22 +736,26 @@ export default {
       })
       console.log(startersCSV)
       this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
-      this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
       this.submitLineup(startersCSV)
     },
     movePlayerEmptySlot (newIndex) {
       this.swapModal = false
+      this.$q.loading.show()
       let starters = []
 
-      var oldIndex = this.modalPositionIndex
       if (this.lineupSynced) {
         starters = JSON.parse(JSON.stringify(this.startersServer))
       } else {
         starters = JSON.parse(JSON.stringify(this.lineupLocal))
       }
 
+      // if selected player is not on the bench, delete him from his old slot
+      if (this.modalPositionIndex || this.modalPositionIndex === 0) {
+        var oldIndex = this.modalPositionIndex
+        delete starters[oldIndex].id
+      }
+
       var startersCSV = ''
-      delete starters[oldIndex].id
       starters[newIndex].id = this.swapPlayer['id']
 
       starters.forEach((el) => {
@@ -604,11 +769,11 @@ export default {
       })
       console.log(startersCSV)
       this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
-      this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
       this.submitLineup(startersCSV)
     },
     movePlayerToBench () {
       this.swapModal = false
+      this.$q.loading.show()
       let starters = []
 
       if (this.lineupSynced) {
@@ -633,8 +798,45 @@ export default {
       })
       console.log(startersCSV)
       this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
-      this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
       this.submitLineup(startersCSV)
+    },
+    movePlayerToIR (actId, deactId) {
+      this.swapModal = false
+      this.irModal = false
+      this.$q.loading.show()
+
+      this.submitIR(actId, deactId, '')
+    },
+    movePlayerFromIR (id) {
+      console.log(id)
+    },
+    movePlayerToTX (id) {
+      console.log(id)
+    },
+    movePlayerFromTX (id) {
+      console.log(id)
+    },
+    updateRoster () {
+      return new Promise((resolve, reject) => {
+        var requests = [
+          'rosters',
+          'liveScoring'
+        ]
+        this.$store.commit('main/CLEAR_TIMESTAMPS', {types: requests})
+        this.$store.dispatch('main/API_REQUEST', { types: requests })
+          .then((response) => {
+            console.log(response)
+            this.$q.loading.hide()
+            resolve(response)
+          })
+          .catch((error) => {
+            if (error) {
+              console.log(error)
+              this.$q.loading.hide()
+              reject(error)
+            }
+          })
+      })
     },
     pluralize: function (value) {
       value = value.toString()
@@ -664,10 +866,41 @@ export default {
       this.$store.dispatch('main/API_POST', { data })
         .then((response) => {
           console.log(response)
-          if (!response.includes('Error')) {
+          if (response.includes('Error')) {
             this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: false})
+          } else {
+            this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: true})
           }
           this.$store.commit('main/SET_DATA', {type: 'lineupResponse', data: response})
+          this.updateRoster()
+        })
+        .catch((error) => {
+          if (error) {
+            console.log(error)
+          }
+        })
+    },
+    submitIR (act, deact, drop) {
+      let data = {
+        cookie: this.token,
+        host: this.leagueData[this.activeLeague].host,
+        season: '2019',
+        TYPE: 'ir',
+        L: this.activeLeague,
+        ACTIVATE: act,
+        DEACTIVATE: deact,
+        DROP: drop
+      }
+      this.$store.dispatch('main/API_POST', { data })
+        .then((response) => {
+          console.log(response)
+          return this.updateRoster()
+        })
+        .then((response) => {
+          this.$store.commit('main/SET_DATA', {type: 'lineupSynced', data: true})
+          this.$store.commit('main/SET_DATA', {type: 'lineupResponse', data: ''})
+          let starters = JSON.parse(JSON.stringify(this.startersServer))
+          this.$store.commit('main/SET_DATA', {type: 'lineupLocal', data: starters})
         })
         .catch((error) => {
           if (error) {
