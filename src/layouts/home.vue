@@ -6,7 +6,7 @@
     class="no-header-shadow main-layout"
   >
     <q-layout-header :reveal="settings.toolbarHide">
-      <q-toolbar class="toolbar border-bottom" color="primary">
+      <q-toolbar class="toolbar" color="primary">
         <q-btn
           flat
           dense
@@ -108,7 +108,7 @@
       </q-list>
     </q-layout-drawer>
 
-    <q-modal @show="$refs.search.focus()" v-model="modal" class="no-header-shadow">
+    <q-modal @show="$refs.search.focus()" v-model="modal" class="no-header-shadow search-modal-wrap">
       <q-modal-layout content-class="row">
         <q-toolbar slot="header" class="bg-white text-dark">
           <q-btn dense flat>
@@ -150,7 +150,7 @@
     <div v-touch-pan.mightPrevent="panHandler">
       <q-btn
         size="lg"
-        style="height: 1.8em; width: 1.8em; top:14px; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
+        style="height: 1.8em; width: 1.8em; top:10px; left:0; right:0; margin-left: auto; margin-right: auto; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); z-index: 1900;"
         class="bg-white text-primary absolute"
         :class="pullLoading ? 'b-spinner' : ''"
         :style="'transform: translate(0, '+ pullMargin + 'px) rotate(' + pullRotation + 'deg) scale(' + pullScale +');'"
@@ -293,7 +293,7 @@ export default {
         this.pullRotation = (this.pullMargin / max) * 360
         if (pan.isFinal) {
           if (scrollDistance > triggerDistance) {
-            this.pullMargin = 70
+            this.pullMargin = 56
             this.pullLoading = true
             this.$refs.childHome.refresher()
               .then((response) => {
