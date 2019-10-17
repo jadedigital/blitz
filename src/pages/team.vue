@@ -6,15 +6,15 @@
       <div class="row">
         <div class="col-6">
           <q-card-title>
-            Starters
+            My Team
           </q-card-title>
         </div>
-        <div class="col-6 action-buttons text-right" style="padding: 18px 10px 0 0;">
+        <div class="col-6 action-buttons text-right" style="padding: 18px 16px 0 0;">
           <q-btn @click="weekModal = true" flat rounded :label="'Week ' + currentWeek" class="b-text text-dark bg-grey-3" />
           <q-btn @click="transactionModal = true" flat round icon="swap_horiz" class="b-icon text-dark bg-grey-3" >
-            <q-chip class="q-chip-dense" floating small square color="tertiary">10</q-chip>
+            <q-chip v-if="transactionCount > 0" class="q-chip-dense" floating small square color="tertiary">{{transactionCount}}</q-chip>
           </q-btn>
-          <q-btn v-if="lineupResponse.includes('Error')" @click="errorModal = true" flat round icon="warning" class="b-icon text-dark bg-grey-3">
+          <q-btn v-if="lineupResponse.includes('Error')" @click="errorModal = true" flat round icon="error" class="b-icon text-tertiary bg-grey-3">
             <q-chip class="q-chip-dense" floating small square color="tertiary">{{lineupErrorCount}}</q-chip>
           </q-btn>
         </div>
@@ -131,7 +131,8 @@ export default {
       futureDraftPicks: 'main/futureDraftPicks',
       api: 'main/api',
       leagueChange: 'main/leagueChange',
-      lineupResponse: 'main/lineupResponse'
+      lineupResponse: 'main/lineupResponse',
+      transactionCount: 0
     }),
     myTeam () {
       var team = this.leagueData[this.activeLeague].teamId
@@ -349,7 +350,9 @@ export default {
   height 2em
   width 2em
 .action-buttons .b-text
+  height 32px
   font-size 12px
+  text-transform none
 .q-chip-dense
   min-height 1px
   max-height 16px
