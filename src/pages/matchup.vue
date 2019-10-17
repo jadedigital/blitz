@@ -1,20 +1,36 @@
 <template>
   <div class="matchup">
-    <div v-if="!dataLoaded" style="height: calc(100vh - 112px)">
-      <q-spinner color="secondary" size="40px" class="absolute-center" style="margin-left: -20px;"/>
-    </div>
-    <q-tabs v-if="dataLoaded" inverted class="secondary-tabs">
+    <blitz-spinner v-if="!dataLoaded">
+    </blitz-spinner>
+    <q-tabs v-model="selectedTab" v-if="dataLoaded" inverted class="no-border">
       <!-- Tabs - notice slot="title" -->
-      <q-tab default slot="title" name="tab-1" label="My Matchup" />
-      <q-tab slot="title" name="tab-2" label="All Matchups"/>
+      <div class="tabs-hide">
+        <q-tab default slot="title" name="tab-1" label="My Matchup" />
+        <q-tab slot="title" name="tab-2" label="All Matchups"/>
+      </div>
       <!-- Targets -->
       <div class="contain-main">
-        <div
-          class="q-if row no-wrap items-center relative-position q-input q-search q-if-has-label text-primary"
-          @click="showModal"
-        >
-          <div class="q-if-inner col row no-wrap items-center relative-position week-select-wrap">
-            <span class="text-primary text-weight-regular week-select q-if-label ellipsis full-width absolute self-start">Week {{weekSelect}}<q-btn dense flat icon="mdi-menu-down" /></span>
+        <div class="row action-row">
+          <div class="col-4">
+            <q-card-title>
+              Matchup
+            </q-card-title>
+          </div>
+          <div class="action-buttons justify-end col-8 q-option cursor-pointer no-outline row inline no-wrap q-toggle q-focusable q-touch">
+            <div @click="togglePane" :class="toggle ? 'shifted' : ''" class="q-option-inner relative-position text-primary active b-toggle">
+              <input type="checkbox">
+              <div class="q-focus-helper">
+              </div>
+              <div class="q-toggle-base b-base bg-grey-3">
+                <div class="text-inner-left absolute text-dark">My</div>
+                <div class="text-inner-right absolute text-dark">All</div>
+              </div>
+              <div class="q-toggle-handle row flex-center b-handle">
+                <div class="q-radial-ripple"></div>
+                <div class="text-inner text-white">{{toggle ? 'All Matchups' : 'My Matchup'}}</div>
+              </div>
+            </div>
+            <q-btn @click="weekModal = true" flat rounded :label="'Week ' + currentWeek" class="b-text text-dark bg-grey-3" />
           </div>
         </div>
         <q-tab-pane keep-alive class="no-pad no-border" name="tab-1">
@@ -104,11 +120,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import blitzMatchup from '../components/blitzMatchup.vue'
+import blitzSpinner from '../components/blitzSpinner.vue'
 
 export default {
   name: 'matchup',
   components: {
-    blitzMatchup
+    blitzMatchup,
+    blitzSpinner
   },
   data () {
     return {
@@ -121,7 +139,9 @@ export default {
       byeWeek: false,
       teamA: '',
       teamB: '',
-      weekModal: false
+      weekModal: false,
+      toggle: false,
+      selectedTab: 'tab-1'
     }
   },
   computed: {
@@ -178,6 +198,14 @@ export default {
     }
   },
   methods: {
+    togglePane () {
+      this.toggle = !this.toggle
+      if (this.selectedTab === 'tab-1') {
+        this.selectedTab = 'tab-2'
+      } else {
+        this.selectedTab = 'tab-1'
+      }
+    },
     setTeams () {
       var myTeam = this.leagueData[this.activeLeague].teamId
       var array = []
@@ -384,4 +412,44 @@ export default {
   text-align center
 .week-select-wrap
   margin-bottom 10px
+.q-toggle-base.b-base
+  height 32px
+  width 130px
+  opacity 1
+.q-toggle-handle.b-handle
+  font-size 12px
+  height 32px
+  width 96px
+  border-radius 30px
+  box-shadow none
+  font-weight 500
+.b-toggle
+  padding 0 0 0 0
+  width 130px
+.text-inner-left
+  font-size 12px
+  left 12px
+  top 16px
+  font-weight 500
+.text-inner-right
+  font-size 12px
+  right 12px
+  top 16px
+  font-weight 500
+.active .q-toggle-handle.b-handle
+  left 0
+.shifted .q-toggle-handle.b-handle
+  left 34px
+.action-buttons
+  padding 18px 16px 0 0
+.action-buttons .b-text
+  font-size 12px
+.action-buttons .q-btn
+  margin-left 4px
+  height 32px
+  text-transform none
+.tabs-hide
+  display none
+.action-row
+  margin-bottom 12px
 </style>
